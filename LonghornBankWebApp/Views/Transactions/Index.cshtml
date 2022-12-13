@@ -1,0 +1,137 @@
+﻿@model IEnumerable<LonghornBankWebApp.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@if (User.IsInRole("Admin"))
+{
+    <h1>All Transactions</h1>
+    <h6>These are all transactions from all accounts associated with Longhorn Bank.</h6>
+}
+
+@if (User.IsInRole("Customer"))
+{
+    <h1>Your Transactions</h1>
+    <h6>These are your transactions from all your bank accounts, in one place.</h6>
+}
+
+
+<form asp-action="Index" asp-controller="Transactions" method="get">
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                Search by description
+            </div>
+
+            <div class="col-3">
+                Select field to sort by
+            </div>
+            <div class="col-2">
+                Order by
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <input name="SearchString" class="form-control" /><br />
+            </div>
+            <div class="col-3">
+                @Html.DropDownList("selected", (List<SelectListItem>)ViewBag.sortby, new { @class = "form-control" })
+            </div>
+
+            <div class="col-2">
+                @Html.DropDownList("order", (List<SelectListItem>)ViewBag.order, new { @class = "form-control" })
+            </div>
+
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@ViewBag.id">Detailed Search</a>
+                <a asp-action="Index" class="btn btn-danger">Show All</a>
+            </div>
+
+        </div>
+    </main>
+</form>
+
+<p class="text-primary">Displaying @ViewBag.queriedCount records of @ViewBag.total</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionNumber)
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Account
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Notes
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionType)
+                </td>
+                @if (item.BankAccount == null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockPortfolio.PortfolioName)
+                    </td>
+                }
+                @if (item.StockPortfolio == null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BankAccount.BankAccountName)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionNotes)
+                </td>
+                @if (item.TransactionStatus == TransactionStatuses.Approved)
+                {
+                    <td>
+                        Completed
+                    </td>
+                }
+                @if (item.TransactionStatus != TransactionStatuses.Approved)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TransactionStatus)
+                    </td>
+                }
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

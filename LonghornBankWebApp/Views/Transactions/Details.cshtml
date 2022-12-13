@@ -1,0 +1,368 @@
+﻿
+@model LonghornBankWebApp.Models.ViewModels.TransactionDispute
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details for Transaction #@Model.transaction.TransactionNumber</h1>
+
+@if (Model.transaction.TransactionStatus == TransactionStatuses.Deleted)
+{
+    <h4 class="text-danger">THIS TRANSACTION HAS BEEN DELETED</h4>
+}
+
+
+<div class="container-fluid">
+    <hr />
+    <div>
+        <dl class="row">
+            <div class="col">
+                <div class="row">
+                    <dt class="col-sm-5">
+                        Transaction Number
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionNumber)
+                    </dd>
+                    @if (Model.transaction.BankAccount == null)
+                    {
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.transaction.StockPortfolio.PortfolioName)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.transaction.StockPortfolio.PortfolioName)
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.transaction.StockPortfolio.PortfolioNumber)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.transaction.StockPortfolio.PortfolioNumber)
+                        </dd>
+
+                    }
+                    @if (Model.transaction.StockPortfolio == null)
+                    {
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.transaction.BankAccount.BankAccountName)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.transaction.BankAccount.BankAccountName)
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.transaction.BankAccount.BankAccountNumber)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.transaction.BankAccount.BankAccountNumber)
+                        </dd>
+                    }
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.transaction.TransactionType)
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionType)
+                    </dd>
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.transaction.TransactionAmount)
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionAmount)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.transaction.TransactionDate)
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionDate)
+                    </dd>
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.transaction.TransactionNotes)
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionNotes)
+                    </dd>
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.transaction.TransactionStatus)
+                    </dt>
+                    <dd class="col-sm-5">
+                        @Html.DisplayFor(model => model.transaction.TransactionStatus)
+                    </dd>
+                </div>
+            </div>
+
+            <div class="col">
+
+                <div class="row">
+
+                    @if (Model.transaction.Disputes.Count > 0)
+                    {
+
+                        foreach (Dispute dispute in Model.transaction.Disputes)
+                        {
+                            if (dispute.DisputeStatus == DisputeStatus.Submitted)
+                            {
+                                <dt class="col-sm-10">
+                                    <p class="text-danger">Dispute created on @dispute.dateCreated</p>
+                                </dt>
+                                <dt class="col-sm-5">
+                                    Dispute notes
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @dispute.DisputeNotes
+                                </dd>
+                                <dt class="col-sm-5">
+                                    Claimed amount
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @dispute.CorrectAmount
+                                </dd>
+                                @if (dispute.DeleteTransaction)
+                                {
+                                    <dt class="col-sm-10">
+                                        <p class="text-danger">Transaction requested to be deleted</p>
+                                    </dt>
+                                }
+                                <dt class="col-sm-5">
+                                    Dispute status
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @dispute.DisputeStatus.ToString()
+                                </dd>
+                            }
+                            else
+                            {
+                                <p class="text-success">Dispute resolved (@dispute.DisputeStatus.ToString()) on @dispute.dateResolved by @dispute.adminEmail <a asp-controller="Disputes" asp-action="Details" asp-route-id="@dispute.DisputeID">View</a></p>
+                            }
+
+                        }
+
+
+                        @*TODO:someone please help me fix the display here*@
+
+                        if (ViewBag.action == true)
+                        {
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <br />
+                                <br />
+                                <form asp-controller="Disputes" asp-action="Resolve" asp-route-id="@ViewBag.current">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            Add comment to dispute resolution
+                                            <input name="message" class="form-control" />
+                                        </div>
+                                    </div>
+
+                                    <br />
+
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            @*<a class="btn btn-success" asp-controller="Disputes" asp-action="Resolve" asp-route-accept="@true" asp-route-id="@ViewBag.current">Accept</a>*@
+                                            <button class="btn btn-success" type="submit" asp-controller="Disputes" asp-action="Resolve" asp-route-id="@ViewBag.current" asp-route-accept="@true">Accept</button>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            @*<a class="btn btn-danger" asp-controller="Disputes" asp-action="Resolve" asp-route-reject="@true" asp-route-id="@ViewBag.current">Reject</a>*@
+                                            <button class="btn btn-danger" type="submit" asp-controller="Disputes" asp-action="Resolve" asp-route-id="@ViewBag.current" asp-route-reject="@true">Reject</button>
+                                        </div>
+
+
+
+                                        <div class="col-md-2">
+                                            <input name="adjusted" type="number" step="0.1" size="2" class="form-control" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-warning">Adjust</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            }
+                        }
+
+                    }
+
+                    @if (User.IsInRole("Customer"))
+                    {
+                        @if (ViewBag.disputable == true)
+                        {
+                            @if (ViewBag.displayDispute == false)
+                            {
+                                <a asp-action="Details" asp-route-id="@Model.transaction.TransactionID" asp-route-displayDispute="@true" class="btn btn-danger">Dispute this transaction</a>
+
+                            }
+                            @if (ViewBag.displayDispute == true)
+                            {
+                                @Html.Partial("CreateDispute_Partial")
+                            }
+                        }
+                    }
+
+
+
+
+
+                </div>
+            </div>
+        </dl>
+
+
+
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.transaction.TransactionID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+
+
+    @*@model LonghornBankWebApp.Models.Transaction
+
+        @{
+            ViewData["Title"] = "Details";
+        }
+
+        <h1>Details for Transaction #@Model.TransactionNumber</h1>
+
+        <div class="container-fluid">
+            <hr />
+            <div>
+                <dl class="row">
+                    <div class="col">
+                        <div class="row">
+                            <dt class="col-sm-5">
+                                Transaction Number
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionNumber)
+                            </dd>
+                            @if (Model.BankAccount == null)
+                            {
+                                <dt class="col-sm-5">
+                                    @Html.DisplayNameFor(model => model.StockPortfolio.PortfolioName)
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @Html.DisplayFor(model => model.StockPortfolio.PortfolioName)
+                                </dd>
+                                <dt class="col-sm-5">
+                                    @Html.DisplayNameFor(model => model.StockPortfolio.PortfolioNumber)
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @Html.DisplayFor(model => model.StockPortfolio.PortfolioNumber)
+                                </dd>
+
+                            }
+                            @if (Model.StockPortfolio == null)
+                            {
+                                <dt class="col-sm-5">
+                                    @Html.DisplayNameFor(model => model.BankAccount.BankAccountName)
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @Html.DisplayFor(model => model.BankAccount.BankAccountName)
+                                </dd>
+                                <dt class="col-sm-5">
+                                    @Html.DisplayNameFor(model => model.BankAccount.BankAccountNumber)
+                                </dt>
+                                <dd class="col-sm-5">
+                                    @Html.DisplayFor(model => model.BankAccount.BankAccountNumber)
+                                </dd>
+                            }
+
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.TransactionType)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionType)
+                            </dd>
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.TransactionAmount)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionAmount)
+                            </dd>
+
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.TransactionDate)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionDate)
+                            </dd>
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.TransactionNotes)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionNotes)
+                            </dd>
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.TransactionStatus)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.TransactionStatus)
+                            </dd>
+                        </div>
+                    </div>
+
+                    <div class="col">
+
+                        <div class="row">
+
+                            @if (Model.Disputes.Count > 0)
+                            {
+
+                                foreach (Dispute dispute in Model.Disputes)
+                                {
+                                    <dt class="col-sm-10">
+                                        <p class="text-danger">This transaction has been disputed</p>
+                                    </dt>
+                                    <dt class="col-sm-5">
+                                        Dispute notes
+                                    </dt>
+                                    <dd class="col-sm-5">
+                                        @dispute.DisputeNotes
+                                    </dd>
+                                    <dt class="col-sm-5">
+                                        Claimed amount
+                                    </dt>
+                                    <dd class="col-sm-5">
+                                        @dispute.CorrectAmount
+                                    </dd>
+                                    @if (dispute.DeleteTransaction)
+                                    {
+                                        <dt class="col-sm-10">
+                                            <p class="text-danger">Transaction requested to be deleted</p>
+                                        </dt>
+                                    }
+                                    <dt class="col-sm-5">
+                                        Dispute status
+                                    </dt>
+                                    <dd class="col-sm-5">
+                                        @dispute.DisputeStatus.ToString()
+                                    </dd>
+                                }
+                            }
+
+                            @if (Model.Disputes.Count == 0)
+                            {
+                                @if (ViewBag.displayDispute == false)
+                                {
+                                    <a asp-action="Details" asp-route-id="@Model.TransactionID" asp-route-displayDispute="@true" class="btn btn-danger">Dispute this transaction</a>
+
+                                }
+                                @if (ViewBag.displayDispute == true)
+                                {
+                                    @Html.Partial("CreateDispute_Partial")
+                                }
+
+
+                            }
+                        </div>
+                    </div>
+                </dl>
+
+
+
+            </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.TransactionID">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>*@

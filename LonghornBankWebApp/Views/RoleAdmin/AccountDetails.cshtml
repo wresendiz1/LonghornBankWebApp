@@ -1,0 +1,36 @@
+﻿@model IndexViewModel
+@{
+    ViewBag.Title = "User Info";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<div>
+    <h4>Change your account settings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>Name:</dt>
+        <dd>@Model.FullName</dd>
+
+        <dt>User Name:</dt>
+        <dd>@Model.UserName</dd>
+
+        <dt>Email:</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Phone Number:</dt>
+        <dd>@Model.PhoneNumber</dd>
+
+        
+        <dt>Address</dt>
+        <dd>@Model.FullAddress</dd>
+
+
+        <dt>Modify Address, Phone Number, and Name</dt>
+        <dd>
+            [@Html.ActionLink("Edit", "AccountModify" , new{ email = @Model.Email})]
+        </dd>
+    </dl>
+</div>
+<a asp-action="AccountIndex" asp-route-id = "@ViewBag.Role" class="btn btn-primary">Back</a>

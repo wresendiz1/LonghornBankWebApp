@@ -1,0 +1,89 @@
+﻿@model IEnumerable<LonghornBankWebApp.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Pending Transactions";
+}
+
+<h3>Pending Transactions</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAccount.BankAccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionNotes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionStatus)
+            </th>
+            <th> Approve </th>
+            <th> Deny </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (item.BankAccount != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BankAccount.BankAccountName)
+                    </td>
+                }
+                else if (item.StockPortfolio != null)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockPortfolio.PortfolioName)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionNotes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionStatus)
+                </td>
+                <td>
+                    @{
+                        var approve = new Dictionary<string, string> {
+                        { "id", item.TransactionNumber.ToString() },
+                        { "status", "Approve" } };
+
+                        var reject = new Dictionary<string, string> {
+                        { "id", item.TransactionNumber.ToString() },
+                        { "status", "Reject" } };
+                    }
+
+                    <a class="btn btn-primary" asp-action="ProcessDeposit" asp-all-route-data="approve">Approve</a>
+                <td>
+                    <a class="btn btn-primary" asp-action="ProcessDeposit" asp-all-route-data="reject">Reject</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="ManageTask" class="btn btn-primary">Back</a>

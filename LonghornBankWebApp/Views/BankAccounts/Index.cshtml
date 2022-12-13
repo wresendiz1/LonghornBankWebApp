@@ -1,0 +1,180 @@
+﻿@model IEnumerable<LonghornBankWebApp.Models.BankAccount>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@if (User.IsInRole("Customer"))
+{
+
+    if(ViewBag.Message != null){
+        <div class="alert alert-warning" role="alert">
+            @ViewBag.Message
+        </div>
+    }
+    if(ViewBag.Create != null){
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Create a stock portfolio with us!</h4>
+            <p>Get approved today</p>
+            <hr>
+            <a asp-action="Create" asp-controller = "StockPortfolio" class="btn btn-outline-success">Create</a>
+        </div>
+    }
+
+    
+    <h1>Your Bank Accounts</h1>
+    <p>
+        <a class="btn btn-success" asp-action="Create">Create New</a>
+        <a class="btn btn-primary" asp-controller="Transactions" asp-action="CreateDeposit">Deposit</a>
+        <a class="btn btn-warning" asp-controller="Transactions" asp-action="CreateWithdrawal">Withdraw</a>
+        <a class="btn btn-danger" asp-controller="Transactions" asp-action="CreateTransfer">Transfer</a>
+    </p>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+{
+    <h1>All Bank Accounts</h1>
+
+    <form asp-action="Index" method="get">
+        <p class="form-group">
+            Search by Name: <input name="SearchString" class="form-control" /><br />
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-danger">Show All</a>
+        </p>
+    </form>
+
+<p>Displaying @ViewBag.Selected of @ViewBag.All Customer Accounts.</p>
+
+    
+    
+}
+
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAccountNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAccountType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankAccountBalance)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (item.BankAccountNumber.ToString().Length < 10)
+                {
+                    <td>
+                        0
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @*this way it only displays last four digits like proj req asks for*@
+                        @item.BankAccountNumber.ToString().Substring(item.BankAccountNumber.ToString().Length - 4)
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankAccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankAccountType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankAccountBalance)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.BankAccountID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.BankAccountID">Details</a>
+                </td>
+            </tr>
+        }
+
+        @if (ViewBag.SP != null)
+        {
+            <tr>
+                @if (@ViewBag.SP.PortfolioNumber.ToString().Length < 10)
+                {
+                    <td>0</td>
+                }
+                else
+                {
+                    <td>
+                        @ViewBag.SP.PortfolioNumber.ToString().Substring(ViewBag.SP.PortfolioNumber.ToString().Length - 4)
+                    </td>
+                }
+
+                <td>
+                    @ViewBag.SP.PortfolioName
+                </td>
+                <td>
+                    Stock Portfolio
+                </td>
+                <td>
+                    @ViewBag.SP.CashValuePortion.ToString("C")
+                </td>
+
+                <td>
+                    <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@ViewBag.SP.StockPortfolioID">Edit</a> |
+                    <a asp-controller="StockPortfolio" asp-action="Index">Details</a>
+                </td>
+            </tr>
+
+        }
+
+
+        @if (ViewBag.portfolios != null)
+        {
+            foreach (StockPortfolio sp in ViewBag.portfolios)
+            {
+                <tr>
+                    @if (@sp.PortfolioNumber.ToString().Length < 10)
+                    {
+                        <td>0</td>
+                    }
+                    else
+                    {
+                        <td>
+                            @sp.PortfolioNumber.ToString().Substring(sp.PortfolioNumber.ToString().Length - 4)
+                        </td>
+                    }
+
+                    <td>
+                        @sp.PortfolioName
+                    </td>
+                    <td>
+                        Stock Portfolio
+                    </td>
+                    <td>
+                        @sp.CashValuePortion
+                    </td>
+
+                    <td>
+                        <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@sp.StockPortfolioID">Edit</a> |
+                        <a asp-controller="StockPortfolio" asp-action="Index" asp-route-id="@sp.StockPortfolioID">Details</a>
+                    </td>
+                </tr>
+            }
+
+        }
+        <tr>
+        </tr>
+    </tbody>
+</table>

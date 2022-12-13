@@ -1,0 +1,56 @@
+﻿
+
+
+/* For background container in header*/
+#bg-start {
+    margin-bottom: 6rem;
+    background-image: url(../images/texas.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+}
+
+.navbar-custom > li { /* <- this affects just my footer navbar */
+    display: inline-block;
+}
+
+/* Adds padding and margin utility classes */
+.my-6 {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+}
+
+.py-6 {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.top_pad{
+    padding-top: 99px;
+}
+
+.notification {
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+    padding: 15px 26px;
+    position: relative;
+    display: inline-block;
+    border-radius: 2px;
+}
+
+.notification:hover {
+    background: red;
+}
+
+.notification .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background: red;
+    color: white;
+}
+

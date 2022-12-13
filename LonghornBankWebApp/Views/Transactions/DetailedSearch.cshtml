@@ -1,0 +1,68 @@
+﻿@model LonghornBankWebApp.Models.ViewModels.SearchViewModel
+
+@{
+    ViewData["Title"] = "DetailedSearch";
+}
+
+<h1>Detailed Search</h1>
+Search your transactions by specific fields.
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="DisplaySearchResults">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="TransactionNumber" class="control-label"></label>
+                <input asp-for="TransactionNumber" class="form-control" />
+                <span asp-validation-for="TransactionNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SelectedType" class="control-label"></label>
+                <select asp-for="SelectedType" asp-items="Html.GetEnumSelectList<TransactionTypes>()" class="form-control">
+                    <option selected="selected" value="">All Types</option>
+                </select>
+                <span asp-validation-for="SelectedType" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TransactionDescription" class="control-label"></label>
+                <input asp-for="TransactionDescription" class="form-control" />
+                <span asp-validation-for="TransactionDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LowAmount" class="control-label"></label>
+                <input asp-for="LowAmount" class="form-control" />
+                <span asp-validation-for="LowAmount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="HighAmount" class="control-label"></label>
+                <input asp-for="HighAmount" class="form-control" />
+                <span asp-validation-for="HighAmount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DateLow" class="control-label"></label>
+                <input asp-for="DateLow" class="form-control" />
+                <span asp-validation-for="DateLow" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DateHigh" class="control-label"></label>
+                <input asp-for="DateHigh" class="form-control" />
+                <span asp-validation-for="DateHigh" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

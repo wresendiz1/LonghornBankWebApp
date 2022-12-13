@@ -1,0 +1,47 @@
+﻿@model LonghornBankWebApp.Models.BankAccount
+
+
+
+
+
+<h1>Bank Account Creation Confirmation</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BankAccountNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BankAccountNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BankAccountName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BankAccountName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BankAccountType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BankAccountType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InitialDeposit)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InitialDeposit)
+        </dd>
+        <div text=".text-primary">
+            @ViewBag.InitDepoStatus
+        </div>
+    </dl>
+</div>
+
+
+<div>   
+    <a class="btn btn-primary" asp-route-num="@Model.BankAccountNumber" asp-route-name="@Model.BankAccountName" asp-route-type="@Model.BankAccountType" asp-route-deposit="@Model.InitialDeposit" asp-action="Confirm">Confirm</a>
+    <a class="btn btn-primary" asp-action="Index">Cancel</a>
+
+</div>

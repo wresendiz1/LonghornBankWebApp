@@ -1,0 +1,74 @@
+﻿@model LonghornBankWebApp.Models.ViewModels.TransactionDispute
+
+
+<h5>Dispute this transaction</h5>
+<form asp-action="Create" asp-controller="Disputes">
+    @Html.HiddenFor(m => m.transaction.TransactionID)
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label class="control-label">Send message to management:</label>
+        <input asp-for="dispute.DisputeNotes" class="form-control" />
+        <span asp-validation-for="dispute.DisputeNotes" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Enter correct amount:</label>
+        <input type="number" step="0.1" asp-for="dispute.CorrectAmount" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label class="form-check-label"></label>
+        <input type="checkbox" class="form-check-input" asp-for="dispute.DeleteTransaction" /> Delete Transaction
+
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+        <button asp-action="Details" class="btn btn-danger">Cancel</button>
+    </div>
+</form>
+
+
+
+@*<h5>Dispute this transaction</h5>
+    <form asp-action="Create" asp-controller="Disputes">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Send message to management:</label>
+            <input asp-for="DisputeNotes" class="form-control" />
+
+        </div>
+        <div class="form-group">
+            <label class="control-label">Enter correct amount:</label>
+            <input type="number" step="0.1" asp-for="CorrectAmount" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="form-check-label"></label>
+            <input type="checkbox" class="form-check-input" asp-for="DeleteTransaction" /> Delete Transaction
+
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            <button asp-action="Details" class="btn btn-danger">Cancel</button>
+        </div>
+    </form>*@
+
+@*<h5>Dispute this transaction</h5>
+    <form asp-action="Create" asp-controller="Disputes">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Send message to management:</label>
+            <input name="message" class="form-control" />
+
+        </div>
+        <div class="form-group">
+            <label class="control-label">Enter correct amount:</label>
+            <input type="number" step="0.1" name="correctAmount" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="form-check-label"></label>
+            <input type="checkbox" class="form-check-input" name="delete" /> Delete Transaction
+
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" asp-route-transactionId="@Model.TransactionID" class="btn btn-primary" />
+            <button asp-action="Details" asp-route-id="@Model.TransactionID" class="btn btn-danger">Cancel</button>
+        </div>
+    </form>*@

@@ -1,0 +1,83 @@
+﻿@model LonghornBankWebApp.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>New Deposit</h1>
+Note: deposits of more than $5,000 will require admin approval before they are applied to account balance.
+<hr />
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateDeposit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @*<label asp-for="BankAccount" class="control-label"></label>*@
+                @*@Html.DropDownList("SelectedBankAccount", (SelectList)ViewBag.Accts, new { @class = "form-control" })*@
+                @Html.DropDownList("SelectedAccountNum", (List<SelectListItem>)ViewBag.Accts, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="TransactionAmount" class="control-label"></label>
+                <input asp-for="TransactionAmount" class="form-control" value="@Model.TransactionAmount" />
+                <span asp-validation-for="TransactionAmount" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="TransactionDate" class="control-label"></label>
+                <input asp-for="TransactionDate" class="form-control"/>
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransactionNotes" class="control-label"></label>
+                <input asp-for="TransactionNotes" class="form-control" />
+                <span asp-validation-for="TransactionNotes" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                @if (ViewData.ModelState.Keys.Contains("ContributionLimit"))
+                {
+                        <input type="submit" value="Modify" asp-route-modify="@true" class="btn btn-success" />
+                }
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-8">
+        @*sad path: user tried to contribute more than IRA limit, offer to fix*@
+        @{
+
+            if (ViewData.ModelState.Keys.Contains("Maxed IRA Contribution"))
+            {
+                <p class="text-danger">You have already contributed $5000, the max contribution limit, to your IRA this year. You may not deposit to this account until next year.</p>
+                <p>Please deposit into another account or press cancel if you would like to return to your bank account management page.</p>
+            }
+
+            else if (ViewData.ModelState.Keys.Contains("ContributionLimit"))
+            {
+                <p class="text-danger">This amount is invalid because it will exceed your IRA's annual contribution limit by $@ViewBag.ExceedLimit</p>
+                @*<a asp-controller="Transactions" asp-action="ModifyAmount" asp-route-amount="@Model.TransactionAmount" asp-route-bankAccountID="@Model.BankAccount.BankAccountID">Modify amount to max valid</a>*@
+                <p>Press the modify button if you'd like to replace the field with the max valid amount that you can deposit (you will still be able to edit before submitting).</p>
+                <p>Feel free to also edit the amount yourself or cancel the deposit.</p>
+            }
+
+            if (ViewData.ModelState.Keys.Contains("NotActive"))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <p> @ViewData.ModelState["NotActive"].Errors[0].ErrorMessage</p>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

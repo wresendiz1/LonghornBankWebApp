@@ -1,0 +1,87 @@
+@model LonghornBankWebApp.Models.StockPortfolio
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Model.PortfolioName: Stock Portion</h1>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PortfolioValue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PortfolioValue)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalFees)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalFees)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsBalanced)
+        </dt>
+        @if (Model.IsBalanced)
+        {
+            <dd class="col-sm-10">
+                Balanced
+            </dd>
+        }
+        else
+        {
+            <dd class="col-sm-10">
+                Imbalanced
+            </dd>
+        }
+    </dl>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Ticker Symbol
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Current Price
+            </th>
+            <th>
+                No. shares
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Stock item in ViewBag.holdings.Keys)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TickerSymbol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockType.StockTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentPrice)
+                </td>
+                <td>
+                    @ViewBag.holdings[item]
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.StockID">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

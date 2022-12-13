@@ -1,0 +1,64 @@
+@model IEnumerable<LonghornBankWebApp.Models.Stock>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Current Stock Offerings</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Add New Stock</a>
+        <a asp-action="Create" asp-controller="StockTypes" class="btn btn-primary">Add New Stock Type</a>
+
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TickerSymbol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockType.StockTypeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentPrice)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TickerSymbol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockType.StockTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentPrice)
+                </td>
+                <td>
+
+                    <a asp-action="Details" asp-route-id="@item.StockID">Details</a>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.StockID">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.StockID">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,78 @@
+﻿@model RoleEditModel
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<h2>Edit Role: @Model.Role.Name</h2>
+
+@Html.ValidationSummary()
+
+@using (Html.BeginForm())
+{
+    <input type="hidden" name="roleName" value="@Model.Role.Name" />
+    <div class="panel panel-primary">
+        <table class="table table-striped">
+            @if (Model.ActiveMembers.Count() == 0)
+            {
+                <tr>
+                    <td colspan="3">No Active Users Are @Model.Role.Name</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th>First Name</th>
+                   <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Deactivate</th>
+                </tr>
+                foreach (AppUser user in Model.ActiveMembers)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.UserName</td>
+                        <td>
+                            <input type="checkbox" name="IdsToDeactivate" value="@user.Id" />
+                        </td>
+
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="panel panel-primary">
+        <table class="table table-striped">
+            @if (Model.InActiveMembers.Count() == 0)
+            {
+                <tr>
+                    <td colspan="3">No Inactive Users Are @Model.Role.Name</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Reactivate</th>
+
+                </tr>
+                foreach (AppUser user in Model.InActiveMembers)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.UserName</td>
+                        <td>
+                            <input type="checkbox" name="IdsToActivate" value="@user.Id" />
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Save</button>
+    <a asp-action="Index" class="btn btn-success">Back</a>
+}

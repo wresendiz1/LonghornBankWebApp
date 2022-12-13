@@ -1,0 +1,64 @@
+﻿@model IEnumerable<LonghornBankWebApp.Models.Message>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Send Message</a>
+</p>
+
+    <table class="table table-bordered">
+
+
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Receiver)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Sender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Info)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Receiver)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sender)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Subject)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Info)
+                        </td>
+                        <td style="white-space:nowrap">
+                            @item.Date.ToString("yyyy-MM-dd")
+                        </td>
+                        <td>
+                            <a asp-action="Read" class = "btn btn-info" asp-route-id="@item.MessageID"> Mark as Read</a>
+@*                            <a asp-action="Delete" asp-route-id="@item.MessageID">Delete</a>
+*@                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+            
+    

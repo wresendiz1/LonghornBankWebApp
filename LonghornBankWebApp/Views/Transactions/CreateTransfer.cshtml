@@ -1,0 +1,112 @@
+﻿@model LonghornBankWebApp.Models.Transaction
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>New Transfer</h1>
+Note: The IRA contribution limit applies to money transferred into an IRA.
+<hr />
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateTransfer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            @*FROM ACCOUNT*@
+            Originating Account (from)
+            <div class="form-group">
+                @Html.DropDownList("SelectedFromAccount", (List<SelectListItem>)ViewBag.DropDown, new { @class = "form-control" })
+                <span asp-validation-for="BankAccount" class="text-danger"></span>
+            </div>
+
+            @*TO ACCOUNT*@
+            Destination Account (to)
+            @*DROPDOWN TO ACC*@
+            <div class="form-group">
+                @Html.DropDownList("SelectedToAccount", (List<SelectListItem>)ViewBag.DropDown, new { @class = "form-control" })
+                <span asp-validation-for="BankAccount" class="text-danger"></span>
+            </div>
+            @*DROPDOWN FRO ACC*@
+            <div class="form-group">
+                <label asp-for="TransactionAmount" class="control-label"></label>
+                <input asp-for="TransactionAmount" class="form-control" value="@Model.TransactionAmount" />
+                <span asp-validation-for="TransactionAmount" class="text-danger"></span>
+            </div>
+            @*DATE*@
+            <div class="form-group">
+                <label asp-for="TransactionDate" class="control-label"></label>
+                <input asp-for="TransactionDate" class="form-control"/>
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                @*ADD/INCLUDE BUTTONS*@
+                @if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
+                {
+                    <input type="submit" value="Add Fee" class="btn btn-success" asp-route-include="@false" />
+                    <input type="submit" value="Include Fee" class="btn btn-primary" asp-route-include="@true" />
+                    
+
+                    <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+                }
+
+                @*MODIFY BUTTON*@
+                else if (ViewData.ModelState.Keys.Contains("ContributionLimit") && ViewData.ModelState.Keys.Contains("Maxed IRA Contribution") == false)
+                {
+                    <input type="submit" value="Modify" asp-route-modify="@true" class="btn btn-success" />
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+                }
+
+                else
+                {
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+                }
+
+            </div>
+
+        </form>
+    </div>
+    <div class="col-md-8">
+        
+        @{
+
+            if (ViewData.ModelState.Keys.Contains("Maxed IRA Contribution"))
+            {
+                <p class="text-danger">You have already contributed $5000, the max contribution limit, to your IRA this year. You may not deposit to this account until next year.</p>
+                <p>Please deposit into another account or press cancel if you would like to return to your bank account management page.</p>
+            }
+
+            else if (ViewData.ModelState.Keys.Contains("ContributionLimit"))
+            {
+                <p class="text-danger">This amount is invalid because it will exceed your IRA's annual contribution limit by $@ViewBag.ExceedLimit</p>
+                <p>Press the modify button if you'd like to replace the field with the max valid amount that you can deposit (you will still be able to edit before submitting).</p>
+                <p>Feel free to also edit the amount yourself or cancel the deposit.</p>
+            }
+
+            else if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
+            {
+                <p class="text-danger">Withdrawals from unqualified IRA distributions (for customers who are 65 years old or younger) have max withdrawal amounts of $3,000 and $30 fees.</p>
+                <p>Pressing 'add fee' will add the fee to your withdrawal amount</p>
+                <p>Pressing 'include fee' will include the fee in your withdrawal amount</p>
+            }
+
+            if (ViewData.ModelState.Keys.Contains("NotActive"))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <p> @ViewData.ModelState["NotActive"].Errors[0].ErrorMessage</p>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

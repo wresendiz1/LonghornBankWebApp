@@ -1,0 +1,72 @@
+@model LonghornBankWebApp.Models.StockTransaction
+
+@{
+    ViewData["Title"] = "Buy Stock";
+}
+
+<h1>New Stock Transaction</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @Html.DropDownList("SelectedStock", @ViewBag.DropDown, "Select a Stock", new { @class = "form-control" })
+            </div>
+            <p><small><small>*Purchase fee is one time payment for transaction</small></small></p>
+            <div class="form-group">
+                <label asp-for="NumberOfShares" class="control-label"></label>
+                <input asp-for="NumberOfShares" class="form-control" />
+                <span asp-validation-for="NumberOfShares" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransactionDate" class="control-label"></label>
+                <input asp-for="TransactionDate" class="form-control" />
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                @if (ViewData.ModelState.Keys.Contains("Succesful"))
+                {
+
+                    <input type="submit" value="Confirm" asp-route-modify = "@true" class="btn btn-success" />
+                    <a asp-action="Create" class="btn btn-danger">Cancel</a>
+                }
+                else
+                {
+                     <input type="submit" value="Create" asp-route-modify = "@false" class="btn btn-primary" />
+                }
+               
+            </div>
+        </form>
+         
+    </div>
+    <div class="col-md-4"> 
+        
+        @if (ViewData.ModelState.Keys.Contains("Succesful"))
+    {
+        <div class="alert alert-success" role="alert">
+        <p> @ViewData.ModelState["Succesful"].Errors[0].ErrorMessage</p>
+        <p> @ViewData.ModelState["Balance"].Errors[0].ErrorMessage</p>
+        </div>
+
+    }
+
+    
+    @{
+
+        if (ViewData.ModelState.Keys.Contains("Not Enough Money!"))
+        {
+            <p class="text-danger">You do not have enough money in your portfolio to buy this many shares.</p>
+        }
+
+    }
+    </div>
+    
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

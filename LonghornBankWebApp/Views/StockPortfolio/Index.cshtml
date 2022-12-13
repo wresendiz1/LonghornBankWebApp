@@ -1,0 +1,391 @@
+@model LonghornBankWebApp.Models.StockPortfolio
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@using LonghornBankWebApp.Models
+
+
+<h1>@Model.PortfolioName</h1>
+<dt class="col-sm-2">
+    @*@Html.DisplayNameFor(model => model.PortfolioNumber)*@
+    Number
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.PortfolioNumber)
+</dd>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.PortfolioValue)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.PortfolioValue)
+</dd>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.IsBalanced)
+</dt>
+@if (Model.IsBalanced)
+{
+    <dd class="col-sm-2">
+        Balanced
+    </dd>
+    @if (User.IsInRole("Customer"))
+    {
+        <a class="btn btn-warning justify-content-right" asp-controller="StockPortfolio" asp-action="CalcBonus" asp-route-id="@Model.StockPortfolioID">Calculate Bonus</a>
+    }
+
+}
+else
+{
+    <dd class="col-sm-2">
+        Unbalanced
+    </dd>
+}
+
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @ViewBag.Message
+    </div>
+}
+
+
+<br />
+<br />
+<div class="row">
+    <div>
+        <h4>
+            Cash-value portion
+
+        </h4>
+    </div>
+
+    <hr />
+</div>
+<div class="row">
+    <div class="col">
+        <dl class="row">
+
+
+
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.CashValuePortion)*@
+                Total Cash
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CashValuePortion)
+            </dd>
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.CashValuePortion)*@
+                Total Cash w/ Pending transactions
+            </dt>
+            <dd class="col-sm-10">
+                $@ViewBag.withPending
+            </dd>
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.CashValuePortion)*@
+                Total Cash w/ Scheduled transactions
+            </dt>
+            <dd class="col-sm-10">
+                $@ViewBag.withScheduled
+            </dd>
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.TotalFees)*@
+                Total Fees
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.TotalFees)
+            </dd>
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.TotalGains)*@
+                Net Gain
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.TotalGains)
+            </dd>
+            <dt class="col-sm-2">
+                @*@Html.DisplayNameFor(model => model.TotalBonuses)*@
+                Bonuses
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.TotalBonuses)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Index" asp-controller="StockPortfolio" method="get">
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                Search by description
+            </div>
+
+            <div class="col-3">
+                Select field to sort by
+            </div>
+            <div class="col-2">
+                Order by
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <input name="SearchString" class="form-control" /><br />
+            </div>
+            <div class="col-3">
+                @Html.DropDownList("selected", (List<SelectListItem>)ViewBag.sortby, new { @class = "form-control" })
+            </div>
+
+            <div class="col-2">
+                @Html.DropDownList("order", (List<SelectListItem>)ViewBag.order, new { @class = "form-control" })
+            </div>
+
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@Model.StockPortfolioID">Detailed Search</a>
+                <a asp-action="Index" asp-route-id="@ViewBag.id" class="btn btn-danger">Show All</a>
+            </div>
+
+        </div>
+    </main>
+</form>
+<p class="text-primary">Displaying @ViewBag.query.Count records of @ViewBag.total</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Cash
+            </th>
+            <th>
+                Stock
+            </th>
+            <th>
+                Price/Share
+            </th>
+            <th>
+                No. Shares
+            </th>
+            <th>
+                Notes
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@foreach (var item in Model.StockTransactions)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockTransactionNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TransactionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockTransactionType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Stock.TickerSymbol)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PricePerShare)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberOfShares)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StockTransactionNotes)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.StockTransactionID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.StockTransactionID">Details</a>
+                    </td>
+                </tr>
+            }*@
+
+        @foreach (var item in ViewBag.query)
+        {
+            if (item is StockTransaction)
+            {
+                <tr>
+                    <td>
+                        @item.StockTransactionNumber
+                        @*@Html.DisplayFor(modelItem => (StockTransaction)item).StockTransaction)*@
+                    </td>
+                    <td>
+                        @item.TransactionDate.ToString("MM-dd-yyyy")
+                        @*@Html.DisplayFor(modelItem => item.TransactionDate)*@
+                    </td>
+                    <td>
+                        @item.StockTransactionType
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionType)*@
+                    </td>
+                    <td>
+                        @item.TotalPrice
+                        @*@Html.DisplayFor(modelItem => item.TotalPrice)*@
+                    </td>
+                    <td>
+                        @item.Stock.TickerSymbol
+                        @*@Html.DisplayFor(modelItem => item.Stock.TickerSymbol)*@
+                    </td>
+                    <td>
+                        @item.PricePerShare
+                        @*@Html.DisplayFor(modelItem => item.PricePerShare)*@
+                    </td>
+                    <td>
+                        @item.NumberOfShares
+                        @*@Html.DisplayFor(modelItem => item.NumberOfShares)*@
+                    </td>
+                    <td>
+                        @item.StockTransactionNotes
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionNotes)*@
+                    </td>
+                    <td>
+                        --
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionNotes)*@
+                    </td>
+                    <td>
+                        <a asp-action="StockTransDetails" asp-controller="StockTransactions" asp-route-id="@item.StockTransactionID">Details</a>
+                    </td>
+                </tr>
+
+            }
+            else if (item is Transaction)
+            {
+                <tr>
+                    <td>
+                        @item.TransactionNumber
+                        @*@Html.DisplayFor(modelItem => (StockTransaction)item).StockTransaction)*@
+                    </td>
+                    <td>
+                        @item.TransactionDate.ToString("MM-dd-yyyy")
+                        @*@Html.DisplayFor(modelItem => item.TransactionDate)*@
+                    </td>
+                    <td>
+                        @item.TransactionType
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionType)*@
+                    </td>
+                    <td>
+                        @item.TransactionAmount
+                        @*@Html.DisplayFor(modelItem => item.TotalPrice)*@
+                    </td>
+                    <td>
+                        --
+                        @*@Html.DisplayFor(modelItem => item.Stock.TickerSymbol)*@
+                    </td>
+                    <td>
+                        --
+                        @*@Html.DisplayFor(modelItem => item.PricePerShare)*@
+                    </td>
+                    <td>
+                        --
+                        @*@Html.DisplayFor(modelItem => item.NumberOfShares)*@
+                    </td>
+                    <td>
+                        @item.TransactionNotes
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionNotes)*@
+                    </td>
+                    <td>
+                        @item.TransactionStatus
+                        @*@Html.DisplayFor(modelItem => item.StockTransactionNotes)*@
+                    </td>
+                    <td>
+                        <a asp-controller="Transactions" asp-action="Details" asp-route-id="@item.TransactionID">Details</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+<br />
+<div class="row">
+    <div>
+        <h4>
+            Stock portion
+        </h4>
+    </div>
+
+    <hr />
+    <dt class="col-sm-2">
+        @*@Html.DisplayNameFor(model => model.CashValuePortion)*@
+        Value of current holdings
+    </dt>
+    <dd class="col-sm-10">
+        $@ViewBag.holdingsvalue
+    </dd>
+    @if (User.IsInRole("Customer"))
+    {
+        <div class="col justify-content-right">
+            <a class="btn btn-success justify-content-right" asp-controller="StockTransactions" asp-action="Create" asp-route-id="@Model.StockPortfolioID">Buy Stock</a>
+            <a class="btn btn-danger justify-content-right" asp-controller="StockTransactions" asp-action="SellStock" asp-route-id="@Model.StockPortfolioID">Sell Stock</a>
+        </div>
+    }
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Ticker Symbol
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Current Price
+            </th>
+            <th>
+                No. shares
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Stock item in ViewBag.holdings.Keys)
+        {
+            <tr>
+                <td>
+                    @item.TickerSymbol
+                </td>
+                <td>
+                    @item.StockType.StockTypeName
+                </td>
+                <td>
+                    @item.StockName
+                </td>
+                <td>
+                    @item.CurrentPrice
+                </td>
+                <td>
+                    @ViewBag.holdings[item]
+                </td>
+                @*<td>
+                        <a asp-action="Details" asp-route-id="@item.StockID">Details</a>
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+</table>

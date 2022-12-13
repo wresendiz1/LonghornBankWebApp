@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PortfolioProcess>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Date Processed
+            </th>
+            <th>
+                Admin
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(PortfolioProcess pp in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => pp.DateProcessed)
+                </td>
+                <td>
+                    @pp.ProcessedBy
+                </td>
+            </tr>
+            
+        }
+    </tbody>
+
+</table>
+<a asp-action="ManageTask" class="btn btn-primary">Back</a>

@@ -1,0 +1,64 @@
+@model LonghornBankWebApp.Models.StockTransaction
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>StockTransaction</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="StockTransactionID" />
+            <div class="form-group">
+                <label asp-for="StockTransactionNumber" class="control-label"></label>
+                <input asp-for="StockTransactionNumber" class="form-control" />
+                <span asp-validation-for="StockTransactionNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PricePerShare" class="control-label"></label>
+                <input asp-for="PricePerShare" class="form-control" />
+                <span asp-validation-for="PricePerShare" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumberOfShares" class="control-label"></label>
+                <input asp-for="NumberOfShares" class="form-control" />
+                <span asp-validation-for="NumberOfShares" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalPrice" class="control-label"></label>
+                <input asp-for="TotalPrice" class="form-control" />
+                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransactionDate" class="control-label"></label>
+                <input asp-for="TransactionDate" class="form-control" />
+                <span asp-validation-for="TransactionDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockTransactionType" class="control-label"></label>
+                <select asp-for="StockTransactionType" class="form-control"></select>
+                <span asp-validation-for="StockTransactionType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockTransactionNotes" class="control-label"></label>
+                <input asp-for="StockTransactionNotes" class="form-control" />
+                <span asp-validation-for="StockTransactionNotes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewData["Title"] = "Home";
+}
+<!-- TODO: Add advertisements to products our bank provides-->
+
+<!-- Show Ads in this Container-->
+
+@section containerFluidStart{
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 py-6">
+                <h1 class="mb-5 text-capitalize text-white fw-bold"> Welcome to </h1>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Customer"))
+                    {
+                    <h1 class="display-3 mb-5 text-white fw-light text-capitalize">Longhorn Bank & Trust, @User.Identity.Name!</h1>
+             
+                    }
+                    else
+                    {
+                    <h1 class="display-3 mb-5 text-white fw-light text-capitalize">Longhorn Bank & Trust!</h1>
+                    }
+                
+
+                <h1 class="text-capitalize text-white fw-bold">Your School.</h1>
+                <h1 class="text-capitalize text-white fw-bold mb-5"> Your Bank.</h1>
+
+            @if (User.Identity.IsAuthenticated == false){
+                <a asp-action="Register" asp-controller="Account" id="registerLink" class="btn btn-light">Register Web Account</a>
+
+            }
+
+
+            </div>
+        </div>
+        
+    </div>
+    
+
+}
+
+@section containerFluid{
+    <div class="container py-3 pb-5">
+        <!-- Create cards -->
+        <div class="row text-center align-items-lg-center">
+            <div class="col">
+                <div class="card text-white bg-secondary" style="max-width: 100%">
+                <div class="card-header">Online Banking</div>    
+                    <div class="card-body">
+                        <p class = "card-text">
+                            Access your account anytime from any place with our online banking service.
+                        </p>
+                     </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white bg-secondary" style="max-width: 100%">
+                    <div class="card-header">Stock Portfolio</div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Protect your money from inflation and taxes while maximizing your investments, all in one place.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white bg-secondary" style="max-width: 100%">
+                    <div class="card-header">IRA Account</div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Enjoy tax-deferred growth with our IRA Account offerings.
+                            
+                        </p>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+@*        <div class="row text-center align-items-lg-center">
+            <div class="col">
+
+            <a asp-action="About" class="btn btn-dark btn-lg mt-5">Learn More</a>
+            </div>
+        </div>*@
+       
+    </div>
+}
+
+
+
+
