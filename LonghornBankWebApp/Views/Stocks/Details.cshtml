@@ -1,39 +1,117 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 @model LonghornBankWebApp.Models.Stock
+@using Highsoft.Web.Mvc.Charts
+@using Highsoft.Web.Mvc.Charts.Rendering;
 
 @{
     ViewData["Title"] = "Details";
+
+    var lineChart = new Highcharts
+    {
+        Title = new Title { Text = "Historical Price"},
+
+        XAxis = new List<XAxis>
+        {
+            new XAxis
+            {
+                Categories = ViewData["PriceX"] as List<string>
+            }
+        },
+
+        YAxis = new List<YAxis>
+        {
+            new YAxis
+            {
+                Title = new YAxisTitle
+                {
+                    Text = "Price ($)"
+                    
+                },
+                PlotLines = new List<YAxisPlotLines>
+                {
+                    new YAxisPlotLines
+                    {
+                        Value = 0,
+                        Width = 1,
+                        Color = "#00a9b7"
+                        
+                    }
+                }
+            }
+        },
+        Series = new List<Series>
+        {
+            new LineSeries
+            {
+                Name = "Price",
+                Data = ViewData["PriceY"] as List<LineSeriesData>,
+                Color = "#a6cd57"
+
+            }
+        }
+
+
+    };
+    lineChart.ID = "chart";
+    var renderer = new HighchartsRenderer(lineChart);
+
+
+
 }
 
-<h1>Details</h1>
+@section container
+{
+<div class="container min-vh-100">
+        
+    <h1 class="text-center">Stock Details</h1>
 
-<div>
-    <h4>Stock</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StockName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CurrentPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TickerSymbol)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TickerSymbol)
-        </dd>
-    </dl>
-</div>
-<div>
-    @if(User.IsInRole("Admin")){
-        <a asp-action="Edit" asp-route-id="@Model?.StockID">Edit</a>
+    <div>
+        <hr />
+        <div class="row">
+            <dl class="col">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.StockName)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.StockName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.CurrentPrice)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.CurrentPrice)
+            </dd>
+            <dt class = "col-sm-4">
+                @Html.DisplayNameFor(model => model.TickerSymbol)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.TickerSymbol)
+            </dd>
+        
+            </dl>
 
-    }
-    <a asp-action="Index">Back to List</a>
+            <dl class="col">
+                @Html.Raw(renderer.RenderHtml())
+            </dl>
+
+        
+        </div>
+    
+    </div>
+    <div>
+        @if(User.IsInRole("Admin")){
+            <a asp-action="Edit" asp-route-id="@Model?.StockID">Edit</a>
+
+        }
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+        
 </div>
+
+
+
+}
+

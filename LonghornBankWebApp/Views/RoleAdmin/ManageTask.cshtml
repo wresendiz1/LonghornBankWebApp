@@ -5,45 +5,93 @@
 }
 
 <h1 class="text-center mb-4">Pending Tasks</h1>
+<hr />
 
-<div class="text-center row">
-    <div class="col">
-        <h2>Transactions</h2>
-        <p>@ViewBag.PendingTrans pending transactions awaiting attention</p>
-        <a asp-action="PendingTrans" class="btn btn-primary">View</a>
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        Transactions
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.PendingTrans</h5>
+                        <p class="card-text">
+                             pending transactions awaiting attention
+                        </p>
+                        <a asp-action="PendingTrans" class="btn btn-primary">View</a>
+
+                    </div>
+                    <div class="card-footer text-muted"></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        Disputes
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.Disputes</h5>
+                        <p class="card-text">
+                            disputes awaiting attention
+                        </p>
+                        <a asp-action="PendingDisputes" class="btn btn-primary">View</a>
+
+                    </div>
+                    <div class="card-footer text-muted"></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        Stock Portfolios
+                    </div>
+                    <div class="card-body">
+                        @if (ViewBag.mostRecent != null)
+                        {
+                            <h5 class="card-title"> @ViewBag.mostRecent.DateProcessed.ToString("MM-dd-yyyy")</h5>
+                        <p class="card-text">
+                                Recently processed by @ViewBag.mostRecent.ProcessedBy
+                            </p>
+                        }
+                        else
+                        {
+                            <h5 class="card-title">Process Portfolios</h5>
+
+                        }
+                        <a class="btn btn-warning" asp-action="DisplayProcessing">View History</a>
+                        <a asp-action="ProcessPortfolios" class="btn btn-primary">Process</a>
+                    </div>
+                    <div class="card-footer text-muted"></div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-header">
+                        Messages
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.Messages</h5>
+                        <p class="card-text">
+                            messages awaiting attention
+                        </p>
+                        <a asp-action="Index" asp-controller="Messages" class="btn btn-primary">View</a>
+
+                    </div>
+                    <div class="card-footer text-muted"></div>
+                </div>
+            </div>
+        </div>
+       
     </div>
-    <div class="col">
-        <h2>Disputes</h2>
-        <p>@ViewBag.Disputes disputes awaiting attention</p>
-        <a asp-action="PendingDisputes" class="btn btn-primary">View</a>
-
-    </div>
-    <div class="col">
-        <h2>Stock Portfolios</h2>
-        @*<p>@ViewBag.Disputes disputes awaiting attention</p>*@
-        @*TODO: show a list of times that portfolios were processed and by which admin*@
-
-        @if (ViewBag.mostRecent != null)
-        {
-            <p class="text-success">Most recently processed on @ViewBag.mostRecent.DateProcessed.ToString("MM-dd-yyyy") by @ViewBag.mostRecent.ProcessedBy</p>
-
-        }
-
-        <a class="btn btn-warning" asp-action="DisplayProcessing">View previous processings</a>
-        <a asp-action="ProcessPortfolios" class="btn btn-primary">Process</a>
-    </div>
-    <div class="col">
-        <h2>Messages</h2>
-        <p>@ViewBag.Messages messages awaiting attention</p>
-        <a asp-action="Index" asp-controller="Messages" class="btn btn-primary">View</a>
-    </div>
+}
 
 
-</div>
-
-
+@*
 <div class="text-center row">
     
 
-</div>
+</div>*@
 

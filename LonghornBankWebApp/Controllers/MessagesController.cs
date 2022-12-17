@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace LonghornBankWebApp.Controllers
 {
 
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin, Customer")]
     public class MessagesController : Controller
     {
         private readonly AppDbContext _context;
@@ -38,7 +38,7 @@ namespace LonghornBankWebApp.Controllers
             List<Message> Viewed = await _context.Messages.Where(m => m.Admins.Contains(user) == false).ToListAsync();
 
 
-            return View(Pending.OrderByDescending(x => x.Date));
+            return View(Pending.OrderByDescending(x => x.MessageID));
         }
 
         // GET: Messages/Details/5
@@ -76,6 +76,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: Messages/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewBag.Admins = GetAllAdmins();
@@ -85,6 +86,7 @@ namespace LonghornBankWebApp.Controllers
         // POST: Messages/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MessageID,Subject,Info")] Message message, string Admin)
@@ -129,6 +131,15 @@ namespace LonghornBankWebApp.Controllers
             
             ViewBag.Admins = GetAllAdmins();
             return View(message);
+        }
+        // function that returns the number of messages for a user
+        public int GetNumberOfMessages()
+        {
+            AppUser user = _userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+
+            List<Message> Pending = _context.Messages.Where(m => m.Admins.Contains(user)).ToList();
+            
+            return Pending.Count();
         }
 
         public async Task<IActionResult> Read(int? id)

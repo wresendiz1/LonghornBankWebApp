@@ -13,6 +13,7 @@ using IronXL.Styles;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
 using LonghornBankWebApp.Utilities;
+using Microsoft.AspNetCore.Identity;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -20,10 +21,13 @@ namespace LonghornBankWebApp.Controllers
     public class StockPortfolioController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public StockPortfolioController(AppDbContext context)
+        public StockPortfolioController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
         }
 
         private ArrayList GetOrderedQuery(ArrayList queried, String selected, String order)
@@ -733,8 +737,9 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: StockPortfolio/Create
-        public IActionResult Create()
+        public IActionResult Create(string msg)
         {
+            ViewBag.msg = msg;
             return View();
         }
 
@@ -748,7 +753,11 @@ namespace LonghornBankWebApp.Controllers
             {
                 return View("Error", new String[] { "You can only have one stock portfolio!" });
             }
-
+            if (init_depo <= 0)
+            {
+                ViewBag.msg = "Initial Deposit must be greater than $0";
+                return View("Create");
+            }
 
             return RedirectToAction("Confirm", new { init_depo = init_depo, name = name });
 
@@ -795,12 +804,57 @@ namespace LonghornBankWebApp.Controllers
                 id.TransactionStatus = TransactionStatuses.Pending;
                 EmailMessaging.SendEmail(sp.User.Email, "Stock Portfolio: " + sp.PortfolioNumber + " has been created",
                 "Note: Your initial deposit is currenlty being procesesd, check back within 2-3 business days");
+
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Congratulations on creating your account! Note: Your initial deposit was over $5,000 and will be processed by an admin within 2-3 business days.",
+                    Subject = "Stock Portfolio has been created",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = sp.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(sp.User);
+                _context.Add(m);
+
+                // Create notification for admins
+                Message m2 = new Message()
+                {
+                    Info = "An initial deposit of over $5,000 by " + sp.User.FullName + ". Please resolve the dispute.",
+                    Subject = "Deposit that needs approval created by " + sp.User.FullName,
+                    Date = DateTime.Today,
+                    Sender = "Deposit System",
+                    Receiver = "All"
+                };
+                List<AppUser> AllAdmins = _userManager.GetUsersInRoleAsync("Admin").Result.ToList();
+
+                var query = from a in AllAdmins where a.IsActive == true select a;
+
+                List<AppUser> ActiveAdmins = query.ToList<AppUser>();
+
+                m2.Admins = ActiveAdmins;
+                _context.Add(m2);
             }
             else
             {
                 id.TransactionStatus = TransactionStatuses.Approved;
                 EmailMessaging.SendEmail(sp.User.Email, "Stock Portfolio: " + sp.PortfolioNumber + " has been created",
                 "Log in and start buying stocks!");
+
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Congratulations on creating your account! Your initial deposit was under $5,000 and has been processed.",
+                    Subject = "Stock Portfolio has been created",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = sp.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(sp.User);
+                _context.Add(m);
+                
                 sp.CashValuePortion += id.TransactionAmount;
             }
 

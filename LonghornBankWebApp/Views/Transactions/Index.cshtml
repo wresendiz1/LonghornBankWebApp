@@ -57,81 +57,86 @@
 
 <p class="text-primary">Displaying @ViewBag.queriedCount records of @ViewBag.total</p>
 
+@section containerbottom{
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionNumber)
-            </th>
-            <th>
-                Amount
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Account
-            </th>
-            <th>
-                Date
-            </th>
-            <th>
-                Notes
-            </th>
-            <th>
-                Status
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionType)
-                </td>
-                @if (item.BankAccount == null)
+    <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TransactionNumber)
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Account
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Notes
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StockPortfolio.PortfolioName)
-                    </td>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionType)
+                        </td>
+                        @if (item.BankAccount == null)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StockPortfolio.PortfolioName)
+                            </td>
+                        }
+                        @if (item.StockPortfolio == null)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BankAccount.BankAccountName)
+                            </td>
+                        }
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionNotes)
+                        </td>
+                        @if (item.TransactionStatus == TransactionStatuses.Approved)
+                        {
+                            <td>
+                                Completed
+                            </td>
+                        }
+                        @if (item.TransactionStatus != TransactionStatuses.Approved)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TransactionStatus)
+                            </td>
+                        }
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a>
+                        </td>
+                    </tr>
                 }
-                @if (item.StockPortfolio == null)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BankAccount.BankAccountName)
-                    </td>
-                }
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionNotes)
-                </td>
-                @if (item.TransactionStatus == TransactionStatuses.Approved)
-                {
-                    <td>
-                        Completed
-                    </td>
-                }
-                @if (item.TransactionStatus != TransactionStatuses.Approved)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TransactionStatus)
-                    </td>
-                }
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.TransactionID">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+}
+

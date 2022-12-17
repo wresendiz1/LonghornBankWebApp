@@ -5,96 +5,105 @@
 }
 
 <h1>Summary</h1>
+<hr />
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockTransactionNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StockTransactionNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock.StockName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock.StockName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock.StockType.StockTypeName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Stock.StockType.StockTypeName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PricePerShare)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PricePerShare)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfShares)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfShares)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TransactionDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockTransactionType)
-        </dt>
-        <dd class = "col-sm-10">
-            @if (Model.StockTransactionType == StockTransactionTypes.Withdrawal)
-            {
-                <span>Purchase</span>
-            }
-            else
-            {
-                <span>Sell</span>
-            }
-        </dd>
-        @if (Model.StockTransactionType == StockTransactionTypes.Deposit){
-            <dt class="col-sm-2">
-                Gain or Loss
-            </dt>
-            <dd class="col-sm-10">
-                @if (Model.GainLoss < 0)
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div>
+
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.StockTransactionNumber)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.StockTransactionNumber)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Stock.StockName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Stock.StockName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Stock.StockType.StockTypeName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Stock.StockType.StockTypeName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.PricePerShare)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.PricePerShare)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NumberOfShares)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.NumberOfShares)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TotalPrice)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TotalPrice)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TransactionDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TransactionDate)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.StockTransactionType)
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.StockTransactionType == StockTransactionTypes.Withdrawal)
+                    {
+                        <span>Purchase</span>
+                    }
+                    else
+                    {
+                        <span>Sell</span>
+                    }
+                </dd>
+                @if (Model.StockTransactionType == StockTransactionTypes.Deposit)
                 {
-                    <span style="color:red">@Model.GainLoss</span>
-                }
-                else if (Model.GainLoss > 0)
-                {
-                    <span style="color:green">@Model.GainLoss</span>
-                }
-                else
-                {
-                    <span style="color:blue">No Change</span>
+                    <dt class="col-sm-2">
+                        Gain or Loss
+                    </dt>
+                    <dd class="col-sm-10">
+                        @if (Model.GainLoss < 0)
+                        {
+                            <span style="color:red">@Model.GainLoss</span>
+                        }
+                        else if (Model.GainLoss > 0)
+                        {
+                            <span style="color:green">@Model.GainLoss</span>
+                        }
+                        else
+                        {
+                            <span style="color:blue">No Change</span>
+                        }
+
+                    </dd>
+
+
                 }
 
-            </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.StockTransactionNotes)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.StockTransactionNotes)
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a asp-action="Index" asp-controller="StockPortfolio">Back to List</a>
+        </div>
 
-            
-        }
         
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StockTransactionNotes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StockTransactionNotes)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index" asp-controller="StockPortfolio">Back to List</a>
-</div>
+    </div>
+}

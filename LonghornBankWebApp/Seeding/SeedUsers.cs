@@ -13,7 +13,7 @@ namespace LonghornBankWebApp.Seeding
         public async static Task<IdentityResult> SeedAllUsers(UserManager<AppUser> userManager, AppDbContext context)
         {
             //ADDED: Read in data from Excel file
-            String path = @"C:\College\Classes\Fall 2022\MIS 333K\MIS333Kproject\LonghornBankWebApp\LonghornBankWebApp\wwwroot\Files\BankData.xlsx";
+            String path = @"C:\Fall 2022\LonghornBankWebApp\LonghornBankWebApp\wwwroot\Files\BankData.xlsx";
             var workBook = new WorkBook(path);
             var workSheet1 = workBook.WorkSheets.First();
             

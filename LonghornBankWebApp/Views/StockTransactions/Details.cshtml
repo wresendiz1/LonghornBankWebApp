@@ -6,95 +6,102 @@
 
 <h1>Details</h1>
 
-<div>
-    <h4>StockTransaction</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Price per Share at Time of Purchase
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PricePerShare)
-        </dd>
-        <dt class="col-sm-2">
-            Current Price per Share
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Stock.CurrentPrice)
-        </dd>
-        <dt class="col-sm-2">
-            Difference per Share
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                var difference = Model.Stock.CurrentPrice - Model.PricePerShare;
+@section containerbottom{
 
-                // if the difference is negative
-                if (difference < 0)
-                {
-                    <span style="color:red">@difference</span>
-                }
-                
-                else if (difference > 0)
-                {
-                    <span style="color:green">@difference</span>
-                }
-                else{
-                    <span style="color:blue">No Change</span>
+    <div class="container min-vh-100 mt-4">
+        <div>
+            <h4>StockTransaction</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Price per Share at Time of Purchase
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.PricePerShare)
+                </dd>
+                <dt class="col-sm-2">
+                    Current Price per Share
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Stock.CurrentPrice)
+                </dd>
+                <dt class="col-sm-2">
+                    Difference per Share
+                </dt>
+                <dd class="col-sm-10">
+                    @{
+                        var difference = Model.Stock.CurrentPrice - Model.PricePerShare;
 
-                }
-            }
-        </dd>
+                        // if the difference is negative
+                        if (difference < 0)
+                        {
+                            <span style="color:red">@difference</span>
+                        }
 
-        <dt class="col-sm-2">
-            @if (difference < 0)
-            {
-                <span style="color:red">Total Loss</span>
-            }
-            else if (difference > 0)
-            {
-                <span style="color:green">Total Gain</span>
-            }
-            else
-            {
-                <span style ="color:blue">Total Gain/Loss</span>
-            }
-        </dt>
-        <dd class="col-sm-10">
-            @{
-                var totaldif = difference * ViewBag.Left;
-                
-                @if (difference < 0)
-                {
-                    <span style="color:red">@totaldif</span>
-                }
-                else if (difference > 0)
-                {
-                    <span style="color:green">@totaldif</span>
-                }
-                else
-                {
-                    <span style="color:blue">No Change</span>
-                }
-                
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfShares) Remaining
-        </dt>
-        <dd class="col-sm-10">
-            @ViewBag.Left
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TransactionDate)
-        </dd>
+                        else if (difference > 0)
+                        {
+                            <span style="color:green">@difference</span>
+                        }
+                        else
+                        {
+                            <span style="color:blue">No Change</span>
 
-    </dl>
-</div>
-<div>
-    <!-- <a asp-action="Edit" asp-route-id="@Model?.StockTransactionID">Edit</a> |-->
-    <a asp-action="SellStock" asp-route-id = "@Model.StockPortfolio.StockPortfolioID">Back to List</a>
-</div>
+                        }
+                    }
+                </dd>
+
+                <dt class="col-sm-2">
+                    @if (difference < 0)
+                    {
+                        <span style="color:red">Total Loss</span>
+                    }
+                    else if (difference > 0)
+                    {
+                        <span style="color:green">Total Gain</span>
+                    }
+                    else
+                    {
+                        <span style="color:blue">Total Gain/Loss</span>
+                    }
+                </dt>
+                <dd class="col-sm-10">
+                    @{
+                        var totaldif = difference * ViewBag.Left;
+
+                        @if (difference < 0)
+                        {
+                            <span style="color:red">@totaldif</span>
+                        }
+                        else if (difference > 0)
+                        {
+                            <span style="color:green">@totaldif</span>
+                        }
+                        else
+                        {
+                            <span style="color:blue">No Change</span>
+                        }
+
+                    }
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NumberOfShares) Remaining
+                </dt>
+                <dd class="col-sm-10">
+                    @ViewBag.Left
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TransactionDate)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TransactionDate)
+                </dd>
+
+            </dl>
+        </div>
+        <div>
+            <!-- <a asp-action="Edit" asp-route-id="@Model?.StockTransactionID">Edit</a> |-->
+            <a asp-action="SellStock" asp-route-id="@Model.StockPortfolio.StockPortfolioID">Back to List</a>
+        </div>
+
+    </div>
+}

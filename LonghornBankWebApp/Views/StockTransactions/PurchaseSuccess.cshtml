@@ -11,44 +11,49 @@
 
 <h1>Sale Summary</h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock.StockName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Stock.StockName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfShares)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfShares)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-        <dt class="col-sm-2">
-            Associated Fees
-        </dt>
-        <dd class="col-sm-10">
-            $10 Transaction fee <br />
-            <small><small>*one time payment per transaction</small></small>
-        </dd>
-        <dt class="col-sm-2">
-            Cash Balance
-        </dt>
-        <dd class="col-sm-10">
-            @ViewBag.Balance
+@section containerbottom{
 
-        </dd>
-    </dl>
-</div>
-<div>
-    <a class="btn btn-primary" asp-action="Index" asp-controller = "StockPortfolio">Portfolio</a>
-    <a class="btn btn-info" asp-action="Create">Purchase More</a>
-</div>
+    <div class="container min-vh-100 mt-4">
+        <div>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Stock.StockName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Stock.StockName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NumberOfShares)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.NumberOfShares)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.TotalPrice)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TotalPrice)
+                </dd>
+                <dt class="col-sm-2">
+                    Associated Fees
+                </dt>
+                <dd class="col-sm-10">
+                    $10 Transaction fee <br />
+                    <small><small>*one time payment per transaction</small></small>
+                </dd>
+                <dt class="col-sm-2">
+                    Cash Balance
+                </dt>
+                <dd class="col-sm-10">
+                    @ViewBag.Balance
+
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a class="btn btn-primary" asp-action="Index" asp-controller="StockPortfolio">Portfolio</a>
+            <a class="btn btn-info" asp-action="Create">Purchase More</a>
+        </div>
+    </div>
+}

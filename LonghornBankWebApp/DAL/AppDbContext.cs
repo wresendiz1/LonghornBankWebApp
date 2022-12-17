@@ -43,7 +43,10 @@ namespace LonghornBankWebApp.DAL
         public DbSet<PortfolioProcess> PortfolioProcesses { get; set; }
 
         public DbSet<Message> Messages { get; set; }
-        
+
+        //ADDED: This is the line that adds the StockPrice table to the database
+        public DbSet<StockPrice> StockPrices { get; set; }
+
 
     }
 }

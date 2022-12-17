@@ -18,58 +18,65 @@
 
 <p>Displaying @ViewBag.SelectedUsers of @ViewBag.AllUsers Customers.</p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.First().UserName)
-            </th>
-            <th>
-                Full Name
-            </th>
-            <th>
-                Has Accounts?
-            </th>
-            <th>
-               Bank Accounts
-            </th>
-        </tr>
-    </thead>
+@section containerbottom{
 
-    <tbody>
-        
-    @foreach (var item in Model)
-        {
-            
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.MidIntName) @Html.DisplayFor(modelItem => item.LastName)
-            </td>
+    <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.First().UserName)
+                    </th>
+                    <th>
+                        Full Name
+                    </th>
+                    <th>
+                        Has Accounts?
+                    </th>
+                    <th>
+                        Bank Accounts
+                    </th>
+                </tr>
+            </thead>
 
-            <td>
-                @if (item.UserHasAccount == false)
+            <tbody>
+
+                @foreach (var item in Model)
                 {
-                    <p>No</p>
-                }
-                else
-                {
-                    <p>Yes</p>
-                }
-            </td>
-        <td>
-            @if (item.UserHasAccount == true)
-            {
-                <a asp-action="BaDetails"  asp-route-user="@item.UserName" class="btn btn-primary">Toggle Accounts</a>
-            }
-        </td>
-    </tr>
-   
-        }
-        
-        
-    </tbody>
 
-</table>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.MidIntName) @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+
+                        <td>
+                            @if (item.UserHasAccount == false)
+                            {
+                                <p>No</p>
+                            }
+                            else
+                            {
+                                <p>Yes</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.UserHasAccount == true)
+                            {
+                                <a asp-action="BaDetails" asp-route-user="@item.UserName" class="btn btn-primary">Toggle Accounts</a>
+                            }
+                        </td>
+                    </tr>
+
+                }
+
+
+            </tbody>
+
+        </table>
+        
+    </div>
+}
+

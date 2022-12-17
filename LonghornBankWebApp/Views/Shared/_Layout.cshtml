@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Identity
+@using LonghornBankWebApp.Controllers
+@using LonghornBankWebApp.Models
 @inject UserManager<AppUser> userManager;
 @inject IHttpContextAccessor _context;
 
@@ -10,12 +12,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title</title>
     <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet"/>
     <!-- Custom Format-->
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/css/app.min.css" rel="stylesheet" />
     <script src="~/js/app.min.js"></script>
 
-
+    
     
 </head>
 <body>
@@ -29,10 +32,11 @@
             </button>
             
             <!--This is the link to the home page - you can leave this as is -->
-            <a asp-controller="Home" asp-action="Index" class="navbar-brand ">Home</a>
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand "><i class="fa fa-home"></i></a>
 
             @{
                 var user = await userManager.GetUserAsync(_context.HttpContext.User);
+                
             }
             <!--everything in this section will collapse when the screen is small -->
             <div class="collapse navbar-collapse" id="nav-content">
@@ -49,21 +53,38 @@
                         <li class="nav-item">
                             <a asp-controller="Transactions" asp-action="Index" class="nav-link">Transactions</a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="StockPortfolio" asp-action="Index" class="nav-link">Stock Portfolio</a>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Stock Portfolio</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="StockPortfolio" asp-action="Index" >Home</a></li>
+                                <li><a class="dropdown-item"  asp-controller="Stocks" asp-action="Index">Stock Offerings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="StockTransactions" asp-action="Create">Buy Stock</a></li>
+                                <li><a class="dropdown-item" asp-controller="StockTransactions" asp-action="SellStock" asp-route-name ="@user.Email">Sell Stock</a></li>
+
+                            </ul>
                         </li>
+
 
                     }
                     @if (User.IsInRole("Customer") && @user.UserHasAccount == false)
                     {
                         <li class="nav-item">
-                            <a asp-controller="BankAccounts" asp-action="Create" class="nav-link">Open Checkings,Savings, or IRA Account</a>
+                            <a asp-controller="BankAccounts" asp-action="Create" class="nav-link">Open Checkings, Savings, or IRA Account</a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="StockPortfolio" asp-action="Index" class="nav-link">Open Stock Portfolio</a>
                          </li>
                     }
 
+                    @if (User.IsInRole("Customer")){
+                        <li class="nav-item">
+                            <span class="badge badge-pill" style="float:right;margin-bottom:-12px; background-color:red"></span>
+                            <a asp-action="Index" asp-controller="Messages" class="nav-link">Alerts</a>
+                        </li>
+                        
+                    }
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
@@ -74,16 +95,47 @@
                             <a asp-controller="Transactions" asp-action="Index" class="nav-link">Transactions</a>
                         </li>*@
                         
-                        <li class="nav-item">
-                            <a asp-controller="RoleAdmin" asp-action="Index" class="nav-link">Manage Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="RoleAdmin" asp-action="ManageTask" class="nav-link">Manage Tasks</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="StockTypes" asp-action="Index" class="nav-link">Stock Types</a>
+                       
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Manage
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropDown1">
+                                <li>
+                                    <a asp-controller="RoleAdmin" asp-action="Index" class="dropdown-item">Manage Users</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="RoleAdmin" asp-action="ManageTask" class="dropdown-item">Manage Tasks</a>
+                                </li>
+                            </ul>
                         </li>
 
+
+
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Stocks
+                          </a>
+                          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a asp-controller="StockTypes" asp-action="Index" class="dropdown-item">Stock Types</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Stocks" asp-action="Index" class="dropdown-item">Stock Offerings</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Create" asp-controller="Stocks">Add Stock</a></li>
+                            <li><a class="dropdown-item" asp-action="Create" asp-controller="StockTypes">Add Stock Type</a></li>
+                            
+                          </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <span class="badge badge-pill" style="float:right;margin-bottom:-12px; background-color:red"></span>
+                            <a asp-action="Index" asp-controller="Messages" class="nav-link">Inbox</a>
+                        </li>
+                     
                     }
 
                     @if (User.IsInRole("Employee") && @user.IsActive)
@@ -98,30 +150,34 @@
                             <a asp-controller="BankAccounts" asp-action="Index" class="nav-link">Accounts</a>
                         </li>
                     }
+                    @if (User.IsInRole("Admin") == false && User.IsInRole("Customer") == false)
+                    {
+                        <li class="nav-item ">
+                            <a asp-controller="Stocks" asp-action="Index" class="nav-link">Stock Offerings</a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a asp-controller="Stocks" asp-action="Index" class="nav-link">Stock Offerings</a>
-                    </li>
                 </ul>
+                @await Html.PartialAsync("_LoginPartial")
             </div>
+
         </div>
-        @await Html.PartialAsync("_LoginPartial")
     </nav>
 
-    <!--This is the code for the main content of the advertising page -->
-    <div class="container-fluid bg-image" id="bg-start">
-        @RenderSection("containerFluidStart", required: false)
-    </div>
-    <!-- Used for the rest of pages that need full page width-->
-    <div class="container-fluid">
-        @RenderSection("containerFluid", required: false)
-    </div>
+    <!-- Used for pages that need full page length-->
+    @RenderSection("container", required: false)
+
+    <!-- Used for pages that need full page width-->
+    @RenderSection("containerFluid", required: false)
+
     
     <!--this is the main content section of the website (does not use full page width) -->
     <div class="container">
         <!--NOTE: This is where the code from the main view is inserted -->
         @RenderBody()
     </div>
+    <!-- Used for pages that need full page length below the body-->
+    @RenderSection("containerbottom", required: false)
 
     <!--This code references different script libraries to make your page responsive -->
     <script src="~/lib/jquery/jquery.js"></script>
@@ -130,7 +186,23 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     @RenderSection("Scripts", required: false)
     
-    <footer class="text-lg-start mt-5">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetNumberOfMessages", "Messages")',
+                type: 'GET',
+                success: function (data) {
+                    if (data > 0) {
+                        $(".badge").text(data);
+                    }
+                   
+                }
+            });
+
+        });
+
+    </script>
+    <footer class="text-lg-start">
         <div class="text-center text-white p-3 bg-secondary">
             © 2022 Longhorn Bank & Trust Corp
         </div>

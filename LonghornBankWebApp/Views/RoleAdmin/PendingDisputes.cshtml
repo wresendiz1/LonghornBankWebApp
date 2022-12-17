@@ -12,19 +12,18 @@
                 <h1>Pending Disputes</h1>
             </div>
             <div class="col">
-                <a class="btn btn-primary" asp-action="PendingDisputes" asp-route-showAll="@true">View all</a>
+                <a class="btn btn-primary" asp-action="PendingDisputes" asp-route-showAll="@true">All</a>
             </div>
 
         }
         @if (ViewBag.showAll == true)
         {
-            <div class="col">
+            <div class="col-md-11">
                 <h1>All Disputes</h1>
             </div>
 
-            @*TODO: please someone make this aligned on the right*@
-            <div class="col float-right">
-                <a class="btn btn-primary" style='text-align: right;' asp-action="PendingDisputes">View Pending</a>
+            <div class="col">
+                <a class="btn btn-primary"  asp-action="PendingDisputes">Pending</a>
             </div>
         }
 
@@ -33,75 +32,82 @@
     </div>
 
 </div>
+@section containerbottom{
+
+        <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.BankAccount.User.FullName)
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.TransactionNotes)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.TransactionAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CorrectAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisputeStatus)
+                    </th>
+
+                    <th> Resolve </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @if (item.Transaction.StockPortfolio != null)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaction.StockPortfolio.User.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaction.StockPortfolio.User.Email)
+                            </td>
+                        }
+                        else if (item.Transaction.BankAccount != null)
+                        {
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaction.BankAccount.User.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Transaction.BankAccount.User.Email)
+                            </td>
+                        }
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Transaction.TransactionNotes)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Transaction.TransactionAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CorrectAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DisputeStatus)
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-action="DisputeResolution" asp-route-id="@item.DisputeID">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+        <a asp-action="ManageTask" class="btn btn-primary">Back</a>
+            
+        </div>
+}
+
 @*<h1>Pending Disputes</h1>*@
 
-<table class="table">
-    <thead>
-        <tr>
-            
-            <th>
-                @Html.DisplayNameFor(model => model.Transaction.BankAccount.User.FullName)
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transaction.TransactionNotes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Transaction.TransactionAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorrectAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DisputeStatus)
-            </th>
-
-            <th> Resolve </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                @if (item.Transaction.StockPortfolio != null)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Transaction.StockPortfolio.User.FullName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Transaction.StockPortfolio.User.Email)
-                    </td>
-                }
-                else if (item.Transaction.BankAccount != null)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Transaction.BankAccount.User.FullName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Transaction.BankAccount.User.Email)
-                    </td>
-                }
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Transaction.TransactionNotes)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Transaction.TransactionAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CorrectAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DisputeStatus)
-                </td>
-                <td>
-                    <a class="btn btn-primary" asp-action="DisputeResolution" asp-route-id="@item.DisputeID">View</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-</table>
-<a asp-action="ManageTask" class="btn btn-primary">Back</a>

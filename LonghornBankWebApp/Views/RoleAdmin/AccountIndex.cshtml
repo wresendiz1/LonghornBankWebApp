@@ -5,74 +5,82 @@
 }
 
 <h2>User Index</h2>
-<form asp-action="AccountIndex" method="get">
-    <p class="form-group">
-        Search: <input name="username" class="form-control" /><br />
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a asp-action="AccountIndex" class="btn btn-danger">Show All</a>
-        <a asp-action="Index" class="btn btn-warning">Back</a>
-    </p>
-</form>
-<p>Displaying @ViewBag.SelectedUsers of @ViewBag.AllUsers Customers.</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.First().UserName)
-            </th>
-            <th>
-                Full Name
-            </th>
-            <th>
-                Active?
-            <th>
-                Modify
-            </th>
-            <th>
-                Password
-            </th>
-        </tr>
-    </thead>
+<hr />
 
-    <tbody>
+@section containerbottom{
 
-        @foreach (var item in Model)
-        {
+    <div class="container min-vh-100 mt-4">
+        <form asp-action="AccountIndex" method="get">
+            <p class="form-group">
+                Search: <input name="username" class="form-control" /><br />
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a asp-action="AccountIndex" class="btn btn-danger">Show All</a>
+                <a asp-action="Index" class="btn btn-warning">Back</a>
+            </p>
+        </form>
+        <p>Displaying @ViewBag.SelectedUsers of @ViewBag.AllUsers Customers.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.First().UserName)
+                    </th>
+                    <th>
+                        Full Name
+                    </th>
+                    <th>
+                        Active?
+                    <th>
+                        Modify
+                    </th>
+                    <th>
+                        Password
+                    </th>
+                </tr>
+            </thead>
 
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.MidIntName) @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @if (item.IsActive == false)
-                    {
-                        <p>No</p>
-                    }
-                    else
-                    {
-                        <p>Yes</p>
-                    }
-                </td>
-                
-                <td>
+            <tbody>
 
-                 <a asp-action="AccountDetails" asp-route-user="@item.UserName" class="btn btn-primary">Modify Profile</a>
+                @foreach (var item in Model)
+                {
 
-                </td>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.MidIntName) @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @if (item.IsActive == false)
+                            {
+                                <p>No</p>
+                            }
+                            else
+                            {
+                                <p>Yes</p>
+                            }
+                        </td>
 
-                <td>
+                        <td>
 
-                <a asp-action="ChangePassword" asp-route-user="@item.UserName" class="btn btn-primary">Change Password</a>
+                            <a asp-action="AccountDetails" asp-route-user="@item.UserName" class="btn btn-primary">Modify Profile</a>
 
-                </td>
-            </tr>
+                        </td>
 
-        }
+                        <td>
+
+                            <a asp-action="ChangePassword" asp-route-user="@item.UserName" class="btn btn-primary">Change Password</a>
+
+                        </td>
+                    </tr>
+
+                }
 
 
-    </tbody>
+            </tbody>
 
-</table>
+        </table>
+        
+    </div>
+}

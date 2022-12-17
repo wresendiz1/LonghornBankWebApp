@@ -6,196 +6,201 @@
 
 <h1>Bank Account Details</h1>
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BankAccountNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BankAccountNumber)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BankAccountName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BankAccountName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BankAccountType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BankAccountType)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BankAccountBalance)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.BankAccountBalance)
-        </dd>
-        <dt class="col-sm-2">
-            Balance w/ scheduled transactions
-        </dt>
-        <dd class="col-sm-10">
-            $@ViewBag.withScheduled
-        </dd>
-        <dt class="col-sm-2">
-            Balance w/ pending transactions
-        </dt>
-        <dd class="col-sm-10">
-            $@ViewBag.withPending
-        </dd>
-        @if (Model.BankAccountType == BankAccountTypes.IRA)
-        {
-            <dt class="col-sm-2">
-                Qualification Status
-            </dt>
-            @if (Model.IRAQualified)
-            {
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.BankAccountNumber)
+                </dt>
                 <dd class="col-sm-10">
-                    Qualified
+                    @Html.DisplayFor(model => model.BankAccountNumber)
                 </dd>
-            }
-            else
-            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.BankAccountName)
+                </dt>
                 <dd class="col-sm-10">
-                    Unqualified
+                    @Html.DisplayFor(model => model.BankAccountName)
                 </dd>
-            }
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.IRAContribution)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.IRAContribution)
-            </dd>
-        }
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.BankAccountType)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.BankAccountType)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.BankAccountBalance)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.BankAccountBalance)
+                </dd>
+                <dt class="col-sm-2">
+                    Balance w/ scheduled transactions
+                </dt>
+                <dd class="col-sm-10">
+                    $@ViewBag.withScheduled
+                </dd>
+                <dt class="col-sm-2">
+                    Balance w/ pending transactions
+                </dt>
+                <dd class="col-sm-10">
+                    $@ViewBag.withPending
+                </dd>
+                @if (Model.BankAccountType == BankAccountTypes.IRA)
+                {
+                    <dt class="col-sm-2">
+                        Qualification Status
+                    </dt>
+                    @if (Model.IRAQualified == true)
+                    {
+                        <dd class="col-sm-10">
+                            Qualified
+                        </dd>
+                    }
+                    else
+                    {
+                        <dd class="col-sm-10">
+                            Unqualified
+                        </dd>
+                    }
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.IRAContribution)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.IRAContribution)
+                    </dd>
+                }
 
-    </dl>
-</div>
-<div>
-    <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model?.BankAccountID">Edit</a>
-    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
-</div>
+            </dl>
+        </div>
+        <div>
+            <a class="btn btn-info" asp-action="Edit" asp-route-id="@Model?.BankAccountID">Edit</a>
+            <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+        </div>
 
 
-<br />
+        <br />
 
-@*<form asp-action="Index" asp-controller="Home" method="get">
+        @*<form asp-action="Index" asp-controller="Home" method="get">
     <p class="form-group">
-        Search: <input name="SearchString" class="form-control" /><br />
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a asp-action="DetailedSearch" class="btn btn-success">Detailed Search</a>
-        <a asp-action="Index" class="btn btn-danger">Show All</a>
+    Search: <input name="SearchString" class="form-control" /><br />
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a asp-action="DetailedSearch" class="btn btn-success">Detailed Search</a>
+    <a asp-action="Index" class="btn btn-danger">Show All</a>
     </p>
-</form>*@
+    </form>*@
 
 
 
 
-<h4>Transactions for this Bank Account</h4>
-@*<a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@ViewBag.id">Detailed Search</a>
-<a asp-action="Details" asp-route-id="@Model.BankAccountID" class="btn btn-danger">Show All</a>*@
+        <h4>Transactions for this Bank Account</h4>
+        @*<a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@ViewBag.id">Detailed Search</a>
+    <a asp-action="Details" asp-route-id="@Model.BankAccountID" class="btn btn-danger">Show All</a>*@
 
 
-<form asp-action="Details" asp-controller="BankAccounts" asp-route-id="@ViewBag.id" method="get">
-    <main class="container-fluid">
-        <div class="row">
-            <div class="col-3">
-                Search by description
-            </div>
+        <form asp-action="Details" asp-controller="BankAccounts" asp-route-id="@ViewBag.id" method="get">
+            <main class="container-fluid">
+                <div class="row">
+                    <div class="col-3">
+                        Search by description
+                    </div>
 
-            <div class="col-3">
-                Select field to sort by
-            </div>
-            <div class="col-2">
-                Order by
-            </div>
+                    <div class="col-3">
+                        Select field to sort by
+                    </div>
+                    <div class="col-2">
+                        Order by
+                    </div>
 
-        </div>
-        <div class="row">
-            <div class="col-3">
-                <input name="SearchString" class="form-control" /><br />
-            </div>
-            <div class="col-3">
-                @Html.DropDownList("selected", (List<SelectListItem>)ViewBag.sortby, new { @class = "form-control" })
-            </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <input name="SearchString" class="form-control" /><br />
+                    </div>
+                    <div class="col-3">
+                        @Html.DropDownList("selected", (List<SelectListItem>)ViewBag.sortby, new { @class = "form-control" })
+                    </div>
 
-            <div class="col-2">
-                @Html.DropDownList("order", (List<SelectListItem>)ViewBag.order, new { @class = "form-control" })
-            </div>
+                    <div class="col-2">
+                        @Html.DropDownList("order", (List<SelectListItem>)ViewBag.order, new { @class = "form-control" })
+                    </div>
 
-            <div class="col">
-                <button type="submit" class="btn btn-primary">Apply</button>
-                <a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@ViewBag.id">Detailed Search</a>
-                <a asp-action="Details" asp-route-id="@Model.BankAccountID" class="btn btn-danger">Show All</a>
-            </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                        <a class="btn btn-success" asp-action="DetailedSearch" asp-route-id="@ViewBag.id">Detailed Search</a>
+                        <a asp-action="Details" asp-route-id="@Model.BankAccountID" class="btn btn-danger">Show All</a>
+                    </div>
 
-        </div>
-    </main>
-</form>
+                </div>
+            </main>
+        </form>
 
-<p class="text-primary">Displaying @ViewBag.queried.Count records of @Model.Transactions.Count</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Transaction #
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Notes
-            </th>
-            <th>
-                Amount
-            </th>
-            <th>
-                Date
-            </th>
-            <th>
-                Status
-            </th>
-        </tr>
-    </thead>
+        <p class="text-primary">Displaying @ViewBag.queried.Count records of @Model.Transactions.Count</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Transaction #
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Notes
+                    </th>
+                    <th>
+                        Amount
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
 
-    @foreach (var transaction in ViewBag.queried)
-    {
-        <tr>
-            <td>
-                @transaction.TransactionNumber
-            </td>
-            <td>
-                @transaction.TransactionType
-            </td>
-            <td>
-                @*@Html.DisplayFor(modelItem => transaction.TransactionNotes)*@
-                @transaction.TransactionNotes
-            </td>
-            <td>
-                @*@Html.DisplayFor(modelItem => transaction.TransactionAmount)*@
-                @transaction.TransactionAmount
-            </td>
-            <td>
-                @*@Html.DisplayFor(modelItem => transaction.TransactionDate)*@
-                @transaction.TransactionDate.ToString("MM-dd-yyyy")
-            </td>
-            @if (transaction.TransactionStatus == TransactionStatuses.Approved)
+            @foreach (var transaction in ViewBag.queried)
             {
-                <td>
-                    Completed
-                </td>
+                <tr>
+                    <td>
+                        @transaction.TransactionNumber
+                    </td>
+                    <td>
+                        @transaction.TransactionType
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => transaction.TransactionNotes)*@
+                        @transaction.TransactionNotes
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => transaction.TransactionAmount)*@
+                        $@transaction.TransactionAmount
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => transaction.TransactionDate)*@
+                        @transaction.TransactionDate.ToString("MM-dd-yyyy")
+                    </td>
+                    @if (transaction.TransactionStatus == TransactionStatuses.Approved)
+                    {
+                        <td>
+                            Completed
+                        </td>
+                    }
+                    @if (transaction.TransactionStatus != TransactionStatuses.Approved)
+                    {
+                        <td>
+                            @transaction.TransactionStatus
+                        </td>
+                    }
+                    <td>
+                        @*<a asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.TransactionID">Edit</a> |*@
+                        <a asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.TransactionID">Details</a>
+                    </td>
+                </tr>
             }
-            @if (transaction.TransactionStatus != TransactionStatuses.Approved)
-            {
-                <td>
-                    @transaction.TransactionStatus
-                </td>
-            }
-            <td>
-                @*<a asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.TransactionID">Edit</a> |*@
-                <a asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.TransactionID">Details</a>
-            </td>
-        </tr>
-    }
-</table>
+        </table>
+    </div> 
+}

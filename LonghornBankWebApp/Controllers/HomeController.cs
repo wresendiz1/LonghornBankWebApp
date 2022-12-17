@@ -11,25 +11,41 @@ namespace LonghornBankWebApp.Controllers
     public class HomeController : Controller
     {
 
+
         // TODO: Add to the Home/Index view to display ads if not registered & button to make new account
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
-            // display list of a users accounts
+            if (User.Identity.Name != null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AnonIndex", "Home");
+            }
+
+        }
+
+
+        public IActionResult AnonIndex()
+        {
+            if (User.Identity.Name != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View();
+            }
             
         }
 
+        [Authorize(Roles = "Customer")]
         public IActionResult NewUser()
         {
             return View();
         }
 
-        public IActionResult Pending()
-        {
-            // TODO: send admins here upon login
-
-            return View();
-        }
     }
 }

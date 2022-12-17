@@ -5,84 +5,96 @@
     ViewData["Title"] = "Roles";
 }
 
-<h2>Index</h2>
+<h2>Manage Users</h2>
+<hr />
 
-<div class="panel panel-primary">
-    <div class="panel-heading">Roles</div>
-    <table class="table table-striped">
-        <tr>
-            <th>Name</th>
-            <th></th>
-            <th></th>
-            <th></th>
 
-        </tr>
-        @if (Model.Count() == 0)
-        { 
-            <tr>
-                <td colspan="4" class="text-center">No roles</td>
-            </tr>
-        }
-        else
-        {
-            foreach (RoleEditModel role in Model)
-            {  
-                @if(User.IsInRole("Employee")){
-                    @if (role.Role.Name == "Customer")
-                    {
-                        <tr>
-                            <td>@role.Role.Name</td>
-                            <td>
-                                @Html.ActionLink("Quick Toggle Status", "Edit", new { id = role.Role.Id }, new { @class = "btn btn-primary" })
-                            </td>
+@section containerbottom{
 
-                            <td>
-                                @Html.ActionLink("Modify Profiles", "AccountIndex", new { id = role.Role.Name }, new { @class = "btn btn-primary" })
-                            </td>
-                        </tr>
-                    }
-                    
-                }
-                
-                else
-                
+    <div class="container min-vh-100 mt-4">
+        <div class="panel panel-primary">
+            <table class="table table-striped">
+                <tr>
+                    <th>Role</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+                @if (Model.Count() == 0)
                 {
-                    @if (role.Role.Name == "Customer" || role.Role.Name == "Employee"){
-                        <tr>
-                            <td>@role.Role.Name</td>
-                            <td>
-                                @Html.ActionLink("Quick Toggle Status", "Edit", new { id = role.Role.Id }, new { @class = "btn btn-primary" })
-                            </td>
-                            <td>
-                                @if (role.Role.Name == "Employee")
-                                {
-                                    <a asp-action="RegisterEmployee" class="btn btn-primary">Register New Employee</a>
-                                    
+                    <tr>
+                        <td colspan="4" class="text-center">No roles</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (RoleEditModel role in Model)
+                    {
+                        @if (User.IsInRole("Employee"))
+                        {
+                            @if (role.Role.Name == "Customer")
+                            {
+                                <tr>
+                                    <td>@role.Role.Name</td>
+                                    <td>
+                                        @Html.ActionLink("Quick Toggle Status", "Edit", new { id = role.Role.Id }, new { @class = "btn btn-primary" })
+                                    </td>
+
                                     <td>
                                         @Html.ActionLink("Modify Profiles", "AccountIndex", new { id = role.Role.Name }, new { @class = "btn btn-primary" })
                                     </td>
-                                        
-                                }
-                                @if (role.Role.Name == "Customer")
-                                {
-                                    <a asp-action="BaIndex" class="btn btn-primary">Manage Accounts</a>
-                                }
-                            </td>
-                            @if (role.Role.Name == "Customer")
-                            {
-                                <td>
-                                    @Html.ActionLink("Modify Profiles", "AccountIndex", new { id = role.Role.Name }, new { @class = "btn btn-primary" })
-                                </td>
+                                </tr>
                             }
 
-                        </tr>
+                        }
 
-                        
+                        else
+
+                        {
+                            @if (role.Role.Name == "Customer" || role.Role.Name == "Employee")
+                            {
+                                <tr>
+                                    <td>@role.Role.Name</td>
+                                    <td>
+                                        @Html.ActionLink("Quick Toggle Status", "Edit", new { id = role.Role.Id }, new { @class = "btn btn-primary" })
+                                    </td>
+                                    <td>
+                                        @if (role.Role.Name == "Employee")
+                                        {
+                                            <a asp-action="RegisterEmployee" class="btn btn-primary">Register New Employee</a>
+
+                                        <td>
+                                                @Html.ActionLink("Modify Profiles", "AccountIndex", new { id = role.Role.Name }, new { @class = "btn btn-primary" })
+                                        </td>
+
+                                        }
+                                        @if (role.Role.Name == "Customer")
+                                        {
+                                        <a asp-action="BaIndex" class="btn btn-primary">Manage Accounts</a>
+                                        }
+                                    </td>
+                                    @if (role.Role.Name == "Customer")
+                                    {
+                                        <td>
+                                            @Html.ActionLink("Modify Profiles", "AccountIndex", new { id = role.Role.Name }, new { @class = "btn btn-primary" })
+                                        </td>
+                                    }
+
+                                </tr>
+
+
+                            }
+
+                        }
+
                     }
-                    
                 }
+            </table>
+        </div>
+        
+    </div>
+}
 
-            }
-        }
-    </table>
-</div>
+
+

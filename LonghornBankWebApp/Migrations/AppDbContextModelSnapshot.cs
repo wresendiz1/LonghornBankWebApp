@@ -360,6 +360,30 @@ namespace LonghornBankWebApp.Migrations
                     b.ToTable("StockPortfolios");
                 });
 
+            modelBuilder.Entity("LonghornBankWebApp.Models.StockPrice", b =>
+                {
+                    b.Property<int>("StockPriceID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StockPriceID"), 1L, 1);
+
+                    b.Property<decimal>("CurrentPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("StockID")
+                        .HasColumnType("int");
+
+                    b.HasKey("StockPriceID");
+
+                    b.HasIndex("StockID");
+
+                    b.ToTable("StockPrices");
+                });
+
             modelBuilder.Entity("LonghornBankWebApp.Models.StockTransaction", b =>
                 {
                     b.Property<int>("StockTransactionID")
@@ -655,6 +679,15 @@ namespace LonghornBankWebApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LonghornBankWebApp.Models.StockPrice", b =>
+                {
+                    b.HasOne("LonghornBankWebApp.Models.Stock", "Stock")
+                        .WithMany("StockPrices")
+                        .HasForeignKey("StockID");
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("LonghornBankWebApp.Models.StockTransaction", b =>
                 {
                     b.HasOne("LonghornBankWebApp.Models.Stock", "Stock")
@@ -750,6 +783,8 @@ namespace LonghornBankWebApp.Migrations
 
             modelBuilder.Entity("LonghornBankWebApp.Models.Stock", b =>
                 {
+                    b.Navigation("StockPrices");
+
                     b.Navigation("StockTransactions");
                 });
 

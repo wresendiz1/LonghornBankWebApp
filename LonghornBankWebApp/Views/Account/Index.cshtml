@@ -1,48 +1,51 @@
 ﻿@model IndexViewModel
 @{
-    ViewBag.Title = "Change Password";
+    ViewData["Title"] = "Change Password";
 }
 
-<h2>@ViewBag.Title.</h2>
+@section containerbottom{
 
-<div>
-    <h4>Change your account settings</h4>
-    <hr />
-    <dl class="dl-horizontal">
+<div class="container min-vh-100 mt-4">
+    <div>
+        <h4>Change your account settings</h4>
+        <hr />
+        <dl class="dl-horizontal">
 
-        <dt>Name:</dt>
-        <dd>@Model.FullName</dd>
+            <dt>Name:</dt>
+            <dd>@Model.FullName</dd>
 
-        <dt>User Name:</dt>
-        <dd>@Model.UserName</dd>
+            <dt>User Name:</dt>
+            <dd>@Model.UserName</dd>
 
-        <dt>Email:</dt>
-        <dd>@Model.Email</dd>
+            <dt>Email:</dt>
+            <dd>@Model.Email</dd>
 
-        <dt>Phone Number:</dt>
-        <dd>@Model.PhoneNumber</dd>
+            <dt>Phone Number:</dt>
+            <dd>@Model.PhoneNumber</dd>
 
         
-        <dt>Address</dt>
-        <dd>@Model.FullAddress</dd>
+            <dt>Address</dt>
+            <dd>@Model.FullAddress</dd>
         
-        @if(User.IsInRole("Employee") || User.IsInRole("Admin"))
-        {
-            <dt>Modify Address and Phone Number</dt>
+            @if(User.IsInRole("Employee") || User.IsInRole("Admin"))
+            {
+                <dt>Modify Address and Phone Number</dt>
+                <dd>
+                    [@Html.ActionLink("Edit", "Modify")]
+                </dd>
+            }
+            @if(User.IsInRole("Customer")){
+                <dt>Modify Address, Phone Number, and Name</dt>
+                <dd>
+                    [@Html.ActionLink("Edit", "Modify")]
+                </dd>
+            }
+        
+            <dt>Password:</dt>
             <dd>
-                [@Html.ActionLink("Edit", "Modify")]
+                [@Html.ActionLink("Change your password", "ChangePassword")]
             </dd>
-        }
-        @if(User.IsInRole("Customer")){
-            <dt>Modify Address, Phone Number, and Name</dt>
-            <dd>
-                [@Html.ActionLink("Edit", "Modify")]
-            </dd>
-        }
-        
-        <dt>Password:</dt>
-        <dd>
-            [@Html.ActionLink("Change your password", "ChangePassword")]
-        </dd>
-    </dl>
-</div>
+        </dl>
+    </div>
+</div> 
+}

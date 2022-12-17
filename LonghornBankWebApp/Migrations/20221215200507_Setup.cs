@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace LonghornBankWebApp.Migrations
 {
-    public partial class Final : Migration
+    public partial class Setup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -344,6 +344,26 @@ namespace LonghornBankWebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StockPrices",
+                columns: table => new
+                {
+                    StockPriceID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CurrentPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StockID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockPrices", x => x.StockPriceID);
+                    table.ForeignKey(
+                        name: "FK_StockPrices_Stocks_StockID",
+                        column: x => x.StockID,
+                        principalTable: "Stocks",
+                        principalColumn: "StockID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StockTransactions",
                 columns: table => new
                 {
@@ -466,6 +486,11 @@ namespace LonghornBankWebApp.Migrations
                 filter: "[AppUserForeignKey] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StockPrices_StockID",
+                table: "StockPrices",
+                column: "StockID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stocks_StockTypeID",
                 table: "Stocks",
                 column: "StockTypeID");
@@ -516,6 +541,9 @@ namespace LonghornBankWebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "PortfolioProcesses");
+
+            migrationBuilder.DropTable(
+                name: "StockPrices");
 
             migrationBuilder.DropTable(
                 name: "StockTransactions");

@@ -5,86 +5,89 @@
     ViewData["Title"] = "Sell Holdings";
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Stock Name
-            </th>
-            <th>
-                Purchase Price
-            </th>
-            <th>
-                Current Price
-            </th>
-            <th>
-                Transaction fee
-            </th>
-            <th>
-                Shares Held
-            </th>
-            <th>
-                Amount to Sell
-            </th>
-            <th>
-                
-            </th>
-        </tr>
-    </thead>
-    <tbody>
+@section containerbottom{
 
-        <!-- Get the item and track index for use of viewbag dict-->
-        @foreach (var item in Model)
-        {
+    <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Stock Name
+                    </th>
+                    <th>
+                        Purchase Price
+                    </th>
+                    <th>
+                        Current Price
+                    </th>
+                    <th>
+                        Transaction fee
+                    </th>
+                    <th>
+                        Shares Held
+                    </th>
+                    <th>
+                        Amount to Sell
+                    </th>
+                    <th>
 
-            var stocksleft = ViewBag.StocksToSell[item.StockTransactionNumber];
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
 
-            var currentprice = item.Stock.CurrentPrice * item.NumberOfShares;
-
-      
-
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Stock.StockName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PricePerShare)
-                </td>
-                <td>
-                    @*@currentprice.ToString("C")*@
-                    $@item.Stock.CurrentPrice
-                </td>
-                <td>
-                    <small><small>$15 transaction fee to sell</small></small>
-                </td>
-                <td>
-                    @stocksleft.ToString()
-                </td>
-                @using (Html.BeginForm("SellConfirm", "StockTransactions", FormMethod.Post, new { @class = "form-inline" }))
+                <!-- Get the item and track index for use of viewbag dict-->
+                @foreach (var item in Model)
                 {
-                <td>
-                    @Html.TextBox("numShares", null, new { @class = "form-control", @Value = "1", @type = "number", @min = "1" ,@max = stocksleft})
-                    <input type="hidden" name="id" value="@item.StockTransactionNumber" />
-                    <input type="hidden" name="stockLeft" value="@stocksleft" />
-                </td>
 
-                <td>
-                    <button type="submit" class="btn btn-primary">Sell</button>
-                </td>
+                    var stocksleft = ViewBag.StocksToSell[item.StockTransactionNumber];
+
+                    var currentprice = item.Stock.CurrentPrice * item.NumberOfShares;
+
+
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Stock.StockName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PricePerShare)
+                        </td>
+                        <td>
+                            @*@currentprice.ToString("C")*@
+                            $@item.Stock.CurrentPrice
+                        </td>
+                        <td>
+                            <small><small>$15 transaction fee to sell</small></small>
+                        </td>
+                        <td>
+                            @stocksleft.ToString()
+                        </td>
+                        @using (Html.BeginForm("SellConfirm", "StockTransactions", FormMethod.Post, new { @class = "form-inline" }))
+                        {
+                            <td>
+                                @Html.TextBox("numShares", null, new { @class = "form-control", @Value = "1", @type = "number", @min = "1" ,@max = stocksleft})
+                                <input type="hidden" name="id" value="@item.StockTransactionNumber" />
+                                <input type="hidden" name="stockLeft" value="@stocksleft" />
+                            </td>
+
+                            <td>
+                                <button type="submit" class="btn btn-primary">Sell</button>
+                            </td>
+                        }
+                        <td>
+                        </td>
+
+                        <td>
+                            <a class="btn btn-primary" asp-action="Details"
+                       asp-route-id="@item.StockTransactionNumber" asp-route-stockLeft="@stocksleft">Details</a>
+                        </td>
+                    </tr>
+
+
                 }
-                <td>
-
-   
-                </td>
-
-                <td>
-                    <a class="btn btn-primary" asp-action="Details" 
-                    asp-route-id="@item.StockTransactionNumber" asp-route-stockLeft= "@stocksleft">Details</a>
-                </td>
-            </tr>
-
-
-        }
-    </tbody>
-</table>
-<a asp-action="Index" asp-controller="StockPortfolio" class="btn btn-primary">Back</a>
+            </tbody>
+        </table>
+        <a asp-action="Index" asp-controller="StockPortfolio" class="btn btn-primary">Back</a>
+    </div>
+}

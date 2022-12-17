@@ -1,0 +1,159 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Welcome!";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <!-- Custom Format-->
+    <link href="~/lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+
+    <link href="~/css/home.css" rel="stylesheet" type="text/css" />
+    <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
+
+
+
+</head>
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(191, 87, 0)">
+    <div class="container-fluid">
+
+        <!--This is the code for the "hamburger menu" button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a asp-controller="Home" asp-action="Index" class="navbar-brand "><i class="fa fa-home"></i></a>
+        <div class="collapse navbar-collapse" id="nav-content">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a asp-controller="Stocks" asp-action="Index" class="nav-link">Stock Offerings</a>
+                </li>
+            </ul>
+            @await Html.PartialAsync("_LoginPartial")
+        </div>
+     </div>
+</nav>
+
+
+
+<div id="menu">
+    
+    <div id="menu-items"> 
+        <p class="menu-desc">Longhorn Bank & Trust</p>
+        <a asp-action="Register" asp-controller="Account" class="menu-item">Register</a>
+        <a asp-action="Login" asp-controller="Account" class="menu-item">Login</a>
+        <a asp-action="Index" asp-controller="Stocks" class="menu-item">Stock Offerings</a>
+        <a href="#scroll-target" class="menu-item">Learn More</a>
+
+    </div>
+    <div id="menu-img"></div>
+
+</div>
+
+<div class="container-fluid py-6" style="background-color:white">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron text-center">
+                <p class="lead">We are a full service bank that offers a variety of services to our customers. We offer checking, savings, and IRA accounts. We also offer a stock portfolio service that allows you to buy and sell stocks.</p>
+                <hr class="my-4">
+                <p>Click on the links above to register for an account, login to your account, or view our stock offerings.</p>
+
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+
+<div class="container-fluid min-vh-100 d-flex flex-column" id="scroll-target">
+    <div class="row flex-grow-1">
+        <div class="col" style="background-color:#ffd600">
+            <h1 class="display-3">Personal Banking</h1>
+            <p class="h2">Ease of Use.</p>
+        </div>
+        <div class="col my-auto mx-auto">
+            <p class="h4 align-middle">Access your account anytime from any place with our online banking service. </p>
+        </div>
+        <div class="col" style="background-color: white; 
+        background-image: url(../images/ease.png); background-repeat: no-repeat;background-size:contain;background-position: center;">
+            
+        </div>
+    </div>
+    <div class="row flex-grow-1">
+        <div class="col" style="background-color: white;
+            background-image: url(../images/stock.png); background-repeat: no-repeat;background-size:contain;background-position: center;">
+        </div>
+        <div class="col" style="background-color:#a6cd57">
+            <h1 class="display-3 text-center">Stock Portfolio</h1>
+            <p class="h2 text-center">Invest.</p>
+        </div>
+        <div class="col my-auto mx-auto">
+            <p class="h4 align-middle">Protect your money from inflation and taxes while maximizing your investments, all in one place.</p>
+        </div>
+
+    </div>
+    <div class="row flex-grow-1">
+
+        <div class="col my-auto mx-auto">
+            <p class="h4 align-middle">Enjoy tax-deferred growth with our IRA Account offerings.</p>
+        </div>
+        <div class="col" style="background-color: white;
+        background-image: url(../images/ira.png); background-repeat: no-repeat;background-size:contain;background-position: center;">
+        </div>
+
+        <div class="col" style="background-color:#00a9b7">
+            <h1 class="display-3 text-end">IRA Account</h1>
+            <p class="h2 text-end">Save.</p>
+        </div>
+
+    </div>
+    
+</div>
+
+
+<footer class="text-lg-start mt-5">
+    <div class="text-center text-white p-3 bg-secondary">
+        © 2022 Longhorn Bank & Trust Corp
+    </div>
+</footer>
+@*<div class="row text-center align-items-lg-center">
+    <div class="col">
+        <div class="card text-white bg-secondary" style="max-width: 100%">
+            <div class="card-header">Online Banking</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Access your account anytime from any place with our online banking service.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-secondary" style="max-width: 100%">
+            <div class="card-header">Stock Portfolio</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Protect your money from inflation and taxes while maximizing your investments, all in one place.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-secondary" style="max-width: 100%">
+            <div class="card-header">IRA Account</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Enjoy tax-deferred growth with our IRA Account offerings.
+
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>*@
+ 

@@ -5,32 +5,48 @@
 }
 
 
+
+
+
+
 @if (User.IsInRole("Customer"))
 {
-
-    if(ViewBag.Message != null){
+    @if (ViewBag.Message != null)
+    {
         <div class="alert alert-warning" role="alert">
             @ViewBag.Message
         </div>
     }
-    if(ViewBag.Create != null){
+    @if (ViewBag.Create != null)
+    {
         <div class="alert alert-success" role="alert">
             <h4 class="alert-heading">Create a stock portfolio with us!</h4>
             <p>Get approved today</p>
             <hr>
-            <a asp-action="Create" asp-controller = "StockPortfolio" class="btn btn-outline-success">Create</a>
+            <a asp-action="Create" asp-controller="StockPortfolio" class="btn btn-outline-success">Create</a>
         </div>
     }
-
     
-    <h1>Your Bank Accounts</h1>
-    <p>
-        <a class="btn btn-success" asp-action="Create">Create New</a>
-        <a class="btn btn-primary" asp-controller="Transactions" asp-action="CreateDeposit">Deposit</a>
-        <a class="btn btn-warning" asp-controller="Transactions" asp-action="CreateWithdrawal">Withdraw</a>
-        <a class="btn btn-danger" asp-controller="Transactions" asp-action="CreateTransfer">Transfer</a>
-    </p>
+    <div>
+        <h1 class="text-center">Your Bank Accounts</h1>
+        <hr />
+        <div align="center">
+            <a class="btn btn-success"  asp-action="Create">Create New</a>
+            <a class="btn btn-primary"  asp-controller="Transactions" asp-action="CreateDeposit">Deposit</a>
+            <a class="btn btn-warning" asp-controller="Transactions" asp-action="CreateWithdrawal">Withdraw</a>
+            <a class="btn btn-danger"asp-controller="Transactions" asp-action="CreateTransfer">Transfer</a>
+        </div>
+
+    </div>
+
+
+
+        
+   
+
 }
+
+
 
 @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
 {
@@ -50,131 +66,220 @@
     
 }
 
+@if (User.IsInRole("Customer"))
+{
+    @section containerbottom{
 
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BankAccountNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BankAccountName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BankAccountType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BankAccountBalance)
-            </th>
-
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                @if (item.BankAccountNumber.ToString().Length < 10)
+    <div class="container min-vh-100 mt-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model)
                 {
-                    <td>
-                        0
-                    </td>
+                    <div class="col">
+                        <div class="card">
+
+                            @if (item.BankAccountNumber.ToString().Length < 10)
+                            {
+                                <div class="card-header">0</div>
+                            }
+                            else
+                            {
+                                <div class="card-header">
+                                    @Html.DisplayFor(modelItem => item.BankAccountType) ending in @item.BankAccountNumber.ToString().Substring(item.BankAccountNumber.ToString().Length - 4)
+                                </div>
+
+                            }
+
+
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @Html.DisplayFor(modelItem => item.BankAccountName)
+                                </h5>
+                                <p class="card-text">
+                                    Balance: @Html.DisplayFor(modelItem => item.BankAccountBalance)
+                                </p>
+                                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.BankAccountID">Edit</a>
+                                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.BankAccountID">Details</a>
+
+                            </div>
+                        </div>
+                    </div>
                 }
-                else
+                @if (ViewBag.SP != null)
                 {
-                    <td>
-                        @*this way it only displays last four digits like proj req asks for*@
-                        @item.BankAccountNumber.ToString().Substring(item.BankAccountNumber.ToString().Length - 4)
-                    </td>
-                }
+                    <div class="col">
+                        <div class="card">
+                            @if (@ViewBag.SP.PortfolioNumber.ToString().Length < 10)
+                            {
+                                <div class="card-header">0</div>
+                            }
+                            else
+                            {
+                                <div class="card-header">
+                                    Stock Portfolio ending in @ViewBag.SP.PortfolioNumber.ToString().Substring(ViewBag.SP.PortfolioNumber.ToString().Length - 4)
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @ViewBag.SP.PortfolioName
+                                </h5>
+                                <p class="card-text">
+                                    @ViewBag.SP.CashValuePortion.ToString("C")
+                                </p>
+                                <a class="btn btn-primary" asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@ViewBag.SP.StockPortfolioID">Edit</a>
+                                <a class="btn btn-primary" asp-controller="StockPortfolio" asp-action="Index">Details</a>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.BankAccountName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BankAccountType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BankAccountBalance)
-                </td>
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.BankAccountID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.BankAccountID">Details</a>
-                </td>
-            </tr>
-        }
-
-        @if (ViewBag.SP != null)
-        {
-            <tr>
-                @if (@ViewBag.SP.PortfolioNumber.ToString().Length < 10)
-                {
-                    <td>0</td>
-                }
-                else
-                {
-                    <td>
-                        @ViewBag.SP.PortfolioNumber.ToString().Substring(ViewBag.SP.PortfolioNumber.ToString().Length - 4)
-                    </td>
+                            </div>
+                        </div>
+                    </div>
                 }
 
-                <td>
-                    @ViewBag.SP.PortfolioName
-                </td>
-                <td>
-                    Stock Portfolio
-                </td>
-                <td>
-                    @ViewBag.SP.CashValuePortion.ToString("C")
-                </td>
-
-                <td>
-                    <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@ViewBag.SP.StockPortfolioID">Edit</a> |
-                    <a asp-controller="StockPortfolio" asp-action="Index">Details</a>
-                </td>
-            </tr>
-
-        }
+            </div>
 
 
-        @if (ViewBag.portfolios != null)
-        {
-            foreach (StockPortfolio sp in ViewBag.portfolios)
-            {
+
+        </div>
+
+    }
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+{
+
+    @section containerbottom
+    {
+    <div class="container min-vh-100">
+        <table class="table py-6">
+            <thead>
                 <tr>
-                    @if (@sp.PortfolioNumber.ToString().Length < 10)
-                    {
-                        <td>0</td>
-                    }
-                    else
-                    {
-                        <td>
-                            @sp.PortfolioNumber.ToString().Substring(sp.PortfolioNumber.ToString().Length - 4)
-                        </td>
-                    }
+                    <th>
+                        @Html.DisplayNameFor(model => model.BankAccountNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BankAccountName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BankAccountType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BankAccountBalance)
+                    </th>
 
-                    <td>
-                        @sp.PortfolioName
-                    </td>
-                    <td>
-                        Stock Portfolio
-                    </td>
-                    <td>
-                        @sp.CashValuePortion
-                    </td>
-
-                    <td>
-                        <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@sp.StockPortfolioID">Edit</a> |
-                        <a asp-controller="StockPortfolio" asp-action="Index" asp-route-id="@sp.StockPortfolioID">Details</a>
-                    </td>
+                    <th></th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                    {
+                        <tr>
+                            @if (item.BankAccountNumber.ToString().Length < 10)
+                            {
+                                <td>
+                                    0
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @*this way it only displays last four digits like proj req asks for*@
+                                    @item.BankAccountNumber.ToString().Substring(item.BankAccountNumber.ToString().Length - 4)
+                                </td>
+                            }
 
-        }
-        <tr>
-        </tr>
-    </tbody>
-</table>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BankAccountName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BankAccountType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BankAccountBalance)
+                            </td>
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.BankAccountID">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.BankAccountID">Details</a>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (ViewBag.SP != null)
+                    {
+                        <tr>
+                            @if (@ViewBag.SP.PortfolioNumber.ToString().Length < 10)
+                            {
+                                <td>0</td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @ViewBag.SP.PortfolioNumber.ToString().Substring(ViewBag.SP.PortfolioNumber.ToString().Length - 4)
+                                </td>
+                            }
+
+                            <td>
+                                @ViewBag.SP.PortfolioName
+                            </td>
+                            <td>
+                                Stock Portfolio
+                            </td>
+                            <td>
+                                @ViewBag.SP.CashValuePortion.ToString("C")
+                            </td>
+
+                            <td>
+                                <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@ViewBag.SP.StockPortfolioID">Edit</a> |
+                                <a asp-controller="StockPortfolio" asp-action="Index">Details</a>
+                            </td>
+                        </tr>
+
+                    }
+
+
+                    @if (ViewBag.portfolios != null)
+                    {
+                        foreach (StockPortfolio sp in ViewBag.portfolios)
+                        {
+                            <tr>
+                                @if (@sp.PortfolioNumber.ToString().Length < 10)
+                                {
+                                    <td>0</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @sp.PortfolioNumber.ToString().Substring(sp.PortfolioNumber.ToString().Length - 4)
+                                    </td>
+                                }
+
+                                <td>
+                                    @sp.PortfolioName
+                                </td>
+                                <td>
+                                    Stock Portfolio
+                                </td>
+                                <td>
+                                    @sp.CashValuePortion
+                                </td>
+
+                                <td>
+                                    <a asp-controller="StockPortfolio" asp-action="Edit" asp-route-id="@sp.StockPortfolioID">Edit</a> |
+                                    <a asp-controller="StockPortfolio" asp-action="Index" asp-route-id="@sp.StockPortfolioID">Details</a>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    <tr>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+}
+}
+
+
+
+

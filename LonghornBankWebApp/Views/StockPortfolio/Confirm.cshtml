@@ -7,50 +7,58 @@
 <h1>Create a Stock Portfolio</h1>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreatePortfolio">
-            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
-            <div class="form-group">
-                <label class="control-label">Portfolio Name</label>
-                <input name="name" value = "@ViewBag.name " class="form-control" />
-                @*<span asp-validation-for="PortfolioName" class="text-danger"></span>*@
-            </div>
 
-            <div class="form-group">
-                <label class="control-label">Initial Deposit</label>
-                <input name="init_depo" value="@ViewBag.init_depo" type="number" class="form-control" />
-                @*<span asp-validation-for="PortfolioName" class="text-danger"></span>*@
+
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="CreatePortfolio">
+                    @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+                    <div class="form-group">
+                        <label class="control-label">Portfolio Name</label>
+                        <input name="name" value="@ViewBag.name " class="form-control" />
+                        @*<span asp-validation-for="PortfolioName" class="text-danger"></span>*@
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Initial Deposit</label>
+                        <input name="init_depo" value="@ViewBag.init_depo" type="number" class="form-control" />
+                        @*<span asp-validation-for="PortfolioName" class="text-danger"></span>*@
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                        <a asp-action="Create" class="btn btn-danger" class="btn btn-primary">Cancel</a>
+                    </div>
+                </form>
             </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Confirm" class="btn btn-primary" />
-                <a asp-action="Create" class ="btn btn-danger" class="btn btn-primary">Cancel</a>
+            <div class="col-md-4">
+                @if (Convert.ToDecimal(ViewBag.init_depo) > 5000)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p>Initial deposit is greater than $5000.00. Are you sure you want to continue?</p>
+                        <hr>
+                        <p class="mb-0">If you are sure, click the confirm button.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading">Success!</h4>
+                        <p>Initial deposit is less than $5000.00. You can continue.</p>
+                        <hr>
+                        <p class="mb-0">If you are sure, click the confirm button.</p>
+                    </div>
+                }
             </div>
-        </form>
+        </div>
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+
     </div>
-    <div class="col-md-4">
-        @if(Convert.ToDecimal(ViewBag.init_depo) > 5000)
-        {
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Warning!</h4>
-                <p>Initial deposit is greater than $5000.00. Are you sure you want to continue?</p>
-                <hr>
-                <p class="mb-0">If you are sure, click the confirm button.</p>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">Success!</h4>
-                <p>Initial deposit is less than $5000.00. You can continue.</p>
-                <hr>
-                <p class="mb-0">If you are sure, click the confirm button.</p>
-            </div>
-        }
-    </div>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+}
 

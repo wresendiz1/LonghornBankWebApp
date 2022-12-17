@@ -10,44 +10,49 @@
 
 
 <h1>Sale Summary</h1>
+@section containerbottom{
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock.StockName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock.StockName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NumberOfShares) to Sell
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NumberOfShares)
-        </dd>
-        <dt class="col-sm-2">
-            Shares Remaining
-        </dt>
-        <dd class="col-sm-10">
-            @ViewBag.Remaining from this initial purchase
-        </dd>
-        <dt class="col-sm-2">
-            Associated Fees
-        </dt>
-        <dd class="col-sm-10">
-           $15 Transaction fee <br />
-           <small><small>*one time payment per transaction</small></small>
-        </dd>
-        <dt class="col-sm-2">
-            Net Profit
-        </dt>
-        <dd class="col-sm-10">
-            @ViewBag.GainOrLoss
-        </dd>
-    </dl>
-</div>
-<div>
-    <a class = "btn btn-success" asp-action="Sell" asp-route-id="@Model.SellingTransactionNumber" asp-route-numShares = "@Model.NumberOfShares" asp-route-profit = "@ViewBag.GainOrLoss">Confirm</a>
-    <a class="btn btn-danger" asp-action="SellStock" asp-route-id = "@Model.StockPortfolio.StockPortfolioID">Cancel</a>
-</div>
+    <div class="container min-vh-100 mt-4">
+        <div>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Stock.StockName)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Stock.StockName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.NumberOfShares) to Sell
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.NumberOfShares)
+                </dd>
+                <dt class="col-sm-2">
+                    Shares Remaining
+                </dt>
+                <dd class="col-sm-10">
+                    @ViewBag.Remaining from this initial purchase
+                </dd>
+                <dt class="col-sm-2">
+                    Associated Fees
+                </dt>
+                <dd class="col-sm-10">
+                    $15 Transaction fee <br />
+                    <small><small>*one time payment per transaction</small></small>
+                </dd>
+                <dt class="col-sm-2">
+                    Net Profit
+                </dt>
+                <dd class="col-sm-10">
+                    @ViewBag.GainOrLoss
+                </dd>
+            </dl>
+        </div>
+        <div>
+            <a class="btn btn-success" asp-action="Sell" asp-route-id="@Model.SellingTransactionNumber" asp-route-numShares="@Model.NumberOfShares" asp-route-profit="@ViewBag.GainOrLoss">Confirm</a>
+            <a class="btn btn-danger" asp-action="SellStock" asp-route-id="@Model.StockPortfolio.StockPortfolioID">Cancel</a>
+        </div>
+
+    </div>
+}

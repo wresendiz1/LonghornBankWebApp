@@ -94,6 +94,11 @@ namespace LonghornBankWebApp.Controllers
         {
             AppUser u = _userManager.FindByNameAsync(User.Identity.Name).Result;
             StockPortfolio sp = _context.StockPortfolios.FirstOrDefault(s => s.User.UserName == User.Identity.Name);
+
+            if (sp == null)
+            {
+                return NotFound();
+            }
             
             if (u.IsActive == false || sp.isActive == false)
             {
@@ -333,16 +338,20 @@ namespace LonghornBankWebApp.Controllers
 
             return holdings;
         }
-        public IActionResult SellStock(int? id)
+        public IActionResult SellStock(int? id, string name)
         {
 
-            if (id == null || _context.StockPortfolios == null)
+            if (id == null &&  name == null)
             {
                 return NotFound();
             }
 
-            // Find User stock portfolio
             var stockPortfolio = _context.StockPortfolios.Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).ThenInclude(s => s.StockType).FirstOrDefault(r => r.StockPortfolioID == id);
+            if (id == null)
+            {
+                stockPortfolio = _context.StockPortfolios.Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).ThenInclude(s => s.StockType).FirstOrDefault(r => r.User.UserName == name);
+
+            }
 
 
             // Get a dictionary for the holding by each purchase transaction

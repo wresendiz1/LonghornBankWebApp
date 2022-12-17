@@ -34,13 +34,23 @@ namespace LonghornBankWebApp.Controllers
         // GET: BankAccounts
         public IActionResult Index(String message, string SearchString)
         {
+            AppUser u = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            if (u.UserHasAccount == false && User.IsInRole("Customer"))
+            {
+                return RedirectToAction("Create", "BankAccounts");
+            }
+
+
             List<BankAccount> bankAccounts;
 
             ViewBag.Message = message;
             
+
+            
             // query and display only the user's bank accounts
             if (User.IsInRole("Customer"))
             {
+                
                 bankAccounts = _context.BankAccounts.Include(r => r.Transactions).Where(r => r.User.UserName == User.Identity.Name).ToList();
                 StockPortfolio holder = new StockPortfolio();
 
@@ -75,14 +85,17 @@ namespace LonghornBankWebApp.Controllers
 
             }
 
-
             StockPortfolio sp1 = _context.StockPortfolios.FirstOrDefault(r => r.User.UserName == User.Identity.Name);
-            if(sp1 == null)
+            
+            if(sp1 == null && u.IsActive)
             {
                 ViewBag.Create = "Create a Stock Portfolio";
 
             }
-
+            else if(u.IsActive == false && ViewBag.Message == null)
+            {
+                ViewBag.Message = "Web Account has been disabled, please contact your local branch for more information";
+            }
 
             return View(bankAccounts);
         }
@@ -272,7 +285,7 @@ namespace LonghornBankWebApp.Controllers
 
         // GET: BankAccounts/Details/5
         // NOTE: Bank account balance should not include pending transactions
-        public async Task<IActionResult> Details(int? id, String? SearchString, String? selected, String? order)
+        public async Task<IActionResult> Details(int? id, String SearchString, String selected, String order)
         {
             UpdateIRA();
 
@@ -305,7 +318,7 @@ namespace LonghornBankWebApp.Controllers
 
             
 
-            if (SearchString is not null)
+            if (String.IsNullOrEmpty(SearchString) == false)
             {
                 foreach (Transaction t in bankAccount.Transactions)
                 {
@@ -532,6 +545,12 @@ namespace LonghornBankWebApp.Controllers
                     }
                 }
 
+                if (bankAccount.InitialDeposit <= 0)
+                {
+                    ModelState.AddModelError(nameof(bankAccount.InitialDeposit), "Initial Deposit must be greater than $0");
+                    return View(bankAccount);
+                }
+
                 //set initial deposit
                 Transaction init_deposit = new Transaction();
                 init_deposit.BankAccount = bankAccount;
@@ -616,11 +635,38 @@ namespace LonghornBankWebApp.Controllers
             {
                 EmailMessaging.SendEmail(bankAccount.User.Email, "Account Created", 
                     "Congratulations on creating your account! Note: Your initial deposit was over $5,000 and will be processed by an admin within 2-3 business days.");
+                
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Congratulations on creating your account! Note: Your initial deposit was over $5,000 and will be processed by an admin within 2-3 business days.",
+                    Subject = "Account Created",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = bankAccount.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(bankAccount.User);
+                _context.Add(m);
             }
             else
             {
                 EmailMessaging.SendEmail(bankAccount.User.Email, "Account Created",
                     "Congratulations on creating your account! Your initial deposit was under $5,000 and has been processed.");
+
+
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Congratulations on creating your account! Your initial deposit was under $5,000 and has been processed.",
+                    Subject = "Account Created",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = bankAccount.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(bankAccount.User);
+                _context.Add(m);
             }
             
             // create message for admins
@@ -632,7 +678,7 @@ namespace LonghornBankWebApp.Controllers
             {
                 message.Date = DateTime.Today;
                 message.Subject = "Deposit that needs approval created by " + init_deposit.BankAccount.User.FullName;
-                message.Info = "An initial deposit of over $5,000 " + init_deposit.TransactionID + " by " + bankAccount.User.FullName + ". Please resolve the dispute.";
+                message.Info = "An initial deposit of over $5,000 by " + bankAccount.User.FullName + ". Please resolve the dispute.";
                 message.Sender = "Deposit System";
                 message.Receiver = "All";
 

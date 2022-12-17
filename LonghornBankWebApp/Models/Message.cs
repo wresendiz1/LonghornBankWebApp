@@ -22,6 +22,7 @@ namespace LonghornBankWebApp.Models
         public Boolean IsRead { get; set; }
 
         // Have a list of all admins and remove once they view
+        // TOOD: Extended model func to users so might change admins to users for clarity
         public List<AppUser> Admins { get; set; }
 
 

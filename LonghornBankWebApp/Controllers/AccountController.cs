@@ -108,6 +108,20 @@ namespace LonghornBankWebApp.Controllers
                 // Send email
                 EmailMessaging.SendEmail(rvm.Email, "Welcome to Longhorn Bank", "Thank you for registering with Longhorn Bank. We look forward to serving you!");
 
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Thank you for registering with Longhorn Bank. We look forward to serving you!",
+                    Subject = "Welcome to Longhorn Bank",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = rvm.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(aum.User);
+                _context.Add(m);
+                _context.SaveChanges();
+
                 //Send the user to apply for a banking Account
                 return RedirectToAction("NewUser", "Home");
             }
@@ -127,10 +141,19 @@ namespace LonghornBankWebApp.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
-            if (User.Identity.IsAuthenticated) //user has been redirected here from a page they're not authorized to see
+            if (User.Identity.IsAuthenticated && User.IsInRole("Employee") == false) //user has been redirected here from a page they're not authorized to see
             {
                 return View("Error", new string[] { "Access Denied" });
             }
+            else if (User.Identity.IsAuthenticated && User.IsInRole("Employee"))
+            {
+                //sign the user out of the application
+                _signInManager.SignOutAsync();
+
+                //send the user back to the home page
+                return RedirectToAction("Index", "Home");
+            }
+
             _signInManager.SignOutAsync(); //this removes any old cookies hanging around
             ViewBag.ReturnUrl = returnUrl; //pass along the page the user should go back to
             return View();
@@ -189,7 +212,20 @@ namespace LonghornBankWebApp.Controllers
                                     EmailMessaging.SendEmail(user.Email, "Longhorn Bank: Transaction Canceled for Bank Account "
                                         + t.BankAccount.BankAccountNumber, "Your transaction for $" + t.TransactionAmount
                                         + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.");
-
+                                    
+                                    // Create notifaction
+                                    Message m = new Message()
+                                    {
+                                        Info = "Your transaction for $" + t.TransactionAmount
+                                        + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.",
+                                        Subject = "Longhorn Bank: Transaction Canceled for Bank Account " + t.BankAccount.BankAccountNumber,
+                                        Date = DateTime.Today,
+                                        Sender = "Longhorn Bank",
+                                        Receiver = user.Email
+                                    };
+                                    m.Admins = new List<AppUser>();
+                                    m.Admins.Add(user);
+                                    _context.Add(m);
                                 }
                                 else
                                 {
@@ -209,6 +245,20 @@ namespace LonghornBankWebApp.Controllers
                                     EmailMessaging.SendEmail(user.Email, "Longhorn Bank: Transaction Canceled for Stock Portfolio " + t.StockPortfolio.PortfolioNumber,
                                         "Your transaction for $" + t.TransactionAmount +
                                         "has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.");
+
+                                    // Create notifaction
+                                    Message m = new Message()
+                                    {
+                                        Info = "Your transaction for $" + t.TransactionAmount
+                                        + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.",
+                                        Subject = "Longhorn Bank: Transaction Canceled for Stock Portfolio " + t.StockPortfolio.PortfolioNumber,
+                                        Date = DateTime.Today,
+                                        Sender = "Longhorn Bank",
+                                        Receiver = user.Email
+                                    };
+                                    m.Admins = new List<AppUser>();
+                                    m.Admins.Add(user);
+                                    _context.Add(m);
                                 }
                                 else
                                 {
@@ -224,15 +274,25 @@ namespace LonghornBankWebApp.Controllers
                     }
                 }
 
-                List<BankAccount> bankAccountsList = _context.BankAccounts.Where(r => r.User.UserName == User.Identity.Name).Include(b => b.User).ToList();
+                // list of bank accounts from user
+                List<BankAccount> bankAccountsList = _context.BankAccounts.Where(b => b.User.UserName == lvm.Email).ToList();
+
 
                 foreach (BankAccount bankAccount in bankAccountsList)
                 {
 
                     if (bankAccount.BankAccountType == BankAccountTypes.IRA)
                     {
+                        DateTime today = DateTime.Today;
+                        
+                        int age = today.Year - bankAccount.User.DOB.Year;
+
+                        if (bankAccount.User.DOB > today.AddYears(-age))
+                        {
+                            age--;
+                        }
                         // update whether or not IRA accounts are qualified
-                        if ((DateTime.Now.Subtract(bankAccount.User.DOB).Days / 365) > 65 && bankAccount.IRAQualified == false)
+                        if ( age > 65 && bankAccount.IRAQualified == false)
                         {
                             bankAccount.IRAQualified = true;
                             _context.Update(bankAccount);

@@ -8,8 +8,15 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-
 }
+
+#bg-login {
+    background-image: url(../images/campus.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
 
 .navbar-custom > li { /* <- this affects just my footer navbar */
     display: inline-block;
@@ -29,6 +36,7 @@
 .top_pad{
     padding-top: 99px;
 }
+
 
 .notification {
     background-color: #555;

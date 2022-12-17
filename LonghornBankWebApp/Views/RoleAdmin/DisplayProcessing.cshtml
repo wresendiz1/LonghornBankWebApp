@@ -1,31 +1,35 @@
 ﻿@model IEnumerable<PortfolioProcess>
 
+@section containerbottom{
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Date Processed
-            </th>
-            <th>
-                Admin
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(PortfolioProcess pp in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => pp.DateProcessed)
-                </td>
-                <td>
-                    @pp.ProcessedBy
-                </td>
-            </tr>
-            
-        }
-    </tbody>
+    <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Date Processed
+                    </th>
+                    <th>
+                        Admin
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PortfolioProcess pp in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => pp.DateProcessed)
+                        </td>
+                        <td>
+                            @pp.ProcessedBy
+                        </td>
+                    </tr>
 
-</table>
-<a asp-action="ManageTask" class="btn btn-primary">Back</a>
+                }
+            </tbody>
+
+        </table>
+        <a asp-action="ManageTask" class="btn btn-primary">Back</a>
+    </div>
+}

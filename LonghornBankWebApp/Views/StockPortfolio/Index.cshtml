@@ -7,23 +7,35 @@
 @using LonghornBankWebApp.Models
 
 
+
+@section containerbottom{
+
+<div class="container min-vh-100 mt-4">
+
+
 <h1>@Model.PortfolioName</h1>
-<dt class="col-sm-2">
-    @*@Html.DisplayNameFor(model => model.PortfolioNumber)*@
-    Number
-</dt>
-<dd class="col-sm-10">
-    @Html.DisplayFor(model => model.PortfolioNumber)
-</dd>
-<dt class="col-sm-2">
-    @Html.DisplayNameFor(model => model.PortfolioValue)
-</dt>
-<dd class="col-sm-10">
-    @Html.DisplayFor(model => model.PortfolioValue)
-</dd>
-<dt class="col-sm-2">
-    @Html.DisplayNameFor(model => model.IsBalanced)
-</dt>
+    <div class="my-4">
+        <a href="#scroll1" class="btn btn-primary">Cash Portion</a>
+        <a href="#scroll2" class="btn btn-primary">Stock Portion</a>
+
+    </div>
+    <dl class="row">
+    <dt class="col-sm-2">
+        @*@Html.DisplayNameFor(model => model.PortfolioNumber)*@
+        Number
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PortfolioNumber)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PortfolioValue)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PortfolioValue)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.IsBalanced)
+    </dt>
 @if (Model.IsBalanced)
 {
     <dd class="col-sm-2">
@@ -31,17 +43,20 @@
     </dd>
     @if (User.IsInRole("Customer"))
     {
-        <a class="btn btn-warning justify-content-right" asp-controller="StockPortfolio" asp-action="CalcBonus" asp-route-id="@Model.StockPortfolioID">Calculate Bonus</a>
+        <dd>
+         <a class="btn btn-primary" asp-controller="StockPortfolio" asp-action="CalcBonus" asp-route-id="@Model.StockPortfolioID">Calculate Bonus</a>           
+        </dd>
     }
 
 }
+
 else
 {
     <dd class="col-sm-2">
         Unbalanced
     </dd>
 }
-
+</dl>
 
 @if (ViewBag.Message != null)
 {
@@ -53,9 +68,9 @@ else
 
 <br />
 <br />
-<div class="row">
+<div class="row" >
     <div>
-        <h4>
+        <h4 class="text-center" id="scroll1">
             Cash-value portion
 
         </h4>
@@ -313,14 +328,15 @@ else
         }
     </tbody>
 </table>
+</div>
 
 
 
+<div class="container min-vh-100" style="margin-top:12rem">
 
-<br />
 <div class="row">
     <div>
-        <h4>
+        <h4 class="text-center" id="scroll2">
             Stock portion
         </h4>
     </div>
@@ -389,3 +405,6 @@ else
         }
     </tbody>
 </table>
+</div>
+
+}

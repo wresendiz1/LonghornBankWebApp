@@ -2,55 +2,59 @@
 
 
 <h1>Transfer Summary</h1>
+@section containerbottom{
 
+    <div class="container min-vh-100 mt-4">
+        <div>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Originating Account
+                </dt>
+                @if (Model.BankAccount != null)
+                {
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.BankAccount.BankAccountNumber) @Html.DisplayFor(model => model.BankAccount.BankAccountName)
+                    </dd>
+                }
 
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Originating Account
-        </dt>
-        @if (Model.BankAccount != null)
-        {
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.BankAccount.BankAccountNumber) @Html.DisplayFor(model => model.BankAccount.BankAccountName)
-            </dd>
-        }
+                else if (Model.StockPortfolio != null)
+                {
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.StockPortfolio.PortfolioNumber) @Html.DisplayFor(model => model.StockPortfolio.PortfolioName)
+                    </dd>
+                }
 
-        else if (Model.StockPortfolio != null)
-        {
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.StockPortfolio.PortfolioNumber) @Html.DisplayFor(model => model.StockPortfolio.PortfolioName)
-            </dd>
-        }
+                <dt class="col-sm-2">
+                    Destination Account
+                </dt>
+                @if (Model.BankAccount != null)
+                {
+                    <dd class="col-sm-10">
+                        @ViewBag.destination.BankAccountNumber @ViewBag.destination.BankAccountName
+                    </dd>
+                }
 
-        <dt class="col-sm-2">
-            Destination Account
-        </dt>
-        @if (Model.BankAccount != null)
-        {
-            <dd class="col-sm-10">
-                @ViewBag.destination.BankAccountNumber @ViewBag.destination.BankAccountName
-            </dd>
-        }
+                else if (Model.StockPortfolio != null)
+                {
+                    <dd class="col-sm-10">
+                        @ViewBag.destination.PortfolioNumber @ViewBag.destination.PortfolioName
+                    </dd>
+                }
+                <dt class="col-sm-2">
+                    Amount
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TransactionAmount)
+                </dd>
+                <dt class="col-sm-2">
+                    Date
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.TransactionDate)
+                </dd>
+            </dl>
+        </div>        
+    </div>
+}
 
-        else if (Model.StockPortfolio != null)
-        {
-            <dd class="col-sm-10">
-                @ViewBag.destination.PortfolioNumber @ViewBag.destination.PortfolioName
-            </dd>
-        }
-        <dt class="col-sm-2">
-            Amount
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TransactionAmount)
-        </dd>
-        <dt class="col-sm-2">
-            Date
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TransactionDate)
-        </dd>
-    </dl>
-</div>

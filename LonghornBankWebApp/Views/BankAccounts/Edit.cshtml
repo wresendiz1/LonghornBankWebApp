@@ -4,9 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Nickname</h1>
 
-<h4>BankAccount</h4>
 <hr />
 @if (ViewBag.Message != null)
 {
@@ -14,27 +13,35 @@
         @ViewBag.Message
     </div>
 }
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for = "BankAccountID" />
-            <input type="hidden" asp-for="BankAccountType" />
-            <div class="form-group">
-                <label asp-for="BankAccountName" class="control-label"></label>
-                <input asp-for="BankAccountName" class="form-control" />
-                <span asp-validation-for="BankAccountName" class="text-danger"></span>
-            </div>
-            
-            <!-- CONSIDER: add the enable/disable account button -->
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+@section containerbottom{
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<div class="container min-vh-100 mt-4">
+
+    <div class="row">
+        <div class="col-md-4 ">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for = "BankAccountID" />
+                <input type="hidden" asp-for="BankAccountType" />
+                <div class="form-group my-4">
+                    <label asp-for="BankAccountName" class="control-label"></label>
+                    <input asp-for="BankAccountName" class="form-control" />
+                    <span asp-validation-for="BankAccountName" class="text-danger"></span>
+                </div>
+            
+                <!-- CONSIDER: add the enable/disable account button -->
+                    <div class="form-group my-4">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>    
+ 
+}
+
 

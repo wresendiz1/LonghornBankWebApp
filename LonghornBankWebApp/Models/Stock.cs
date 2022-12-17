@@ -28,11 +28,18 @@ namespace LonghornBankWebApp.Models
 
         public List<StockTransaction> StockTransactions { get; set; }
 
+        public List<StockPrice> StockPrices { get; set; }
+
         public Stock()
         {
             if (StockTransactions == null)
             {
                 StockTransactions = new List<StockTransaction>();
+                
+            }
+            if (StockPrices == null)
+            {
+                StockPrices = new List<StockPrice>();
             }
         }
     }

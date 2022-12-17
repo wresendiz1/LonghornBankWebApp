@@ -4,60 +4,65 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Stock</h4>
+<h1>Add Stock</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StockName" class="control-label"></label>
-                <input asp-for="StockName" class="form-control" />
-                <span asp-validation-for="StockName" class="text-danger"></span>
+
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="StockName" class="control-label"></label>
+                        <input asp-for="StockName" class="form-control" />
+                        <span asp-validation-for="StockName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CurrentPrice" class="control-label"></label>
+                        <input asp-for="CurrentPrice" class="form-control" />
+                        <span asp-validation-for="CurrentPrice" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TickerSymbol" class="control-label"></label>
+                        <input asp-for="TickerSymbol" class="form-control" />
+                        <span asp-validation-for="TickerSymbol" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Type</label>
+                        @Html.DropDownList("SelectedID", @ViewBag.Types, "Select a Stock", new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @if (ViewData.ModelState.Keys.Contains("Valid"))
+                        {
+                            <input type="submit" value="Confirm" asp-route-modify="@true" class="btn btn-success" />
+                            <a asp-action="Create" class="btn btn-danger">Cancel</a>
+                        }
+                        else
+                        {
+                            <input type="submit" value="Create" asp-route-modify="@false" class="btn btn-primary" />
+
+                        }
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="CurrentPrice" class="control-label"></label>
-                <input asp-for="CurrentPrice" class="form-control" />
-                <span asp-validation-for="CurrentPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TickerSymbol" class="control-label"></label>
-                <input asp-for="TickerSymbol" class="form-control" />
-                <span asp-validation-for="TickerSymbol" class="text-danger"></span>
-            </div>
-            <div class = "form-group">
-                <label>Stock Type</label>
-                @Html.DropDownList("SelectedID", @ViewBag.Types, "Select a Stock", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
+            <div class="col-md-4">
+
                 @if (ViewData.ModelState.Keys.Contains("Valid"))
                 {
-                    <input type="submit" value="Confirm" asp-route-modify="@true" class="btn btn-success" />
-                    <a asp-action="Create" class="btn btn-danger">Cancel</a>
-                }
-                else
-                {
-                    <input type="submit" value="Create" asp-route-modify="@false" class="btn btn-primary" />
+                    <div class="alert alert-success" role="alert">
+                        <p> @ViewData.ModelState["Valid"].Errors[0].ErrorMessage</p>
+                    </div>
 
                 }
             </div>
-        </form>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+
     </div>
-    <div class="col-md-4">
-
-        @if (ViewData.ModelState.Keys.Contains("Valid"))
-        {
-            <div class="alert alert-success" role="alert">
-                <p> @ViewData.ModelState["Valid"].Errors[0].ErrorMessage</p>
-            </div>
-
-        }
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+}
 

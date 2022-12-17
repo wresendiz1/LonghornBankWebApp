@@ -278,7 +278,6 @@ namespace LonghornBankWebApp.Controllers
             return View("Confirm");
         }
 
-        //ASK: does the return type need to be Task<IActionResult>
         public IActionResult SeedBankAccounts()
         {
             try

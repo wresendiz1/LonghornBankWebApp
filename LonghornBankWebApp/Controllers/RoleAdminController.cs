@@ -271,15 +271,43 @@ namespace LonghornBankWebApp.Controllers
                 
                 _context.Update(tr.BankAccount);
 
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
+                "Head over to your account to view the details of this transaction.",
+                    Subject = "Transaction: " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString(),
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = tr.BankAccount.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(tr.BankAccount.User);
+                _context.Add(m);
+
             }
 
             else if (tr.StockPortfolio!= null)
             {
                 EmailMessaging.SendEmail(tr.StockPortfolio.User.Email, "Transaction: " + tr.TransactionNumber
-                + " has been " + tr.TransactionStatus.ToString(), "Transaction " + tr.StockPortfolio + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
+                + " has been " + tr.TransactionStatus.ToString(), "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
                 " Please login to your account to view the details of this transaction.");
 
                 _context.Update(tr.StockPortfolio);
+
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
+                "Head over to your account to view the details of this transaction.",
+                    Subject = "Transaction: " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString(),
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = tr.StockPortfolio.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(tr.StockPortfolio.User);
+                _context.Add(m);
             }
 
             _context.Update(tr);

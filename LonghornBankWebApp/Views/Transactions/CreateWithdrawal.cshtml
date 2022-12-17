@@ -7,83 +7,88 @@
 <h1>New Withdrawal</h1>
 <hr />
 
+@section containerbottom{
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateWithdrawal">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="container min-vh-100 mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="CreateWithdrawal">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            @*DROPDOWN FOR ACCOUNT SELECTION*@
-            <div class="form-group">
-                @Html.DropDownList("SelectedAccountNum", (List<SelectListItem>)ViewBag.DropDown, new { @class = "form-control" })
-            </div>
-
-            @*AMOUNT*@
-            <div class="form-group">
-                <label asp-for="TransactionAmount" class="control-label"></label>
-                <input asp-for="TransactionAmount" class="form-control" value="@Model.TransactionAmount" />
-                <span asp-validation-for="TransactionAmount" class="text-danger"></span>
-            </div>
-
-            @*DATE*@
-            <div class="form-group">
-                <label asp-for="TransactionDate" class="control-label"></label>
-                <input asp-for="TransactionDate" class="form-control" />
-                <span asp-validation-for="TransactionDate" class="text-danger"></span>
-            </div>
-
-            @*NOTES*@
-            <div class="form-group">
-                <label asp-for="TransactionNotes" class="control-label"></label>
-                <input asp-for="TransactionNotes" class="form-control" />
-                <span asp-validation-for="TransactionNotes" class="text-danger"></span>
-            </div>
-            <br />
-
-            @*BUTTONS TO INCLUDE/ ADD FEE*@
-            @if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
-            {
-                @*ADD FEE BUTTON*@
-                <input type="submit" value="Add Fee" class="btn btn-secondary" asp-route-include="@false" />
-
-                @*INCLUDE FEE BUTTON*@
-                <input type="submit" value="Include Fee" class="btn btn-primary" asp-route-include="@true" />
-
-                @*CANCEL BUTTON*@
-                <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
-            }
-
-            @*NORMAL BUTTON TO SUBMIT*@
-            else
-            {
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
-            }
-
-        </form>
-    </div>
-    <div class="col-md-8">
-        @{
-            if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
-            {
-                <p class="text-danger">Withdrawals from unqualified IRA distributions (for customers who are 65 years old or younger) have max withdrawal amounts of $3,000 and $30 fees.</p>
-                <p>Pressing 'add fee' will add the fee to your withdrawal amount</p>
-                <p>Pressing 'include fee' will include the fee in your withdrawal amount</p>
-
-
-
-
-            }
-
-            if (ViewData.ModelState.Keys.Contains("NotActive"))
-            {
-                    <div class="alert alert-danger" role="alert">
-                        <p> @ViewData.ModelState["NotActive"].Errors[0].ErrorMessage</p>
+                    @*DROPDOWN FOR ACCOUNT SELECTION*@
+                    <div class="form-group">
+                        @Html.DropDownList("SelectedAccountNum", (List<SelectListItem>)ViewBag.DropDown, new { @class = "form-control" })
                     </div>
-            }
-        }
+
+                    @*AMOUNT*@
+                    <div class="form-group">
+                        <label asp-for="TransactionAmount" class="control-label"></label>
+                        <input asp-for="TransactionAmount" class="form-control" value="@Model.TransactionAmount" />
+                        <span asp-validation-for="TransactionAmount" class="text-danger"></span>
+                    </div>
+
+                    @*DATE*@
+                    <div class="form-group">
+                        <label asp-for="TransactionDate" class="control-label"></label>
+                        <input asp-for="TransactionDate" class="form-control" />
+                        <span asp-validation-for="TransactionDate" class="text-danger"></span>
+                    </div>
+
+                    @*NOTES*@
+                    <div class="form-group">
+                        <label asp-for="TransactionNotes" class="control-label"></label>
+                        <input asp-for="TransactionNotes" class="form-control" />
+                        <span asp-validation-for="TransactionNotes" class="text-danger"></span>
+                    </div>
+                    <br />
+
+                    @*BUTTONS TO INCLUDE/ ADD FEE*@
+                    @if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
+                    {
+                        @*ADD FEE BUTTON*@
+                        <input type="submit" value="Add Fee" class="btn btn-secondary" asp-route-include="@false" />
+
+                        @*INCLUDE FEE BUTTON*@
+                        <input type="submit" value="Include Fee" class="btn btn-primary" asp-route-include="@true" />
+
+                        @*CANCEL BUTTON*@
+                        <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+                    }
+
+                    @*NORMAL BUTTON TO SUBMIT*@
+                    else
+                    {
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <a class="btn btn-danger" asp-controller="BankAccounts" asp-action="Index">Cancel</a>
+                    }
+
+                </form>
+            </div>
+            <div class="col-md-8">
+                @{
+                    if (ViewData.ModelState.Keys.Contains("IRA Unqualified"))
+                    {
+                        <p class="text-danger">Withdrawals from unqualified IRA distributions (for customers who are 65 years old or younger) have max withdrawal amounts of $3,000 and $30 fees.</p>
+                        <p>Pressing 'add fee' will add the fee to your withdrawal amount</p>
+                        <p>Pressing 'include fee' will include the fee in your withdrawal amount</p>
+
+
+
+
+                    }
+
+                    if (ViewData.ModelState.Keys.Contains("NotActive"))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <p> @ViewData.ModelState["NotActive"].Errors[0].ErrorMessage</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
-</div>
+}
+
 
 
 @*<div>

@@ -133,8 +133,23 @@ namespace LonghornBankWebApp.Controllers
                 
                 // find user email
                 StockPortfolio sp = _context.StockPortfolios.Include(sp => sp.User).FirstOrDefault(sp => sp.StockPortfolioID == dispute.Transaction.StockPortfolio.StockPortfolioID);
+                
                 EmailMessaging.SendEmail(sp.User.Email, "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved"
                     , "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + " by admin " + dispute.adminEmail + ". Please check your account for more details. Message from admin: " + dispute.adminMessage);
+                
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + 
+                    " by admin " + dispute.adminEmail + ". Please check your transaction for more details",
+                    Subject = "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = sp.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(sp.User);
+                _context.Add(m);
             }
             else if (dispute.Transaction.BankAccount != null)
             {
@@ -144,6 +159,20 @@ namespace LonghornBankWebApp.Controllers
                 BankAccount ba = _context.BankAccounts.Include(ba => ba.User).FirstOrDefault(ba => ba.BankAccountID == dispute.Transaction.BankAccount.BankAccountID);
                 EmailMessaging.SendEmail(ba.User.Email, "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved"
                     , "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + " by admin" + dispute.adminEmail + ". Please check your account for more details. Message from admin: " + dispute.adminMessage);
+
+                // Create notifaction
+                Message m = new Message()
+                {
+                    Info = "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() +
+                    " by admin " + dispute.adminEmail + ". Please check your transaction for more details",
+                    Subject = "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved",
+                    Date = DateTime.Today,
+                    Sender = "Longhorn Bank",
+                    Receiver = ba.User.Email
+                };
+                m.Admins = new List<AppUser>();
+                m.Admins.Add(ba.User);
+                _context.Add(m);
 
             }
             _context.SaveChanges();
