@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using Highsoft.Web.Mvc.Charts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -241,6 +242,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: Stocks/Delete/5
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Stocks == null)
@@ -259,23 +261,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: Stocks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Stocks == null)
-            {
-                return Problem("Entity set 'AppDbContext.Stocks'  is null.");
-            }
-            var stock = await _context.Stocks.FindAsync(id);
-            if (stock != null)
-            {
-                _context.Stocks.Remove(stock);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Stocks == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.Stocks'  is null.");
+        //    }
+        //    var stock = await _context.Stocks.FindAsync(id);
+        //    if (stock != null)
+        //    {
+        //        _context.Stocks.Remove(stock);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool StockExists(int id)
         {

@@ -121,6 +121,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: StockTypes/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.StockTypes == null)
@@ -139,23 +140,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: StockTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.StockTypes == null)
-            {
-                return Problem("Entity set 'AppDbContext.StockTypes'  is null.");
-            }
-            var stockType = await _context.StockTypes.FindAsync(id);
-            if (stockType != null)
-            {
-                _context.StockTypes.Remove(stockType);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.StockTypes == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.StockTypes'  is null.");
+        //    }
+        //    var stockType = await _context.StockTypes.FindAsync(id);
+        //    if (stockType != null)
+        //    {
+        //        _context.StockTypes.Remove(stockType);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool StockTypeExists(int id)
         {

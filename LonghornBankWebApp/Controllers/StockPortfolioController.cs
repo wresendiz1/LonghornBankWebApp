@@ -238,6 +238,7 @@ namespace LonghornBankWebApp.Controllers
             bool index = false;
             bool mutual = false;
             Stock temp = new Stock();
+            
 
             IDictionary<Stock, Int32> stock_holdings = new Dictionary<Stock, Int32>();
 
@@ -303,13 +304,14 @@ namespace LonghornBankWebApp.Controllers
             return (stonks, stock_holdings);
         }
         
-        public IActionResult Index(string SearchString, string selected, string order, int id, string message)
+        public IActionResult Index(string SearchString, string selected, string order, int id, string message, string bonus)
         {
             
             // get the stock portfolio from the database
             StockPortfolio stonks = new StockPortfolio();
 
             ViewBag.Message = message;
+            ViewBag.bonus = bonus;
 
             if(User.IsInRole("Customer"))
             {
@@ -420,8 +422,12 @@ namespace LonghornBankWebApp.Controllers
             StockPortfolio stonk = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefault(r => r.StockPortfolioID == id);
             decimal bonus = (stonk.PortfolioValue-stonk.CashValuePortion) * 0.1m;
 
-            ViewBag.bonus = bonus;
-            return View(stonk);
+            //ViewBag.bonus = bonus;
+            //return View(stonk);
+            
+            String bonus1 = "You have earned a bonus of $" + bonus + " !";
+            return RedirectToAction("Index", new { bonus = bonus1 });
+
         }
 
         public IActionResult DetailedSearch(Int32 id)
@@ -673,7 +679,7 @@ namespace LonghornBankWebApp.Controllers
                 return NotFound();
             }
 
-            var stockPortfolio = _context.StockPortfolios.Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).ThenInclude(s => s.StockType).FirstOrDefault(r => r.StockPortfolioID == id);
+            var stockPortfolio = await _context.StockPortfolios.Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).ThenInclude(s => s.StockType).FirstOrDefaultAsync(r => r.StockPortfolioID == id);
 
             if (stockPortfolio == null)
             {
@@ -933,6 +939,8 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: StockPortfolio/Delete/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.StockPortfolios == null)
@@ -951,23 +959,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: StockPortfolio/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.StockPortfolios == null)
-            {
-                return Problem("Entity set 'AppDbContext.StockPortfolios'  is null.");
-            }
-            var stockPortfolio = await _context.StockPortfolios.FindAsync(id);
-            if (stockPortfolio != null)
-            {
-                _context.StockPortfolios.Remove(stockPortfolio);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.StockPortfolios == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.StockPortfolios'  is null.");
+        //    }
+        //    var stockPortfolio = await _context.StockPortfolios.FindAsync(id);
+        //    if (stockPortfolio != null)
+        //    {
+        //        _context.StockPortfolios.Remove(stockPortfolio);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool StockPortfolioExists(int id)
         {

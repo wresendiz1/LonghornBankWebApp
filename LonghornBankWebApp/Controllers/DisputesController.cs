@@ -309,6 +309,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: Disputes/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Disputes == null)
@@ -327,23 +328,24 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: Disputes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Disputes == null)
-            {
-                return Problem("Entity set 'AppDbContext.Disputes'  is null.");
-            }
-            var dispute = await _context.Disputes.FindAsync(id);
-            if (dispute != null)
-            {
-                _context.Disputes.Remove(dispute);
-            }
+        //[Authorize(Roles = "Admin")]
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Disputes == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.Disputes'  is null.");
+        //    }
+        //    var dispute = await _context.Disputes.FindAsync(id);
+        //    if (dispute != null)
+        //    {
+        //        _context.Disputes.Remove(dispute);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool DisputeExists(int id)
         {

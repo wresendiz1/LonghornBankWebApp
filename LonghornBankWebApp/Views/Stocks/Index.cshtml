@@ -55,7 +55,6 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.StockID">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.StockID">Delete</a>
                     }
                 </td>
             </tr>

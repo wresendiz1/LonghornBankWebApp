@@ -6,48 +6,54 @@
 
 <h1>Index</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DisputeNotes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CorrectAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeleteTransaction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DisputeStatus)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DisputeNotes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CorrectAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeleteTransaction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DisputeStatus)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DisputeID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DisputeID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DisputeID">Delete</a>
-            </td>
-        </tr>
+</p>*@
+
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisputeNotes)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CorrectAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DeleteTransaction)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DisputeStatus)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DisputeNotes)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CorrectAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeleteTransaction)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DisputeStatus)
+                    </td>
+                    <td>
+  @*                      <a asp-action="Edit" asp-route-id="@item.DisputeID">Edit</a> |*@
+                        <a asp-action="Details" asp-route-id="@item.DisputeID">Details</a> 
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+     
+    </div>
 }
-    </tbody>
-</table>

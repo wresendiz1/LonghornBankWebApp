@@ -1163,6 +1163,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: Transactions/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Transactions == null)
@@ -1181,23 +1182,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: Transactions/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Transactions == null)
-            {
-                return Problem("Entity set 'AppDbContext.Transactions'  is null.");
-            }
-            var transaction = await _context.Transactions.FindAsync(id);
-            if (transaction != null)
-            {
-                _context.Transactions.Remove(transaction);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Transactions == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.Transactions'  is null.");
+        //    }
+        //    var transaction = await _context.Transactions.FindAsync(id);
+        //    if (transaction != null)
+        //    {
+        //        _context.Transactions.Remove(transaction);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
 
 

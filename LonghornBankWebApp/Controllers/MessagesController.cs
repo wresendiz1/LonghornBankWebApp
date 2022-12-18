@@ -164,6 +164,8 @@ namespace LonghornBankWebApp.Controllers
 
 
         // GET: Messages/Delete/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Messages == null)
@@ -182,23 +184,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: Messages/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Messages == null)
-            {
-                return Problem("Entity set 'AppDbContext.Messages'  is null.");
-            }
-            var message = await _context.Messages.FindAsync(id);
-            if (message != null)
-            {
-                _context.Messages.Remove(message);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Messages == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.Messages'  is null.");
+        //    }
+        //    var message = await _context.Messages.FindAsync(id);
+        //    if (message != null)
+        //    {
+        //        _context.Messages.Remove(message);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool MessageExists(int id)
         {

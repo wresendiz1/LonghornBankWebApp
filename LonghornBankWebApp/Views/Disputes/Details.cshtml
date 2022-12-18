@@ -5,128 +5,136 @@
 }
 
 <h1>Details for dispute #@Model.DisputeID on transaction #@Model.Transaction.TransactionID</h1>
-<br />
-<div class="container-fluid">
-    <div class="row">
-        <div class="col">
+<hr />
+
+@section containerbottom{
+
+    <div class="container min-vh-100 mt-4">
+        <div class="container-fluid">
             <div class="row">
-                <dt class="col-sm-5">
-                    Transaction Number
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionNumber)
-                </dd>
-                @if (Model.Transaction.BankAccount == null)
-                {
-                    <dt class="col-sm-5">
-                        @Html.DisplayNameFor(model => model.Transaction.StockPortfolio.PortfolioName)
-                    </dt>
-                    <dd class="col-sm-5">
-                        @Html.DisplayFor(model => model.Transaction.StockPortfolio.PortfolioName)
-                    </dd>
-                    <dt class="col-sm-5">
-                        @Html.DisplayNameFor(model => model.Transaction.StockPortfolio.PortfolioNumber)
-                    </dt>
-                    <dd class="col-sm-5">
-                        @Html.DisplayFor(model => model.Transaction.StockPortfolio.PortfolioNumber)
-                    </dd>
+                <div class="col">
+                    <div class="row">
+                        <dt class="col-sm-5">
+                            Transaction Number
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionNumber)
+                        </dd>
+                        @if (Model.Transaction.BankAccount == null)
+                        {
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.Transaction.StockPortfolio.PortfolioName)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.Transaction.StockPortfolio.PortfolioName)
+                            </dd>
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.Transaction.StockPortfolio.PortfolioNumber)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.Transaction.StockPortfolio.PortfolioNumber)
+                            </dd>
 
-                }
-                @if (Model.Transaction.StockPortfolio == null)
-                {
-                    <dt class="col-sm-5">
-                        @Html.DisplayNameFor(model => model.Transaction.BankAccount.BankAccountName)
-                    </dt>
-                    <dd class="col-sm-5">
-                        @Html.DisplayFor(model => model.Transaction.BankAccount.BankAccountName)
-                    </dd>
-                    <dt class="col-sm-5">
-                        @Html.DisplayNameFor(model => model.Transaction.BankAccount.BankAccountNumber)
-                    </dt>
-                    <dd class="col-sm-5">
-                        @Html.DisplayFor(model => model.Transaction.BankAccount.BankAccountNumber)
-                    </dd>
-                }
+                        }
+                        @if (Model.Transaction.StockPortfolio == null)
+                        {
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.Transaction.BankAccount.BankAccountName)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.Transaction.BankAccount.BankAccountName)
+                            </dd>
+                            <dt class="col-sm-5">
+                                @Html.DisplayNameFor(model => model.Transaction.BankAccount.BankAccountNumber)
+                            </dt>
+                            <dd class="col-sm-5">
+                                @Html.DisplayFor(model => model.Transaction.BankAccount.BankAccountNumber)
+                            </dd>
+                        }
 
-                <dt class="col-sm-5">
-                    @Html.DisplayNameFor(model => model.Transaction.TransactionType)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionType)
-                </dd>
-                <dt class="col-sm-5">
-                    @Html.DisplayNameFor(model => model.Transaction.TransactionAmount)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionAmount)
-                </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Transaction.TransactionType)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionType)
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Transaction.TransactionAmount)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionAmount)
+                        </dd>
 
-                <dt class="col-sm-5">
-                    @Html.DisplayNameFor(model => model.Transaction.TransactionDate)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionDate)
-                </dd>
-                <dt class="col-sm-5">
-                    @Html.DisplayNameFor(model => model.Transaction.TransactionNotes)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionNotes)
-                </dd>
-                <dt class="col-sm-5">
-                    @Html.DisplayNameFor(model => model.Transaction.TransactionStatus)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.Transaction.TransactionStatus)
-                </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Transaction.TransactionDate)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionDate)
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Transaction.TransactionNotes)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionNotes)
+                        </dd>
+                        <dt class="col-sm-5">
+                            @Html.DisplayNameFor(model => model.Transaction.TransactionStatus)
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.Transaction.TransactionStatus)
+                        </dd>
+                    </div>
+                </div>
+
+
+                <div class="col">
+                    <div class="row">
+                        <dt class="col-sm-10">
+                            <p class="text-danger">This transaction was disputed on @Html.DisplayFor(model => model.dateCreated)</p>
+                        </dt>
+                        <dt class="col-sm-5">
+                            Dispute notes
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.DisputeNotes)
+                        </dd>
+                        <dt class="col-sm-5">
+                            Original amount
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.oldAmount)
+                        </dd>
+                        <dt class="col-sm-5">
+                            Claimed amount
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.CorrectAmount)
+                        </dd>
+                        @if (Model.DeleteTransaction)
+                        {
+                            <dt class="col-sm-10">
+                                <p class="text-danger">Transaction was requested to be deleted</p>
+                            </dt>
+                        }
+                        <br />
+                        <dt class="col-sm-10">
+                            <p class="text-success">Dispute was resolved (@Html.DisplayFor(model => model.DisputeStatus)) on @Html.DisplayFor(model => model.dateResolved) by @Html.DisplayFor(model => model.adminEmail)</p>
+                        </dt>
+                        <dt class="col-sm-5">
+                            Admin message:
+                        </dt>
+                        <dd class="col-sm-5">
+                            @Html.DisplayFor(model => model.adminMessage)
+                        </dd>
+
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
-
-        <div class="col">
-            <div class="row">
-                <dt class="col-sm-10">
-                    <p class="text-danger">This transaction was disputed on @Html.DisplayFor(model => model.dateCreated)</p>
-                </dt>
-                <dt class="col-sm-5">
-                    Dispute notes
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.DisputeNotes)
-                </dd>
-                <dt class="col-sm-5">
-                    Original amount
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.oldAmount)
-                </dd>
-                <dt class="col-sm-5">
-                    Claimed amount
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.CorrectAmount)
-                </dd>
-                @if (Model.DeleteTransaction)
-                {
-                    <dt class="col-sm-10">
-                        <p class="text-danger">Transaction was requested to be deleted</p>
-                    </dt>
-                }
-                <br />
-                <dt class="col-sm-10">
-                    <p class="text-success">Dispute was resolved (@Html.DisplayFor(model => model.DisputeStatus)) on @Html.DisplayFor(model => model.dateResolved) by @Html.DisplayFor(model => model.adminEmail)</p>
-                </dt>
-                <dt class="col-sm-5">
-                    Admin message:
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.adminMessage)
-                </dd>
-
-
-            </div>
-        </div>
-
+        
     </div>
-</div>
+}
 

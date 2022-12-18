@@ -770,6 +770,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: BankAccounts/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.BankAccounts == null)
@@ -788,23 +789,23 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // POST: BankAccounts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.BankAccounts == null)
-            {
-                return Problem("Entity set 'AppDbContext.BankAccounts'  is null.");
-            }
-            var bankAccount = await _context.BankAccounts.FindAsync(id);
-            if (bankAccount != null)
-            {
-                _context.BankAccounts.Remove(bankAccount);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.BankAccounts == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.BankAccounts'  is null.");
+        //    }
+        //    var bankAccount = await _context.BankAccounts.FindAsync(id);
+        //    if (bankAccount != null)
+        //    {
+        //        _context.BankAccounts.Remove(bankAccount);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool BankAccountExists(int id)
         {
