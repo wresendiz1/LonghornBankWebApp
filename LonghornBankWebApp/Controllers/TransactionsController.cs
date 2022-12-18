@@ -367,11 +367,11 @@ namespace LonghornBankWebApp.Controllers
                 // create message for admins
                 // extra func only needed for disputes
                 
-                var fullname = transaction.BankAccount is null ? transaction.StockPortfolio.User.FullName : transaction.BankAccount.User.FullName;
+                var fullname = transaction.BankAccount == null ? transaction.StockPortfolio.User.FullName : transaction.BankAccount.User.FullName;
                 Message message = new Message();
                 message.Date = DateTime.Today;
                 message.Subject = "Deposit that needs approval created by " + fullname;
-                message.Info = "A deposit of over $5,000 " + transaction.TransactionID + " by " + fullname + ". Please resolve the dispute.";
+                message.Info = "A deposit of over $5,000 by " + fullname + ". Please resolve the dispute.";
                 message.Sender = "Deposit System";
                 message.Receiver = "All";
 
@@ -385,6 +385,17 @@ namespace LonghornBankWebApp.Controllers
 
                 _context.Add(message);
 
+
+                // notify user that their deposit is pending
+                Message userMessage = new Message();
+                userMessage.Date = DateTime.Today;
+                userMessage.Subject = "Deposit Pending";
+                userMessage.Info = "Your deposit of $" + transaction.TransactionAmount + " is pending. An administrator will resolve the transaction.";
+                userMessage.Sender = "Deposit System";
+                userMessage.Receiver = u.Email;
+                userMessage.Admins = new List<AppUser>();
+                userMessage.Admins.Add(u);
+                _context.Add(userMessage);
             }
             else
             {

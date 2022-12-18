@@ -190,7 +190,7 @@ namespace LonghornBankWebApp.Controllers
 
             }
             // TODO: Account for stock portfolios
-            
+
             Transaction transaction = _context.Transactions.Include(t => t.BankAccount).ThenInclude(b => b.User).FirstAsync(t => t.TransactionID == td.transaction.TransactionID).Result;
 
             Dispute dispute = td.dispute;
@@ -203,7 +203,7 @@ namespace LonghornBankWebApp.Controllers
             Message message = new Message();
             message.Date = DateTime.Today;
 
-            if(transaction.BankAccount != null)
+            if (transaction.BankAccount != null)
             {
                 message.Subject = "Dispute created by " + transaction.BankAccount.User.FullName;
                 message.Info = "A dispute has been created for transaction " + transaction.TransactionID + " by " + transaction.BankAccount.User.FullName + ". Please resolve the dispute.";
@@ -212,11 +212,11 @@ namespace LonghornBankWebApp.Controllers
             else if (transaction.StockPortfolio != null)
             {
                 message.Subject = "Dispute created by " + transaction.StockPortfolio.User.FullName;
-                message.Info = "A dispute has been created for transaction " + transaction.TransactionID + " by " + transaction.StockPortfolio.User.FullName + ". Please resolve the dispute.";
+                message.Info = "A dispute has been created for transaction #" + transaction.TransactionID + " by " + transaction.StockPortfolio.User.FullName + ". Please resolve the dispute.";
             }
 
-            
-            
+
+
             message.Sender = "Dispute System";
             message.Receiver = "All";
 
@@ -228,6 +228,18 @@ namespace LonghornBankWebApp.Controllers
 
             message.Admins = ActiveAdmins;
 
+            // notify user that dispute has been created
+            Message userMessage = new Message();
+            userMessage.Date = DateTime.Today;
+            userMessage.Subject = "Dispute created";
+            userMessage.Info = "Your dispute for transaction #" + transaction.TransactionID + " has been created. Please wait for an administrator to resolve the dispute.";
+            userMessage.Sender = "Dispute System";
+            userMessage.Receiver = u.Email;
+            userMessage.Admins = new List<AppUser>();
+            userMessage.Admins.Add(u);
+
+            
+            _context.Add(userMessage);
             _context.Add(message);
             _context.Add(dispute);
             _context.SaveChanges();
