@@ -9,6 +9,7 @@ A C# based MVC website using a SQL Server Database.
 - Employee
   - Email: a.taylor@longhornbank.neet | Password: nostalgic
 
-## Files
+## Links
+- [Live Website](https://longhornbanktrust.azurewebsites.net/)
 - [Seeding Data](https://docs.google.com/spreadsheets/d/1BGDKu35suQDCJtoVuJB_bfHXkfqeeJJ2/edit?usp=sharing&ouid=103498623239049888969&rtpof=true&sd=true)
 - [Requirements](https://drive.google.com/file/d/1TNSuNIw1mHEuCd42CXjUxoBO66P5geQ5/view?usp=sharing)
