@@ -47,5 +47,10 @@ namespace LonghornBankWebApp.Controllers
             return View();
         }
 
+        public IActionResult HowTo()
+        {
+            return View();
+        }
+
     }
 }
