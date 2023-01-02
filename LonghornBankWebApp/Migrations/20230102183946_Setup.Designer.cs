@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LonghornBankWebApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221217185310_Final")]
-    partial class Final
+    [Migration("20230102183946_Setup")]
+    partial class Setup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

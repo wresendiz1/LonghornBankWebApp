@@ -24,6 +24,23 @@ namespace LonghornBankWebApp.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> SeedAllAsync()
+        {
+            var result = await SeedRoles();
+            var result2 = await SeedPeople();
+            var result3 = SeedStockTypes();
+            var result4 = SeedStocks();
+            var result5 = SeedBankAccounts();
+            var result6 = SeedTransactions();
+            var result7 = SeedStockTransactions();
+            var result8 = SeedDisputes();
+
+            return View("Confirm");
+
+        }
+
+       
         public async Task<IActionResult> SeedRoles()
         {
             try

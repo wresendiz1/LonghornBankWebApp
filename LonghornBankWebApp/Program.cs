@@ -14,9 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-MailBee.Global.LicenseKey = "MN120-F33B3BD93B5C3BD03BDB8A151BAF-80EE";
+//MailBee.Global.LicenseKey = "MN120-F33B3BD93B5C3BD03BDB8A151BAF-80EE";
 
-String connectionString = "Server=tcp:thelonghornbank.database.windows.net,1433;Initial Catalog=LonghornBankandTrust;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+String connectionString = "Server=tcp:longhornbanktrust.database.windows.net,1433;Initial Catalog=longhornbank;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+
 
 //NOTE: This tells your application how to get a connection to the database
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));

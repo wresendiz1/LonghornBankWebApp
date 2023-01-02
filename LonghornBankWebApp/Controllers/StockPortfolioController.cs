@@ -304,7 +304,7 @@ namespace LonghornBankWebApp.Controllers
             return (stonks, stock_holdings);
         }
         
-        public IActionResult Index(string SearchString, string selected, string order, int id, string message, string bonus)
+        public async Task<IActionResult> Index(string SearchString, string selected, string order, int id, string message, string bonus)
         {
             
             // get the stock portfolio from the database
@@ -315,12 +315,12 @@ namespace LonghornBankWebApp.Controllers
 
             if(User.IsInRole("Customer"))
             {
-                stonks = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefault(r => r.User.UserName == User.Identity.Name);
+                stonks = await _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefaultAsync(r => r.User.UserName == User.Identity.Name);
             }
             
             if (User.IsInRole("Admin") || User.IsInRole("Employee"))
             {
-                stonks = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefault(r => r.StockPortfolioID == id);
+                stonks = await _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefaultAsync(r => r.StockPortfolioID == id);
             }
 
             if (stonks == null && User.IsInRole("Customer"))
@@ -340,11 +340,11 @@ namespace LonghornBankWebApp.Controllers
             List<StockTransaction> st = stonks.StockTransactions;
 
             // if the user actually entered something to search by
-            if (SearchString != "" && SearchString != null)
+            if (String.IsNullOrEmpty(SearchString) == false)
             {
                 foreach (Transaction transaction in t)
                 {
-                    if (transaction.TransactionNotes != "" && transaction.TransactionNotes != null)
+                    if (String.IsNullOrEmpty(transaction.TransactionNotes) == false)
                     {
                         if (transaction.TransactionNotes.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
                         {
@@ -355,7 +355,7 @@ namespace LonghornBankWebApp.Controllers
 
                 foreach (StockTransaction transaction in st)
                 {
-                    if (transaction.StockTransactionNotes != "" && transaction.StockTransactionNotes != null)
+                    if (String.IsNullOrEmpty(transaction.StockTransactionNotes) == false)
                     {
                         if (transaction.StockTransactionNotes.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
                         {
