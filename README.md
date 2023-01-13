@@ -5,9 +5,10 @@ A C# based MVC website using a SQL Server Database.
 - Customer
   - Email: cbaker@freezing.co.uk | Password: gazing
 - Admin
-  - Email: t.jacobs@longhornbank.neet | Password: society
-- Employee
   - Email: a.taylor@longhornbank.neet | Password: nostalgic
+- Employee
+  - Email: t.jacobs@longhornbank.neet | Password: society
+    
 
 ## Links
 - [Live Website](https://longhornbanktrust.azurewebsites.net/)
