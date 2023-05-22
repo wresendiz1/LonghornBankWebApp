@@ -6,8 +6,6 @@ using LonghornBankWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using LonghornBankWebApp.Utilities;
-using MailBee.ImapMail;
-using MailBee.Mime;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -316,61 +314,6 @@ namespace LonghornBankWebApp.Controllers
         }
 
 
-        public IActionResult Inbox()
-        {
-            // TODO: Retrieve emails from IMAP
-
-            Imap imp = new();
-            imp.Connect("imap.gmail.com", 993);
-            imp.Login("longhornbanktrust@gmail.com", "uddtvaxvzyhsmwee");
-            
-        
-
-            imp.ExamineFolder("INBOX");
-            List<Message> messages = new();
-
-            if (imp.MessageCount > 1)
-            
-            {
-
-                int max = imp.MessageCount;
-
-                
-                for (int i = 1; i <= max; i++)
-                {
-                    MailMessage m = imp.DownloadEntireMessage(i, false);
-                    Message msg = new()
-                    {
-                        Receiver = m.To,
-                        Sender = m.From,
-                        Subject = m.Subject,
-                        Date = m.Date,
-                        Info = m.BodyPlainText,
-                        IsRead = false
-                    };
-
-                    messages.Add(msg);
-
-
-
-                }
-
-                imp.Disconnect();
-
-                messages = messages.Where(m => m.Subject.Contains("Team 33")).ToList();
-
-                return View(messages);
-                
-            }   
-
-            else
-            {
-                imp.Disconnect();
-                return View();
-            }
-
-
-        }
 
 
         

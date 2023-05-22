@@ -13,7 +13,7 @@ namespace LonghornBankWebApp.Utilities
 
             UInt32 intMaxOrderNumber;
             UInt32 intNextOrderNumber;
-            if (_context.BankAccounts.Count() == 0 && _context.StockPortfolios.Count() == 0)
+            if (!_context.BankAccounts.Any() && !_context.StockPortfolios.Any())
             {
                 intMaxOrderNumber = START_NUMBER;
             }
@@ -51,7 +51,7 @@ namespace LonghornBankWebApp.Utilities
 
             
 
-            if (_context.Transactions.Count() == 0 && _context.StockTransactions.Count() == 0)
+            if (!_context.Transactions.Any() && !_context.StockTransactions.Any())
             {
                 intMaxTNumber = START_NUMBER;
             }

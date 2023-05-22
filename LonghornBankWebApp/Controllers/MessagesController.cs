@@ -70,7 +70,7 @@ namespace LonghornBankWebApp.Controllers
             //AppUser All = new AppUser() { Email = "All", FirstName = "All", LastName = "Admins" };
             //ActiveAdmins.Add(All);
 
-            SelectList AllAdminsList = new SelectList(ActiveAdmins.OrderBy(u => u.FirstName), "Email", "FullName");
+            SelectList AllAdminsList = new(ActiveAdmins.OrderBy(u => u.FirstName), "Email", "FullName");
 
             return AllAdminsList;
         }
@@ -116,8 +116,10 @@ namespace LonghornBankWebApp.Controllers
                         ViewBag.Admins = GetAllAdmins();
                         return View(message);
                     }
-                    message.Admins = new List<AppUser>();
-                    message.Admins.Add(user);
+                    message.Admins = new List<AppUser>
+                    {
+                        user
+                    };
 
                     message.Receiver = user.FullName;
                 }
@@ -139,7 +141,7 @@ namespace LonghornBankWebApp.Controllers
 
             List<Message> Pending = _context.Messages.Where(m => m.Admins.Contains(user)).ToList();
             
-            return Pending.Count();
+            return Pending.Count;
         }
 
         public async Task<IActionResult> Read(int? id)
