@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -24,6 +23,7 @@ namespace LonghornBankWebApp.DAL
             builder.Entity<AppUser>().HasOne(sp => sp.StockPortfolio).WithOne(u => u.User).HasForeignKey<StockPortfolio>("AppUserForeignKey");
             //builder.Entity<AppUser>().HasMany(b => b.BankAccounts).WithOne(u => u.User);
 
+            // builder.Entity<BankAccount>().Property(ba => ba.BankAccountBalance).HasPrecision(18, 2).HasColumnType("decimal(18,2)");
             base.OnModelCreating(builder);
         }
 

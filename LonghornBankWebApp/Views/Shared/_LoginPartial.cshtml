@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity;
-@if (User.Identity.IsAuthenticated)
+﻿@if (User.Identity.IsAuthenticated)
 {
     <form asp-action="LogOff" asp-controller="Account" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right ms-auto">

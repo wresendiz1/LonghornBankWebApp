@@ -9,8 +9,6 @@ using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using System.Collections;
 using LonghornBankWebApp.Models.ViewModels;
-using IronXL.Styles;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Authorization;
 using LonghornBankWebApp.Utilities;
 using Microsoft.AspNetCore.Identity;
@@ -30,24 +28,24 @@ namespace LonghornBankWebApp.Controllers
 
         }
 
-        private ArrayList GetOrderedQuery(ArrayList queried, String selected, String order)
+        private ArrayList GetOrderedQuery(ArrayList queried, string selected, string order)
         {
-            List<Int32> ordered = new List<Int32>();
+            List<int> ordered = new();
 
             if (selected == "Number")
             {
-                List<Int32> number_ordered = new List<Int32>();
+                List<int> number_ordered = new();
 
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        number_ordered.Add(((Transaction)item).TransactionNumber);
+                        number_ordered.Add(tr.TransactionNumber);
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction tr2)
                     {
-                        number_ordered.Add(((StockTransaction)item).StockTransactionNumber);
+                        number_ordered.Add(tr2.StockTransactionNumber);
                     }
                 }
 
@@ -68,29 +66,29 @@ namespace LonghornBankWebApp.Controllers
             else if (selected == "Amount")
             {
                 // for storing
-                IDictionary<Int32, decimal> amount_ordered = new Dictionary<Int32, decimal>();
+                IDictionary<int, decimal> amount_ordered = new Dictionary<int, decimal>();
 
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        amount_ordered.Add(((Transaction)item).TransactionNumber, ((Transaction)item).TransactionAmount);
+                        amount_ordered.Add(tr.TransactionNumber, tr.TransactionAmount);
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction str)
                     {
-                        amount_ordered.Add(((StockTransaction)item).StockTransactionNumber, ((StockTransaction)item).TotalPrice);
+                        amount_ordered.Add(str.StockTransactionNumber, str.TotalPrice);
                     }
                 }
 
                 if (order == "Descending")
                 {
-                    amount_ordered.OrderByDescending(x => x.Value);
+                     amount_ordered = amount_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 else
                 {
-                    amount_ordered.OrderBy(x => x.Value);
+                    amount_ordered = amount_ordered.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 ordered = amount_ordered.Keys.ToList();
@@ -98,29 +96,29 @@ namespace LonghornBankWebApp.Controllers
 
             else if (selected == "Type")
             {
-                IDictionary<Int32, string> type_ordered = new Dictionary<Int32, string>();
+                IDictionary<int, string> type_ordered = new Dictionary<int, string>();
 
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        type_ordered.Add(((Transaction)item).TransactionNumber, ((Transaction)item).TransactionType.ToString());
+                        type_ordered.Add(tr.TransactionNumber, tr.TransactionType.ToString());
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction str)
                     {
-                        type_ordered.Add(((StockTransaction)item).StockTransactionNumber, ((StockTransaction)item).StockTransactionType.ToString());
+                        type_ordered.Add(str.StockTransactionNumber, str.StockTransactionType.ToString());
                     }
                 }
 
                 if (order == "Descending")
                 {
-                    type_ordered.OrderByDescending(x => x.Value);
+                    type_ordered = type_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 else
                 {
-                    type_ordered.OrderBy(x => x.Value);
+                    type_ordered = type_ordered.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
 
@@ -130,27 +128,27 @@ namespace LonghornBankWebApp.Controllers
 
             else if (selected == "Notes")
             {
-                IDictionary<Int32, string> notes_ordered = new Dictionary<Int32, string>();
+                IDictionary<int, string> notes_ordered = new Dictionary<int, string>();
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        notes_ordered.Add(((Transaction)item).TransactionNumber, ((Transaction)item).TransactionNotes);
+                        notes_ordered.Add(tr.TransactionNumber, tr.TransactionNotes);
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction str)
                     {
-                        notes_ordered.Add(((StockTransaction)item).StockTransactionNumber, ((StockTransaction)item).StockTransactionNotes);
+                        notes_ordered.Add(str.StockTransactionNumber, str.StockTransactionNotes);
                     }
                 }
 
                 if (order == "Descending")
                 {
-                    notes_ordered.OrderByDescending(x => x.Value);
+                    notes_ordered = notes_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
                 else
                 {
-                    notes_ordered.OrderBy(x => x.Value);
+                    notes_ordered = notes_ordered.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 ordered = notes_ordered.Keys.ToList();
@@ -158,27 +156,27 @@ namespace LonghornBankWebApp.Controllers
 
             else if (selected == "Date")
             {
-                IDictionary<Int32, DateTime> date_ordered = new Dictionary<Int32, DateTime>();
+                IDictionary<int, DateTime> date_ordered = new Dictionary<int, DateTime>();
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        date_ordered.Add(((Transaction)item).TransactionNumber, ((Transaction)item).TransactionDate);
+                        date_ordered.Add(tr.TransactionNumber, tr.TransactionDate);
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction str)
                     {
-                        date_ordered.Add(((StockTransaction)item).StockTransactionNumber, ((StockTransaction)item).TransactionDate);
+                        date_ordered.Add(str.StockTransactionNumber, str.TransactionDate);
                     }
                 }
 
                 if (order == "Descending")
                 {
-                    date_ordered.OrderByDescending(x => x.Value);
+                    date_ordered = date_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
                 else
                 {
-                    date_ordered.OrderBy(x => x.Value);
+                    date_ordered = date_ordered.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 ordered = date_ordered.Keys.ToList();
@@ -191,25 +189,25 @@ namespace LonghornBankWebApp.Controllers
             {
                 foreach (var item in queried)
                 {
-                    if (item is Transaction)
+                    if (item is Transaction tr)
                     {
-                        ordered.Add(((Transaction)item).TransactionNumber);
+                        ordered.Add(tr.TransactionNumber);
                     }
 
-                    if (item is StockTransaction)
+                    if (item is StockTransaction str)
                     {
-                        ordered.Add(((StockTransaction)item).StockTransactionNumber);
+                        ordered.Add(str.StockTransactionNumber);
                     }
                 }
             }
 
 
-            Transaction tadd = new Transaction();
-            StockTransaction stadd = new StockTransaction();
+            Transaction tadd = new();
+            StockTransaction stadd = new();
 
             var queried_ordered = new ArrayList();
 
-            foreach (Int32 tnum in ordered)
+            foreach (int tnum in ordered)
             {
                 tadd = null;
                 stadd = null;
@@ -230,19 +228,19 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: StockPortfolio
-        public static (StockPortfolio, IDictionary<Stock, Int32>) UpdatePortfolio(StockPortfolio stonks, AppDbContext _context)
+        public static (StockPortfolio, IDictionary<Stock, int>) UpdatePortfolio(StockPortfolio stonks, AppDbContext _context)
         {
-            IDictionary<Int32, Int32> holdings = GetHoldings(stonks);
+            IDictionary<int, int> holdings = GetHoldings(stonks);
             decimal sum = 0;
             int ordinary = 0;
             bool index = false;
             bool mutual = false;
-            Stock temp = new Stock();
+            Stock temp = new();
             
 
-            IDictionary<Stock, Int32> stock_holdings = new Dictionary<Stock, Int32>();
+            IDictionary<Stock, int> stock_holdings = new Dictionary<Stock, int>();
 
-            foreach (KeyValuePair<Int32, Int32> holding in holdings)
+            foreach (KeyValuePair<int, int> holding in holdings)
             {
                 sum += _context.Stocks.Find(holding.Key).CurrentPrice * holding.Value;
                 temp = _context.Stocks.Include(s=>s.StockType).FirstOrDefault(s=> s.StockID == holding.Key);
@@ -308,7 +306,7 @@ namespace LonghornBankWebApp.Controllers
         {
             
             // get the stock portfolio from the database
-            StockPortfolio stonks = new StockPortfolio();
+            StockPortfolio stonks = new();
 
             ViewBag.Message = message;
             ViewBag.bonus = bonus;
@@ -328,7 +326,7 @@ namespace LonghornBankWebApp.Controllers
                 return RedirectToAction("Create");
             }
 
-            IDictionary<Stock, Int32> holdings = new Dictionary<Stock, Int32>();
+            IDictionary<Stock, int> holdings = new Dictionary<Stock, int>();
 
             (stonks, holdings) = UpdatePortfolio(stonks, _context);
 
@@ -340,11 +338,11 @@ namespace LonghornBankWebApp.Controllers
             List<StockTransaction> st = stonks.StockTransactions;
 
             // if the user actually entered something to search by
-            if (String.IsNullOrEmpty(SearchString) == false)
+            if (string.IsNullOrEmpty(SearchString) == false)
             {
                 foreach (Transaction transaction in t)
                 {
-                    if (String.IsNullOrEmpty(transaction.TransactionNotes) == false)
+                    if (string.IsNullOrEmpty(transaction.TransactionNotes) == false)
                     {
                         if (transaction.TransactionNotes.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
                         {
@@ -355,7 +353,7 @@ namespace LonghornBankWebApp.Controllers
 
                 foreach (StockTransaction transaction in st)
                 {
-                    if (String.IsNullOrEmpty(transaction.StockTransactionNotes) == false)
+                    if (string.IsNullOrEmpty(transaction.StockTransactionNotes) == false)
                     {
                         if (transaction.StockTransactionNotes.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
                         {
@@ -384,9 +382,9 @@ namespace LonghornBankWebApp.Controllers
             }
 
             ViewBag.query = queried_ordered;
-            ViewBag.sortby = getSortBy();
+            ViewBag.sortby = GetSortBy();
             ViewBag.order = GetOrder();
-            ViewBag.total = t.Count() + st.Count();
+            ViewBag.total = t.Count + st.Count;
 
 
             decimal withScheduled = 0;
@@ -417,26 +415,26 @@ namespace LonghornBankWebApp.Controllers
         }
 
 
-        public IActionResult CalcBonus(Int32 id)
+        public IActionResult CalcBonus(int id)
         {
             StockPortfolio stonk = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefault(r => r.StockPortfolioID == id);
             decimal bonus = (stonk.PortfolioValue-stonk.CashValuePortion) * 0.1m;
 
             //ViewBag.bonus = bonus;
             //return View(stonk);
-            
-            String bonus1 = "You have earned a bonus of $" + bonus + " !";
+
+            string bonus1 = "You have earned a bonus of $" + bonus + " !";
             return RedirectToAction("Index", new { bonus = bonus1 });
 
         }
 
-        public IActionResult DetailedSearch(Int32 id)
+        public IActionResult DetailedSearch(int id)
         {
-            SearchViewModel svm = new SearchViewModel();
+            SearchViewModel svm = new();
 
-            List<SelectListItem> sortby = new List<SelectListItem>();
+            List<SelectListItem> sortby = new();
 
-            ViewBag.sortby = getSortBy();
+            ViewBag.sortby = GetSortBy();
 
             ViewBag.order = GetOrder();
 
@@ -444,10 +442,10 @@ namespace LonghornBankWebApp.Controllers
             return View(svm);
         }
 
-        public IActionResult DisplaySearchResults(SearchViewModel svm, String? selected, String? order, Int32 id)
+        public IActionResult DisplaySearchResults(SearchViewModel svm, string selected, string order, int id)
         {
 
-            List<StockPortfolio> stonks = new List<StockPortfolio>();
+            List<StockPortfolio> stonks = new();
             if (User.IsInRole("Customer"))
             {
                 stonks=_context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).Where(r => r.User.UserName == User.Identity.Name).ToList();
@@ -630,12 +628,12 @@ namespace LonghornBankWebApp.Controllers
             var queried_ordered = GetOrderedQuery(queried, selected, order);
 
             ViewBag.query = queried_ordered;
-            ViewBag.sortby = getSortBy();
+            ViewBag.sortby = GetSortBy();
             ViewBag.order = GetOrder();
             ViewBag.total = stonks[0].Transactions.Count + stonks[0].StockTransactions.Count;
             ViewBag.id = id;
             
-            IDictionary<Stock, Int32> holdings = new Dictionary<Stock, Int32>();
+            IDictionary<Stock, int> holdings = new Dictionary<Stock, int>();
             (stonks[0], holdings) = UpdatePortfolio(stonks[0], _context);
             ViewBag.holdings = holdings;
 
@@ -643,29 +641,31 @@ namespace LonghornBankWebApp.Controllers
 
         }
 
-        private List<SelectListItem> getSortBy()
+        private static List<SelectListItem> GetSortBy()
         {
-            
-            List<SelectListItem> sortby = new List<SelectListItem>();
 
-            sortby.Add(new SelectListItem(text: "Transaction Number", value: "Number"));
-            sortby.Add(new SelectListItem(text: "Transaction Type", value: "Type"));
-            sortby.Add(new SelectListItem(text: "Transaction Notes", value: "Notes"));
-            sortby.Add(new SelectListItem(text: "Transaction Amount", value: "Amount"));
+            List<SelectListItem> sortby = new()
+            {
+                new SelectListItem(text: "Transaction Number", value: "Number"),
+                new SelectListItem(text: "Transaction Type", value: "Type"),
+                new SelectListItem(text: "Transaction Notes", value: "Notes"),
+                new SelectListItem(text: "Transaction Amount", value: "Amount"),
 
 
-            sortby.Add(new SelectListItem(text: "Transaction Date", value: "Date"));
+                new SelectListItem(text: "Transaction Date", value: "Date")
+            };
 
             return sortby;
 
         }
 
-        private List<SelectListItem> GetOrder()
+        private static List<SelectListItem> GetOrder()
         {
-            List<SelectListItem> orderList = new List<SelectListItem>();
-
-            orderList.Add(new SelectListItem(text: "Descending", value: "Descending"));
-            orderList.Add(new SelectListItem(text: "Ascending", value: "Ascending"));
+            List<SelectListItem> orderList = new()
+            {
+                new SelectListItem(text: "Descending", value: "Descending"),
+                new SelectListItem(text: "Ascending", value: "Ascending")
+            };
 
             return orderList;
         }
@@ -686,28 +686,28 @@ namespace LonghornBankWebApp.Controllers
                 return NotFound();
             }
 
-            ViewBag.holdings = updateBalanced(stockPortfolio, _context);
+            ViewBag.holdings = UpdateBalanced(stockPortfolio, _context);
 
             return View(stockPortfolio);
         }
 
 
-        public static IDictionary<Stock, Int32> updateBalanced(StockPortfolio stockPortfolio, AppDbContext _context)
+        public static IDictionary<Stock, int> UpdateBalanced(StockPortfolio stockPortfolio, AppDbContext _context)
         {
-            IDictionary<Int32, Int32> holdings_dict = GetHoldings(stockPortfolio);
+            IDictionary<int, int> holdings_dict = GetHoldings(stockPortfolio);
 
 
 
-            IDictionary<Stock, Int32> holdings = new Dictionary<Stock, Int32>();
+            IDictionary<Stock, int> holdings = new Dictionary<Stock, int>();
 
-            Stock temp = new Stock();
+            Stock temp = new();
 
             bool index = false;
             bool mutual = false;
             int ordinary = 0;
             bool changed = false;
 
-            foreach (Int32 stockID in holdings_dict.Keys)
+            foreach (int stockID in holdings_dict.Keys)
             {
 
                 temp = _context.Stocks.Find(stockID);
@@ -750,14 +750,14 @@ namespace LonghornBankWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Decimal init_depo, String name)
+        public IActionResult Create(decimal init_depo, string name)
         {
 
             int count = _context.StockPortfolios.Where(sp => sp.User.Email == User.Identity.Name).Count();
 
             if (count >= 1)
             {
-                return View("Error", new String[] { "You can only have one stock portfolio!" });
+                return View("Error", new string[] { "You can only have one stock portfolio!" });
             }
             if (init_depo <= 0)
             {
@@ -765,28 +765,28 @@ namespace LonghornBankWebApp.Controllers
                 return View("Create");
             }
 
-            return RedirectToAction("Confirm", new { init_depo = init_depo, name = name });
+            return RedirectToAction("Confirm", new { init_depo, name });
 
 
         }
-        public IActionResult Confirm(decimal init_depo, String name)
+        public IActionResult Confirm(decimal init_depo, string name)
         {
             ViewBag.init_depo = init_depo;
             ViewBag.name = name;
             return View();
         }
 
-        public IActionResult CreatePortfolio(Decimal init_depo, String name, bool confirm)
+        public IActionResult CreatePortfolio(decimal init_depo, string name, bool confirm)
         {
             int count = _context.StockPortfolios.Where(sp => sp.User.Email == User.Identity.Name).Count();
 
             if (count >= 1)
             {
-                return View("Error", new String[] { "You can only have one stock portfolio!" });
+                return View("Error", new string[] { "You can only have one stock portfolio!" });
             }
 
             
-            StockPortfolio sp = new StockPortfolio();
+            StockPortfolio sp = new();
 
 
             if (name == "" || name == null)
@@ -799,10 +799,12 @@ namespace LonghornBankWebApp.Controllers
 
             sp.PortfolioNumber = Utilities.GenerateNextNum.GetNextAccountNum(_context);
 
-            Transaction id = new Transaction();
-            id.StockPortfolio = sp;
-            id.TransactionAmount = init_depo;
-            id.TransactionDate = DateTime.Today;
+            Transaction id = new()
+            {
+                StockPortfolio = sp,
+                TransactionAmount = init_depo,
+                TransactionDate = DateTime.Today
+            };
 
 
             if (id.TransactionAmount > 5000)
@@ -812,20 +814,22 @@ namespace LonghornBankWebApp.Controllers
                 "Note: Your initial deposit is currenlty being procesesd, check back within 2-3 business days");
 
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
                     Info = "Congratulations on creating your account! Note: Your initial deposit was over $5,000 and will be processed by an admin within 2-3 business days.",
                     Subject = "Stock Portfolio has been created",
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = sp.User.Email
+                    Receiver = sp.User.Email,
+                    Admins = new List<AppUser>
+                {
+                    sp.User
+                }
                 };
-                m.Admins = new List<AppUser>();
-                m.Admins.Add(sp.User);
                 _context.Add(m);
 
                 // Create notification for admins
-                Message m2 = new Message()
+                Message m2 = new()
                 {
                     Info = "An initial deposit of over $5,000 by " + sp.User.FullName + ". Please resolve the dispute.",
                     Subject = "Deposit that needs approval created by " + sp.User.FullName,
@@ -849,16 +853,18 @@ namespace LonghornBankWebApp.Controllers
                 "Log in and start buying stocks!");
 
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
                     Info = "Congratulations on creating your account! Your initial deposit was under $5,000 and has been processed.",
                     Subject = "Stock Portfolio has been created",
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = sp.User.Email
+                    Receiver = sp.User.Email,
+                    Admins = new List<AppUser>
+                {
+                    sp.User
+                }
                 };
-                m.Admins = new List<AppUser>();
-                m.Admins.Add(sp.User);
                 _context.Add(m);
                 
                 sp.CashValuePortion += id.TransactionAmount;
@@ -921,7 +927,7 @@ namespace LonghornBankWebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, String portfolioName)
+        public IActionResult Edit(int id, string portfolioName)
         {
 
             StockPortfolio sp = _context.StockPortfolios.Where(sp => sp.StockPortfolioID == id).Include(sp => sp.User).FirstOrDefault();
@@ -983,9 +989,9 @@ namespace LonghornBankWebApp.Controllers
         }
 
 
-        private static IDictionary<Int32, Int32> GetHoldings(StockPortfolio stonks)
+        private static IDictionary<int, int> GetHoldings(StockPortfolio stonks)
         {
-            IDictionary<Int32, Int32> holdings = new Dictionary<Int32, Int32>();
+            IDictionary<int, int> holdings = new Dictionary<int, int>();
 
             foreach (StockTransaction st in stonks.StockTransactions)
             {
@@ -993,7 +999,7 @@ namespace LonghornBankWebApp.Controllers
                 {
 
                     // Increment the number of shares of the stock that was purchased
-                    if (holdings.Keys.Contains(st.Stock.StockID))
+                    if (holdings.ContainsKey(st.Stock.StockID))
                     {
                         holdings[st.Stock.StockID] += st.NumberOfShares;
                     }
@@ -1012,7 +1018,7 @@ namespace LonghornBankWebApp.Controllers
                 }
             }
 
-            foreach (KeyValuePair<Int32,Int32> kp in holdings)
+            foreach (KeyValuePair<int, int> kp in holdings)
             {
                 if (kp.Value == 0)
                 {

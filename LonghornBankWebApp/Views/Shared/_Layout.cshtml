@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Identity
-@using LonghornBankWebApp.Controllers
 @using LonghornBankWebApp.Models
 @inject UserManager<AppUser> userManager;
 @inject IHttpContextAccessor _context;
@@ -15,8 +14,6 @@
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet"/>
     <!-- Custom Format-->
     <link href="~/css/site.css" rel="stylesheet" />
-    <link href="~/css/app.min.css" rel="stylesheet" />
-    <script src="~/js/app.min.js"></script>
 
     
     
@@ -41,9 +38,6 @@
             <!--everything in this section will collapse when the screen is small -->
             <div class="collapse navbar-collapse" id="nav-content">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!--TODO: Consider what navbar should have -->
-
-
                     @if (User.IsInRole("Customer") && @user.UserHasAccount)
                     {
                         <li class="nav-item">
@@ -193,22 +187,25 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     @RenderSection("Scripts", required: false)
     
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("GetNumberOfMessages", "Messages")',
-                type: 'GET',
-                success: function (data) {
-                    if (data > 0) {
-                        $(".badge").text(data);
-                    }
-                   
-                }
-            });
+    @if(User.Identity.IsAuthenticated){
+        <script type="text/javascript">
+                $(document).ready(function () {
+                    $.ajax({
+                        url: '@Url.Action("GetNumberOfMessages", "Messages")',
+                        type: 'GET',
+                        success: function (data) {
+                            if (data > 0) {
+                                $(".badge").text(data);
+                            }
+                        
+                        }
+                    });
 
-        });
+                });
 
-    </script>
+        </script>
+    }
+    
     <footer class="text-lg-start">
         <div class="text-center text-white p-3 bg-secondary">
             © 2022 Longhorn Bank & Trust Corp

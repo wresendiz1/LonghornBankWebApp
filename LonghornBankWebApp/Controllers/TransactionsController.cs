@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using LonghornBankWebApp.Utilities;
 using LonghornBankWebApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -28,9 +23,9 @@ namespace LonghornBankWebApp.Controllers
         }
 
         // GET: Transactions
-        public IActionResult Index(string SearchString, String? selected, String? order)
+        public IActionResult Index(string SearchString, string selected, string order)
         {
-            List<Transaction> all = new List<Transaction>();
+            List<Transaction> all = new();
             if (User.IsInRole("Customer"))
             {
                 all = _context.Transactions.Include(t => t.BankAccount).Include(t => t.StockPortfolio).Where(t => t.BankAccount.User.UserName == User.Identity.Name || t.StockPortfolio.User.UserName == User.Identity.Name).ToList();
@@ -44,10 +39,10 @@ namespace LonghornBankWebApp.Controllers
 
 
 
-            ViewBag.total = all.Count();
-            List<Transaction> queried = new List<Transaction>();
+            ViewBag.total = all.Count;
+            List<Transaction> queried = new();
 
-            if (String.IsNullOrEmpty(SearchString) == false)
+            if (string.IsNullOrEmpty(SearchString) == false)
             {
                 foreach (Transaction t in all)
                 {
@@ -125,20 +120,22 @@ namespace LonghornBankWebApp.Controllers
                 }
             }
 
-            List<SelectListItem> sortby = new List<SelectListItem>();
-
-            sortby.Add(new SelectListItem(text: "Transaction Number", value: "Number"));
-            sortby.Add(new SelectListItem(text: "Transaction Type", value: "Type"));
-            sortby.Add(new SelectListItem(text: "Transaction Notes", value: "Notes"));
-            sortby.Add(new SelectListItem(text: "Transaction Amount", value: "Amount"));
+            List<SelectListItem> sortby = new()
+            {
+                new SelectListItem(text: "Transaction Number", value: "Number"),
+                new SelectListItem(text: "Transaction Type", value: "Type"),
+                new SelectListItem(text: "Transaction Notes", value: "Notes"),
+                new SelectListItem(text: "Transaction Amount", value: "Amount")
+            };
 
             ViewBag.sortby = sortby;
 
 
-            List<SelectListItem> orderList = new List<SelectListItem>();
-
-            orderList.Add(new SelectListItem(text: "Descending", value: "Descending"));
-            orderList.Add(new SelectListItem(text: "Ascending", value: "Ascending"));
+            List<SelectListItem> orderList = new()
+            {
+                new SelectListItem(text: "Descending", value: "Descending"),
+                new SelectListItem(text: "Ascending", value: "Ascending")
+            };
 
             ViewBag.order = orderList;
 
@@ -165,10 +162,12 @@ namespace LonghornBankWebApp.Controllers
 
             ViewBag.displayDispute = displayDispute;
 
-            TransactionDispute td = new TransactionDispute();
-            td.transaction = transaction;
+            TransactionDispute td = new()
+            {
+                transaction = transaction
+            };
 
-            Dispute d = new Dispute();
+            Dispute d = new();
             td.dispute = d;
 
             ViewBag.disputable = true;
@@ -202,7 +201,7 @@ namespace LonghornBankWebApp.Controllers
                 return RedirectToAction("Index", "BankAccounts", new { message = "Your account is not active. Please contact an administrator to activate your account." });
 
             }
-            Transaction deposit = new Transaction();
+            Transaction deposit = new();
             ViewBag.SelectedBankAccount = 0;
             ViewBag.Accts = GetAllBankAccounts();
             return View(deposit);
@@ -262,10 +261,10 @@ namespace LonghornBankWebApp.Controllers
 
 
         [HttpPost]
-        public IActionResult CreateDeposit(Transaction transaction, UInt32 SelectedAccountNum, bool? modify)
+        public IActionResult CreateDeposit(Transaction transaction, uint SelectedAccountNum, bool? modify)
         {
             bool isPortfolio = false;
-            StockPortfolio dbStockPortfolio = new StockPortfolio();
+            StockPortfolio dbStockPortfolio = new();
 
             if (transaction.TransactionDate < DateTime.Today)
             {
@@ -368,12 +367,14 @@ namespace LonghornBankWebApp.Controllers
                 // extra func only needed for disputes
                 
                 var fullname = transaction.BankAccount == null ? transaction.StockPortfolio.User.FullName : transaction.BankAccount.User.FullName;
-                Message message = new Message();
-                message.Date = DateTime.Today;
-                message.Subject = "Deposit that needs approval created by " + fullname;
-                message.Info = "A deposit of over $5,000 by " + fullname + ". Please resolve the dispute.";
-                message.Sender = "Deposit System";
-                message.Receiver = "All";
+                Message message = new()
+                {
+                    Date = DateTime.Today,
+                    Subject = "Deposit that needs approval created by " + fullname,
+                    Info = "A deposit of over $5,000 by " + fullname + ". Please resolve the dispute.",
+                    Sender = "Deposit System",
+                    Receiver = "All"
+                };
 
                 List<AppUser> AllAdmins = _userManager.GetUsersInRoleAsync("Admin").Result.ToList();
 
@@ -387,13 +388,15 @@ namespace LonghornBankWebApp.Controllers
 
 
                 // notify user that their deposit is pending
-                Message userMessage = new Message();
-                userMessage.Date = DateTime.Today;
-                userMessage.Subject = "Deposit Pending";
-                userMessage.Info = "Your deposit of $" + transaction.TransactionAmount + " is pending. An administrator will resolve the transaction.";
-                userMessage.Sender = "Deposit System";
-                userMessage.Receiver = u.Email;
-                userMessage.Admins = new List<AppUser>();
+                Message userMessage = new()
+                {
+                    Date = DateTime.Today,
+                    Subject = "Deposit Pending",
+                    Info = "Your deposit of $" + transaction.TransactionAmount + " is pending. An administrator will resolve the transaction.",
+                    Sender = "Deposit System",
+                    Receiver = u.Email,
+                    Admins = new List<AppUser>()
+                };
                 userMessage.Admins.Add(u);
                 _context.Add(userMessage);
             }
@@ -453,15 +456,17 @@ namespace LonghornBankWebApp.Controllers
                 return RedirectToAction("Index", "BankAccounts", new { message = "Your account is not active. Please contact an administrator to activate your account." });
 
             }
-            Transaction withdrawal = new Transaction();
-            withdrawal.TransactionType = TransactionTypes.Withdrawal;
+            Transaction withdrawal = new()
+            {
+                TransactionType = TransactionTypes.Withdrawal
+            };
             ViewBag.Accts = GetAllBankAccounts();
             ViewBag.DropDown = GetTransferDropDown();
             return View(withdrawal);
         }
 
         [HttpPost]
-        public IActionResult CreateWithdrawal(Transaction transaction, UInt32? SelectedAccountNum, Boolean? include)
+        public IActionResult CreateWithdrawal(Transaction transaction, uint? SelectedAccountNum, bool? include)
         {
 
             StockPortfolio dbStockPortfolio = _context.StockPortfolios.Include(b => b.User).Include(b => b.Transactions).FirstOrDefault(b => b.PortfolioNumber == SelectedAccountNum && b.User.Email == User.Identity.Name);
@@ -624,14 +629,16 @@ namespace LonghornBankWebApp.Controllers
                 }
 
 
-                Transaction fee = new Transaction();
-                fee.TransactionType = TransactionTypes.Fee;
-                fee.BankAccount = transaction.BankAccount;
-                fee.TransactionAmount = -30;
-                fee.TransactionDate = transaction.TransactionDate;
-                fee.TransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1;
-                fee.TransactionNotes = "Fee for transaction " + transaction.TransactionNumber.ToString();
-                fee.TransactionStatus = TransactionStatuses.Approved;
+                Transaction fee = new()
+                {
+                    TransactionType = TransactionTypes.Fee,
+                    BankAccount = transaction.BankAccount,
+                    TransactionAmount = -30,
+                    TransactionDate = transaction.TransactionDate,
+                    TransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1,
+                    TransactionNotes = "Fee for transaction " + transaction.TransactionNumber.ToString(),
+                    TransactionStatus = TransactionStatuses.Approved
+                };
 
                 dbBankAccount.BankAccountBalance += fee.TransactionAmount;
 
@@ -657,15 +664,17 @@ namespace LonghornBankWebApp.Controllers
                 return RedirectToAction("Index", "BankAccounts", new { message = "Your account is not active. Please contact an administrator to activate your account." });
 
             }
-            Transaction transfer = new Transaction();
-            transfer.TransactionType = TransactionTypes.Transfer;
+            Transaction transfer = new()
+            {
+                TransactionType = TransactionTypes.Transfer
+            };
 
             ViewBag.DropDown = GetTransferDropDown();
             return View(transfer);
         }
 
         [HttpPost]
-        public IActionResult CreateTransfer(Transaction deposit, UInt32 SelectedFromAccount, UInt32 SelectedToAccount, bool? include, bool? modify)
+        public IActionResult CreateTransfer(Transaction deposit, uint SelectedFromAccount, uint SelectedToAccount, bool? include, bool? modify)
         {
             if (SelectedFromAccount == SelectedToAccount)
             {
@@ -726,9 +735,11 @@ namespace LonghornBankWebApp.Controllers
             }
 
 
-            Transaction withdrawal = new Transaction();
-            withdrawal.TransactionAmount = deposit.TransactionAmount;
-            withdrawal.TransactionDate = deposit.TransactionDate;
+            Transaction withdrawal = new()
+            {
+                TransactionAmount = deposit.TransactionAmount,
+                TransactionDate = deposit.TransactionDate
+            };
 
             StockPortfolio dbStockPortfolioFrom = _context.StockPortfolios.FirstOrDefault(sp => sp.PortfolioNumber == SelectedFromAccount && sp.User.Email == User.Identity.Name);
             BankAccount dbBankAccountFrom = _context.BankAccounts.FirstOrDefault(ba => ba.BankAccountNumber == SelectedFromAccount && ba.User.Email == User.Identity.Name);
@@ -870,7 +881,7 @@ namespace LonghornBankWebApp.Controllers
         //}
 
 
-        public (BankAccount, Transaction) CreateWithdrawalTransferAccount(Transaction transaction, BankAccount dbBankAccount, Boolean? include)
+        public (BankAccount, Transaction) CreateWithdrawalTransferAccount(Transaction transaction, BankAccount dbBankAccount, bool? include)
         {
             // set known amounts
             transaction.TransactionNumber = GenerateNextNum.GetNextTransactionNum(_context);
@@ -1038,13 +1049,13 @@ namespace LonghornBankWebApp.Controllers
         private List<SelectListItem> GetTransferDropDown()
         {
             List<BankAccount> bankAccountsList = _context.BankAccounts.Where(r => r.User.UserName == User.Identity.Name).Include(b => b.User).ToList();
-            List<SelectListItem> items = new List<SelectListItem>();
+            List<SelectListItem> items = new();
 
 
             foreach (BankAccount bankAccount in bankAccountsList)
             {
                
-                bankAccount.TransferDropDown = bankAccount.BankAccountName + "     " + "XXXXXX" + bankAccount.BankAccountNumber.ToString().Substring(bankAccount.BankAccountNumber.ToString().Length - 4) + "     $" + bankAccount.BankAccountBalance;
+                bankAccount.TransferDropDown = bankAccount.BankAccountName + "     " + "XXXXXX" + bankAccount.BankAccountNumber.ToString()[^4..] + "     $" + bankAccount.BankAccountBalance;
                 items.Add(new SelectListItem(text: bankAccount.TransferDropDown, value: bankAccount.BankAccountNumber.ToString()));
 
 
@@ -1053,7 +1064,7 @@ namespace LonghornBankWebApp.Controllers
             List<StockPortfolio> holder = _context.StockPortfolios.Where(r => r.User.UserName == User.Identity.Name).ToList();
             if (holder.Count > 0)
             {
-                holder[0].TransferDropDown = holder[0].PortfolioName + "     " + "XXXXXX" + holder[0].PortfolioNumber.ToString().Substring(holder[0].PortfolioNumber.ToString().Length - 4) + "     $" + holder[0].CashValuePortion;
+                holder[0].TransferDropDown = holder[0].PortfolioName + "     " + "XXXXXX" + holder[0].PortfolioNumber.ToString()[^4..] + "     $" + holder[0].CashValuePortion;
                 items.Add(new SelectListItem(text: holder[0].TransferDropDown, value: holder[0].PortfolioNumber.ToString()));
             }
 
@@ -1067,7 +1078,7 @@ namespace LonghornBankWebApp.Controllers
             List<BankAccount> bankAccountsList = _context.BankAccounts.Where(r => r.User.UserName == User.Identity.Name).Include(b => b.User).ToList();
 
 
-            List<SelectListItem> items = new List<SelectListItem>();
+            List<SelectListItem> items = new();
 
             // update whether or not IRA accounts are qualified
             foreach (BankAccount bankAccount in bankAccountsList.OrderBy(m => m.BankAccountNumber))
@@ -1096,15 +1107,15 @@ namespace LonghornBankWebApp.Controllers
 
             //SelectList bankAccountsSelList = new SelectList(bankAccountsList.OrderBy(m => m.BankAccountID), "BankAccountID", "BankAccountName");
 
-            SelectList bankAccountsSelList = new SelectList(items);
+            SelectList bankAccountsSelList = new(items);
 
             return items;
         }
 
-        public IActionResult ModifyAmountTransfer(Decimal amount, Int32 bankAccountID)
+        public IActionResult ModifyAmountTransfer(decimal amount, int bankAccountID)
         {
             // CONSIDER: add error checks             
-            Transaction transaction = new Transaction();
+            Transaction transaction = new();
             BankAccount dbBankAccount = _context.BankAccounts.Include(b => b.User).FirstOrDefault(b => b.BankAccountID == bankAccountID);
             transaction.BankAccount = dbBankAccount;
 

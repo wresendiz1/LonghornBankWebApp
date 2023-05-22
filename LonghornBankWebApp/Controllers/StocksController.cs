@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -32,13 +28,15 @@ namespace LonghornBankWebApp.Controllers
         {
             List<StockType> StockTypes = _context.StockTypes.ToList();
 
-            List<SelectListItem> StockTypeList = new List<SelectListItem>();
+            List<SelectListItem> StockTypeList = new();
 
             foreach (StockType s in StockTypes)
             {
-                SelectListItem newStockType = new SelectListItem();
-                newStockType.Text = s.StockTypeName;
-                newStockType.Value = s.StockTypeID.ToString();
+                SelectListItem newStockType = new()
+                {
+                    Text = s.StockTypeName,
+                    Value = s.StockTypeID.ToString()
+                };
                 StockTypeList.Add(newStockType);
             }
             
@@ -54,28 +52,27 @@ namespace LonghornBankWebApp.Controllers
                 return NotFound();
             }
 
-            Stock stock = await _context.Stocks.Include(s => s.StockPrices)
-                .FirstOrDefaultAsync(m => m.StockID == id);
-            
+
+            var stock = await _context.Stocks.Where(s => s.StockID == id).Select(
+                s => new 
+                {
+                    Stock = s,
+                    Prices = s.StockPrices.Select(sp => new LineSeriesData { Y = Decimal.ToDouble(sp.CurrentPrice)}),
+                    Dates = s.StockPrices.Select(sp => sp.Date.ToString())
+                }).FirstOrDefaultAsync();
+
             if (stock == null)
             {
                 return NotFound();
             }
 
             //ADDED: Create a line graph of the historical stock price
-
-            List<LineSeriesData> prices = new List<LineSeriesData>();
-            List<string> dates = new List<string>();
-
-            stock.StockPrices.ForEach(s => prices.Add(new LineSeriesData { Y = Decimal.ToDouble(s.CurrentPrice) }));
-            stock.StockPrices.ForEach(s => dates.Add(s.Date.ToString()));
-            
-            ViewData["PriceX"] = dates;
-            ViewData["PriceY"] = prices;
+            ViewData["PriceX"] = stock.Dates.ToList();
+            ViewData["PriceY"] = stock.Prices.ToList();
 
 
 
-            return View(stock);
+            return View(stock.Stock);
         }
 
        
@@ -186,10 +183,12 @@ namespace LonghornBankWebApp.Controllers
                 _context.Update(dbStock);
 
                 //ADDED: add stock price history
-                StockPrice sp = new StockPrice();
-                sp.Stock = dbStock;
-                sp.CurrentPrice = stock.CurrentPrice;
-                sp.Date = DateTime.Now;
+                StockPrice sp = new()
+                {
+                    Stock = dbStock,
+                    CurrentPrice = stock.CurrentPrice,
+                    Date = DateTime.Now
+                };
                 _context.Add(sp);
 
                 await _context.SaveChangesAsync();

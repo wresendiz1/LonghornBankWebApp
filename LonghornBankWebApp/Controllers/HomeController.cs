@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.DAL;
 
 
 namespace LonghornBankWebApp.Controllers

@@ -27,14 +27,14 @@ namespace LonghornBankWebApp.Controllers
 
         public async Task<IActionResult> SeedAllAsync()
         {
-            var result = await SeedRoles();
-            var result2 = await SeedPeople();
-            var result3 = SeedStockTypes();
-            var result4 = SeedStocks();
-            var result5 = SeedBankAccounts();
-            var result6 = SeedTransactions();
-            var result7 = SeedStockTransactions();
-            var result8 = SeedDisputes();
+            _ = await SeedRoles();
+            _ = await SeedPeople();
+            _ = SeedStockTypes();
+            _ = SeedStocks();
+            _ = SeedBankAccounts();
+            _ = SeedTransactions();
+            _ = SeedStockTransactions();
+            _ = SeedDisputes();
 
             return View("Confirm");
 
@@ -51,13 +51,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //add the error messages to a list of strings
-                List<String> errorList = new List<String>();
+                List<string> errorList = new()
+                {
+                    //Add the outer message
+                    ex.Message,
 
-                //Add the outer message
-                errorList.Add(ex.Message);
-
-                //Add the message from the inner exception
-                errorList.Add(ex.InnerException.Message);
+                    //Add the message from the inner exception
+                    ex.InnerException.Message
+                };
 
                 //Add additional inner exception messages, if there are any
                 if (ex.InnerException.InnerException != null)
@@ -81,13 +82,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //add the error messages to a list of strings
-                List<String> errorList = new List<String>();
+                List<string> errorList = new()
+                {
+                    //Add the outer message
+                    ex.Message,
 
-                //Add the outer message
-                errorList.Add(ex.Message);
-
-                //Add the message from the inner exception
-                errorList.Add(ex.InnerException.Message);
+                    //Add the message from the inner exception
+                    ex.InnerException.Message
+                };
 
                 //Add additional inner exception messages, if there are any
                 if (ex.InnerException.InnerException != null)
@@ -114,13 +116,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding transaction to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding transaction to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)
@@ -154,13 +157,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding transaction to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding transaction to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)
@@ -192,13 +196,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding transaction to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding transaction to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)
@@ -229,13 +234,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding transaction to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding transaction to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)
@@ -267,13 +273,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding transaction to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding transaction to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)
@@ -305,13 +312,14 @@ namespace LonghornBankWebApp.Controllers
             catch (Exception ex)
             {
                 //create a new list for the error messages
-                List<String> errors = new List<String>();
+                List<string> errors = new()
+                {
+                    //add a generic error message
+                    "There was a problem adding bank account to DB",
 
-                //add a generic error message
-                errors.Add("There was a problem adding bank account to DB");
-
-                //add message from the exception
-                errors.Add(ex.Message);
+                    //add message from the exception
+                    ex.Message
+                };
 
                 //add messages from inner exceptions, if there are any
                 if (ex.InnerException != null)

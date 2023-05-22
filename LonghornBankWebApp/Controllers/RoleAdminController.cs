@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System;
 using LonghornBankWebApp.Utilities;
 using MailBee.ImapMail;
-using NuGet.Packaging.Signing;
-using System.Collections.Generic;
 using MailBee.Mime;
 
 namespace LonghornBankWebApp.Controllers
@@ -40,7 +35,7 @@ namespace LonghornBankWebApp.Controllers
         public async Task<ActionResult> Index()
         {
             //Create a list of roles that will need to be edited
-            List<RoleEditModel> roles = new List<RoleEditModel>();
+            List<RoleEditModel> roles = new();
             
             //loop through each of the existing roles
             foreach (IdentityRole role in _roleManager.Roles)
@@ -50,11 +45,12 @@ namespace LonghornBankWebApp.Controllers
 
 
                 //create a new instance of the role edit model
-                RoleEditModel rem = new RoleEditModel();
-
-                //populate the properties of the role edit model
-                rem.Role = role; //role from database
-                rem.ActiveMembers = await UsersInRole;
+                RoleEditModel rem = new()
+                {
+                    //populate the properties of the role edit model
+                    Role = role, //role from database
+                    ActiveMembers = await UsersInRole
+                };
 
                 //add this role to the list of role edit models
                 roles.Add(rem);  
@@ -79,11 +75,11 @@ namespace LonghornBankWebApp.Controllers
 
 
             // Show # of tasks that need to be dealt
-            ViewBag.PendingTrans = PendingTrans.Count();
-            ViewBag.Disputes = Disputes.Count();
+            ViewBag.PendingTrans = PendingTrans.Count;
+            ViewBag.Disputes = Disputes.Count;
 
 
-            List<PortfolioProcess> processed = new List<PortfolioProcess>();
+            List<PortfolioProcess> processed = new();
 
             processed = _context.PortfolioProcesses.ToList();
 
@@ -108,10 +104,11 @@ namespace LonghornBankWebApp.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult ProcessPortfolios()
         {
-            PortfolioProcess pp = new PortfolioProcess();
-
-            pp.DateProcessed = DateTime.Today;
-            pp.ProcessedBy = User.Identity.Name;
+            PortfolioProcess pp = new()
+            {
+                DateProcessed = DateTime.Today,
+                ProcessedBy = User.Identity.Name
+            };
             _context.Add(pp);
 
 
@@ -123,19 +120,21 @@ namespace LonghornBankWebApp.Controllers
             foreach (StockPortfolio sp in portfolios)
             {
 
-                Controllers.StockPortfolioController.UpdatePortfolio(sp, _context);
+                StockPortfolioController.UpdatePortfolio(sp, _context);
                 
 
-                if (sp.IsBalanced == true)
+                if (sp.IsBalanced)
                 {
-                    bonus = new Transaction();
-                    bonus.TransactionAmount = (sp.PortfolioValue - sp.CashValuePortion) * 0.1m;
-                    bonus.TransactionType = TransactionTypes.Bonus;
-                    bonus.TransactionDate = DateTime.Today;
-                    bonus.TransactionNumber = Utilities.GenerateNextNum.GetNextTransactionNum(_context);
-                    bonus.TransactionStatus = TransactionStatuses.Approved;
-                    bonus.StockPortfolio = sp;
-                    bonus.TransactionNotes = "Balanced Portfolio Bonus";
+                    bonus = new()
+                    {
+                        TransactionAmount = (sp.PortfolioValue - sp.CashValuePortion) * 0.1m,
+                        TransactionType = TransactionTypes.Bonus,
+                        TransactionDate = DateTime.Today,
+                        TransactionNumber = Utilities.GenerateNextNum.GetNextTransactionNum(_context),
+                        TransactionStatus = TransactionStatuses.Approved,
+                        StockPortfolio = sp,
+                        TransactionNotes = "Balanced Portfolio Bonus"
+                    };
                     sp.CashValuePortion += bonus.TransactionAmount;
                     sp.TotalBonuses += bonus.TransactionAmount;
 
@@ -146,7 +145,7 @@ namespace LonghornBankWebApp.Controllers
                 }
             }
 
-            if(changed == true)
+            if(changed)
             {
 
                 _context.SaveChanges();
@@ -170,7 +169,7 @@ namespace LonghornBankWebApp.Controllers
         public IActionResult PendingDisputes(bool showAll = false)
         {
             
-            List<Dispute> Disputes = new List<Dispute>();
+            List<Dispute> Disputes = new();
 
             if (showAll == false)
             {
@@ -272,16 +271,16 @@ namespace LonghornBankWebApp.Controllers
                 _context.Update(tr.BankAccount);
 
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
                     Info = "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
                 "Head over to your account to view the details of this transaction.",
                     Subject = "Transaction: " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString(),
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = tr.BankAccount.User.Email
+                    Receiver = tr.BankAccount.User.Email,
+                    Admins = new List<AppUser>()
                 };
-                m.Admins = new List<AppUser>();
                 m.Admins.Add(tr.BankAccount.User);
                 _context.Add(m);
 
@@ -296,16 +295,16 @@ namespace LonghornBankWebApp.Controllers
                 _context.Update(tr.StockPortfolio);
 
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
                     Info = "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
                 "Head over to your account to view the details of this transaction.",
                     Subject = "Transaction: " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString(),
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = tr.StockPortfolio.User.Email
+                    Receiver = tr.StockPortfolio.User.Email,
+                    Admins = new List<AppUser>()
                 };
-                m.Admins = new List<AppUser>();
                 m.Admins.Add(tr.StockPortfolio.User);
                 _context.Add(m);
             }
@@ -321,33 +320,34 @@ namespace LonghornBankWebApp.Controllers
         {
             // TODO: Retrieve emails from IMAP
 
-            Imap imp = new Imap();
+            Imap imp = new();
             imp.Connect("imap.gmail.com", 993);
             imp.Login("longhornbanktrust@gmail.com", "uddtvaxvzyhsmwee");
             
         
 
             imp.ExamineFolder("INBOX");
-            List<Message> messages = new List<Message>();
+            List<Message> messages = new();
 
             if (imp.MessageCount > 1)
             
             {
 
-                var max = imp.MessageCount;
+                int max = imp.MessageCount;
 
                 
-                for (var i = 1; i <= max; i++)
+                for (int i = 1; i <= max; i++)
                 {
                     MailMessage m = imp.DownloadEntireMessage(i, false);
-                    Message msg = new Message();
-                    
-                    msg.Receiver = m.To;
-                    msg.Sender = m.From;
-                    msg.Subject = m.Subject;
-                    msg.Date = m.Date;
-                    msg.Info = m.BodyPlainText;
-                    msg.IsRead = false;
+                    Message msg = new()
+                    {
+                        Receiver = m.To,
+                        Sender = m.From,
+                        Subject = m.Subject,
+                        Date = m.Date,
+                        Info = m.BodyPlainText,
+                        IsRead = false
+                    };
 
                     messages.Add(msg);
 
@@ -380,9 +380,9 @@ namespace LonghornBankWebApp.Controllers
             IdentityRole role = _roleManager.FindByIdAsync(id).Result;
 
             //create a list for the members of the role
-            List<AppUser> Active = new List<AppUser>();
+            List<AppUser> Active = new();
 
-            List<AppUser> NonActive = new List<AppUser>();
+            List<AppUser> NonActive = new();
 
             var UsersInRole = _userManager.GetUsersInRoleAsync(role.Name).Result;  
 
@@ -401,13 +401,13 @@ namespace LonghornBankWebApp.Controllers
             }
 
             //create a new instance of the role edit model
-            RoleEditModel rem = new RoleEditModel();
-
-
-            //populate the properties of the role edit model
-            rem.Role = role; //role from database
-            rem.ActiveMembers = Active; //list of users in this role
-            rem.InActiveMembers = NonActive;
+            RoleEditModel rem = new()
+            {
+                //populate the properties of the role edit model
+                Role = role, //role from database
+                ActiveMembers = Active, //list of users in this role
+                InActiveMembers = NonActive
+            };
 
             //send user to view with populated role edit model
             return View(rem);
@@ -491,7 +491,7 @@ namespace LonghornBankWebApp.Controllers
                 return View(rvm);
             }
             //this code maps the RegisterViewModel to the AppUser domain model
-            AppUser newUser = new AppUser
+            AppUser newUser = new()
             {
                 UserName = rvm.Email,
                 Email = rvm.Email,
@@ -509,7 +509,7 @@ namespace LonghornBankWebApp.Controllers
             };
 
             //create AddUserModel
-            AddUserModel aum = new AddUserModel()
+            AddUserModel aum = new()
             {
                 User = newUser,
                 Password = rvm.Password,
@@ -548,7 +548,7 @@ namespace LonghornBankWebApp.Controllers
             var UsersInRole = _userManager.GetUsersInRoleAsync(id);
 
 
-            if (UsersInRole.Result.Count() == 0)
+            if (UsersInRole.Result.Count == 0)
             {
                 return View("Error", new string[] { "No Users Found" });
             }
@@ -587,24 +587,25 @@ namespace LonghornBankWebApp.Controllers
                 return View("Error", new string[] { "User Not Found" });
             }
 
-            IndexViewModel ivm = new IndexViewModel();
+            IndexViewModel ivm = new()
+            {
+                //populate the view model
+                //(i.e. map the domain model to the view model)
+                Email = customer.Email,
+                HasPassword = true,
+                UserID = customer.Id,
+                UserName = customer.UserName,
+                // Add added fields to view model
+                Street = customer.Street,
+                State = customer.State,
+                City = customer.City,
+                ZipCode = customer.ZipCode,
+                PhoneNumber = customer.PhoneNumber,
 
-            //populate the view model
-            //(i.e. map the domain model to the view model)
-            ivm.Email = customer.Email;
-            ivm.HasPassword = true;
-            ivm.UserID = customer.Id;
-            ivm.UserName = customer.UserName;
-            // Add added fields to view model
-            ivm.Street = customer.Street;
-            ivm.State = customer.State;
-            ivm.City = customer.City;
-            ivm.ZipCode = customer.ZipCode;
-            ivm.PhoneNumber = customer.PhoneNumber;
-
-            ivm.FirstName = customer.FirstName;
-            ivm.MidIntName = customer.MidIntName;
-            ivm.LastName = customer.LastName;
+                FirstName = customer.FirstName,
+                MidIntName = customer.MidIntName,
+                LastName = customer.LastName
+            };
 
 
             ViewBag.Role = await _userManager.GetRolesAsync(customer);
@@ -754,7 +755,7 @@ namespace LonghornBankWebApp.Controllers
             var UsersInRole = _userManager.GetUsersInRoleAsync("Customer");
 
 
-            if (UsersInRole.Result.Count() == 0)
+            if (UsersInRole.Result.Count == 0)
             {
                 return View("Error", new string[] { "No Customers Found" });
             }

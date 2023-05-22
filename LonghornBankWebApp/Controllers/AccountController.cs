@@ -1,18 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using LonghornBankWebApp.Utilities;
-using SixLabors.ImageSharp.Drawing;
-using System.Runtime.Intrinsics.Arm;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -64,7 +56,7 @@ namespace LonghornBankWebApp.Controllers
             }
 
             //this code maps the RegisterViewModel to the AppUser domain model
-            AppUser newUser = new AppUser
+            AppUser newUser = new()
             {
                 UserName = rvm.Email,
                 Email = rvm.Email,
@@ -87,7 +79,7 @@ namespace LonghornBankWebApp.Controllers
             };
 
             //create AddUserModel
-            AddUserModel aum = new AddUserModel()
+            AddUserModel aum = new()
             {
                 User = newUser,
                 Password = rvm.Password,
@@ -96,7 +88,7 @@ namespace LonghornBankWebApp.Controllers
             };
 
             //This code uses the AddUser utility to create a new user with the specified password
-            IdentityResult result = await Utilities.AddUser.AddUserWithRoleAsync(aum, _userManager, _context);
+            IdentityResult result = await AddUser.AddUserWithRoleAsync(aum, _userManager, _context);
 
             if (result.Succeeded) //everything is okay
             { 
@@ -105,25 +97,34 @@ namespace LonghornBankWebApp.Controllers
                 //the business rules!
                 Microsoft.AspNetCore.Identity.SignInResult result2 = await _signInManager.PasswordSignInAsync(rvm.Email, rvm.Password, false, lockoutOnFailure: false);
 
-                // Send email
-                EmailMessaging.SendEmail(rvm.Email, "Welcome to Longhorn Bank", "Thank you for registering with Longhorn Bank. We look forward to serving you!");
-
-                // Create notifaction
-                Message m = new Message()
+                if (result2.Succeeded)
                 {
-                    Info = "Thank you for registering with Longhorn Bank. We look forward to serving you!",
-                    Subject = "Welcome to Longhorn Bank",
-                    Date = DateTime.Today,
-                    Sender = "Longhorn Bank",
-                    Receiver = rvm.Email
-                };
-                m.Admins = new List<AppUser>();
-                m.Admins.Add(aum.User);
-                _context.Add(m);
-                _context.SaveChanges();
+                    // Send email
+                    EmailMessaging.SendEmail(rvm.Email, "Welcome to Longhorn Bank", "Thank you for registering with Longhorn Bank. We look forward to serving you!");
 
-                //Send the user to apply for a banking Account
-                return RedirectToAction("NewUser", "Home");
+                    // Create notifaction
+                    Message m = new()
+                    {
+                        Info = "Thank you for registering with Longhorn Bank. We look forward to serving you!",
+                        Subject = "Welcome to Longhorn Bank",
+                        Date = DateTime.Today,
+                        Sender = "Longhorn Bank",
+                        Receiver = rvm.Email,
+                        Admins = new List<AppUser>()
+                    };
+                    m.Admins.Add(aum.User);
+                    _context.Add(m);
+                    _context.SaveChanges();
+
+                    //Send the user to apply for a banking Account
+                    return RedirectToAction("NewUser", "Home");
+                }
+                else //the login didn't work, send them back to the login page
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+
+
             }
             else  //the add user operation didn't work, and we need to show an error message
             {
@@ -207,23 +208,22 @@ namespace LonghornBankWebApp.Controllers
                                 {
 
                                     // TRANSACTION WILL SEND THE ACCOUNT INTO OVERDRAFT
-                                    // TODO: ADD CALL FOR EMAIL NOTIFICATION
                                     t.TransactionStatus = TransactionStatuses.Deleted;
                                     EmailMessaging.SendEmail(user.Email, "Longhorn Bank: Transaction Canceled for Bank Account "
                                         + t.BankAccount.BankAccountNumber, "Your transaction for $" + t.TransactionAmount
                                         + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.");
                                     
                                     // Create notifaction
-                                    Message m = new Message()
+                                    Message m = new()
                                     {
                                         Info = "Your transaction for $" + t.TransactionAmount
                                         + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.",
                                         Subject = "Longhorn Bank: Transaction Canceled for Bank Account " + t.BankAccount.BankAccountNumber,
                                         Date = DateTime.Today,
                                         Sender = "Longhorn Bank",
-                                        Receiver = user.Email
+                                        Receiver = user.Email,
+                                        Admins = new List<AppUser>()
                                     };
-                                    m.Admins = new List<AppUser>();
                                     m.Admins.Add(user);
                                     _context.Add(m);
                                 }
@@ -240,23 +240,22 @@ namespace LonghornBankWebApp.Controllers
                                 if (t.StockPortfolio.CashValuePortion + t.TransactionAmount < 0)
                                 {
                                     // TRANSACTION WILL SEND THE ACCOUNT INTO OVERDRAFT
-                                    // TODO: ADD CALL FOR EMAIL NOTIFICATION
                                     t.TransactionStatus = TransactionStatuses.Deleted;
                                     EmailMessaging.SendEmail(user.Email, "Longhorn Bank: Transaction Canceled for Stock Portfolio " + t.StockPortfolio.PortfolioNumber,
                                         "Your transaction for $" + t.TransactionAmount +
                                         "has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.");
 
                                     // Create notifaction
-                                    Message m = new Message()
+                                    Message m = new()
                                     {
                                         Info = "Your transaction for $" + t.TransactionAmount
                                         + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.",
                                         Subject = "Longhorn Bank: Transaction Canceled for Stock Portfolio " + t.StockPortfolio.PortfolioNumber,
                                         Date = DateTime.Today,
                                         Sender = "Longhorn Bank",
-                                        Receiver = user.Email
+                                        Receiver = user.Email,
+                                        Admins = new List<AppUser>()
                                     };
-                                    m.Admins = new List<AppUser>();
                                     m.Admins.Add(user);
                                     _context.Add(m);
                                 }
@@ -367,7 +366,7 @@ namespace LonghornBankWebApp.Controllers
         
         public IActionResult Index()
         {
-            IndexViewModel ivm = new IndexViewModel();
+            IndexViewModel ivm = new();
 
             //get user info
             String id = User.Identity.Name;

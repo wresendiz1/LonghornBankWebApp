@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
@@ -54,7 +49,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
 
-        public IActionResult Resolve(Int32 id, String? message, Decimal adjusted = -1, bool reject = false, bool accept = false )
+        public IActionResult Resolve(int id, string message, decimal adjusted = -1, bool reject = false, bool accept = false )
         {
             Dispute dispute = _context.Disputes.Include(t=>t.Transaction).ThenInclude(t=>t.BankAccount).Include(t => t.Transaction).ThenInclude(t => t.StockPortfolio).FirstOrDefault(d => d.DisputeID == id);
 
@@ -136,18 +131,18 @@ namespace LonghornBankWebApp.Controllers
                 
                 EmailMessaging.SendEmail(sp.User.Email, "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved"
                     , "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + " by admin " + dispute.adminEmail + ". Please check your account for more details. Message from admin: " + dispute.adminMessage);
-                
+
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
-                    Info = "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + 
+                    Info = "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() +
                     " by admin " + dispute.adminEmail + ". Please check your transaction for more details",
                     Subject = "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved",
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = sp.User.Email
+                    Receiver = sp.User.Email,
+                    Admins = new List<AppUser>()
                 };
-                m.Admins = new List<AppUser>();
                 m.Admins.Add(sp.User);
                 _context.Add(m);
             }
@@ -161,16 +156,16 @@ namespace LonghornBankWebApp.Controllers
                     , "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + " by admin" + dispute.adminEmail + ". Please check your account for more details. Message from admin: " + dispute.adminMessage);
 
                 // Create notifaction
-                Message m = new Message()
+                Message m = new()
                 {
                     Info = "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() +
                     " by admin " + dispute.adminEmail + ". Please check your transaction for more details",
                     Subject = "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved",
                     Date = DateTime.Today,
                     Sender = "Longhorn Bank",
-                    Receiver = ba.User.Email
+                    Receiver = ba.User.Email,
+                    Admins = new List<AppUser>()
                 };
-                m.Admins = new List<AppUser>();
                 m.Admins.Add(ba.User);
                 _context.Add(m);
 
@@ -200,8 +195,10 @@ namespace LonghornBankWebApp.Controllers
             dispute.dateCreated = DateTime.Today;
 
             // create message for admins
-            Message message = new Message();
-            message.Date = DateTime.Today;
+            Message message = new()
+            {
+                Date = DateTime.Today
+            };
 
             if (transaction.BankAccount != null)
             {
@@ -229,13 +226,15 @@ namespace LonghornBankWebApp.Controllers
             message.Admins = ActiveAdmins;
 
             // notify user that dispute has been created
-            Message userMessage = new Message();
-            userMessage.Date = DateTime.Today;
-            userMessage.Subject = "Dispute created";
-            userMessage.Info = "Your dispute for transaction #" + transaction.TransactionID + " has been created. Please wait for an administrator to resolve the dispute.";
-            userMessage.Sender = "Dispute System";
-            userMessage.Receiver = u.Email;
-            userMessage.Admins = new List<AppUser>();
+            Message userMessage = new()
+            {
+                Date = DateTime.Today,
+                Subject = "Dispute created",
+                Info = "Your dispute for transaction #" + transaction.TransactionID + " has been created. Please wait for an administrator to resolve the dispute.",
+                Sender = "Dispute System",
+                Receiver = u.Email,
+                Admins = new List<AppUser>()
+            };
             userMessage.Admins.Add(u);
 
             

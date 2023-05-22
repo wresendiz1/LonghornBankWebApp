@@ -47,7 +47,7 @@ namespace LonghornBankWebApp.Models
 
         [Display(Name = "Middle Initial")]
         [RegularExpression(@"^[a-zA-Z]{1}$", ErrorMessage = "Middle initial must be 1 valid character long.")]
-        public string? MidIntName { get; set; }
+        public String MidIntName { get; set; }
 
         
         [Required(ErrorMessage = "Last name is required.")]

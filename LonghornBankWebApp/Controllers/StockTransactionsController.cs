@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using LonghornBankWebApp.Utilities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -99,7 +94,7 @@ namespace LonghornBankWebApp.Controllers
             {
                 return NotFound();
             }
-            
+
             if (u.IsActive == false || sp.isActive == false)
             {
                 return RedirectToAction("Index", "StockPortfolio", new { message = "Your account is not active. Please contact an administrator to activate your account." });
@@ -116,7 +111,7 @@ namespace LonghornBankWebApp.Controllers
                     ViewBag.DropDown = GetStockDropDown();
                     return View(stockTransaction);
                 }
-                
+
                 // Find stock from database
 
                 Stock st = _context.Stocks.Include(s => s.StockType).FirstOrDefault(s => s.StockID == SelectedStock);
@@ -162,14 +157,16 @@ namespace LonghornBankWebApp.Controllers
                         stockTransaction.StockTransactionNotes = "Stock Purchase - Account " + stp.PortfolioNumber.ToString();
 
                         // create a purchase fee stocktrans
-                        StockTransaction fee = new StockTransaction();
-                        fee.TotalPrice = -10;
-                        fee.StockPortfolio = stp;
-                        fee.Stock = st;
-                        fee.StockTransactionType = StockTransactionTypes.Fee;
-                        fee.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1;
-                        fee.StockTransactionNotes = "Fee for purchase of " + st.StockName;
-                        fee.TransactionDate = stockTransaction.TransactionDate;
+                        StockTransaction fee = new()
+                        {
+                            TotalPrice = -10,
+                            StockPortfolio = stp,
+                            Stock = st,
+                            StockTransactionType = StockTransactionTypes.Fee,
+                            StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1,
+                            StockTransactionNotes = "Fee for purchase of " + st.StockName,
+                            TransactionDate = stockTransaction.TransactionDate
+                        };
 
 
 
@@ -177,7 +174,7 @@ namespace LonghornBankWebApp.Controllers
                         _context.StockTransactions.Add(stockTransaction);
                         _context.StockTransactions.Add(fee);
                         await _context.SaveChangesAsync();
-                        
+
                         ViewBag.Balance = stp.CashValuePortion;
                         return View("PurchaseSuccess", stockTransaction);
 
@@ -187,7 +184,7 @@ namespace LonghornBankWebApp.Controllers
                         return NotFound();
                     }
 
-                    
+
                 }
 
                 else
@@ -206,7 +203,8 @@ namespace LonghornBankWebApp.Controllers
             }
         }
 
-        public IActionResult PurchaseSuccess() {
+        public IActionResult PurchaseSuccess()
+        {
             return View();
         }
 
@@ -218,7 +216,7 @@ namespace LonghornBankWebApp.Controllers
             List<Stock> AllStocks = _context.Stocks.Include(s => s.StockType).ToList();
 
 
-            List<SelectListItem> StockList = new List<SelectListItem>();
+            List<SelectListItem> StockList = new();
 
             foreach (Stock st in AllStocks)
             {
@@ -236,7 +234,7 @@ namespace LonghornBankWebApp.Controllers
             return StockList;
 
         }
-        
+
         // Not used anymore
         //private SelectList GetAllStocks()
         //{
@@ -308,7 +306,7 @@ namespace LonghornBankWebApp.Controllers
                 {
 
                     // Increment the number of shares of the stock that was purchased
-                    if (holdings.Keys.Contains(st.StockTransactionNumber))
+                    if (holdings.ContainsKey(st.StockTransactionNumber))
                     {
                         holdings[st.StockTransactionNumber] += st.NumberOfShares;
                     }
@@ -341,7 +339,7 @@ namespace LonghornBankWebApp.Controllers
         public IActionResult SellStock(int? id, string name)
         {
 
-            if (id == null &&  name == null)
+            if (id == null && name == null)
             {
                 return NotFound();
             }
@@ -367,7 +365,7 @@ namespace LonghornBankWebApp.Controllers
             var st = holdings_dict.ToList();
 
             // Query user stock transactions
-            List<StockTransaction> stockTransactions = new List<StockTransaction>();
+            List<StockTransaction> stockTransactions = new();
 
             foreach (var item in st)
             {
@@ -379,186 +377,192 @@ namespace LonghornBankWebApp.Controllers
 
             return View(stockTransactions);
 
-            
+
         }
-        
+
         public IActionResult SellConfirm(int? id, int? numShares, int? stockLeft)
         {
-            
-                if (id == null || _context.StockTransactions == null)
-                {
-                    return NotFound();
-                }
 
-                AppUser u = _userManager.FindByNameAsync(User.Identity.Name).Result;
-                StockPortfolio sp = _context.StockPortfolios.FirstOrDefault(s => s.User.UserName == User.Identity.Name);
+            if (id == null || _context.StockTransactions == null)
+            {
+                return NotFound();
+            }
 
-                if (u.IsActive == false || sp.isActive == false)
-                {
-                    return RedirectToAction("Index", "StockPortfolio", new { message = "Your account is not active. Please contact an administrator to activate your account." });
+            AppUser u = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            StockPortfolio sp = _context.StockPortfolios.FirstOrDefault(s => s.User.UserName == User.Identity.Name);
 
-                }
+            if (u.IsActive == false || sp.isActive == false)
+            {
+                return RedirectToAction("Index", "StockPortfolio", new { message = "Your account is not active. Please contact an administrator to activate your account." });
+
+            }
 
             StockTransaction stockTransaction = _context.StockTransactions.Include(s => s.StockPortfolio).Include(s => s.Stock).ThenInclude(s => s.StockType).FirstOrDefault(r => r.StockTransactionNumber == id);
 
-                if (stockTransaction == null)
-                {
-                    return NotFound();
-                }
+            if (stockTransaction == null)
+            {
+                return NotFound();
+            }
 
-                if (Convert.ToInt32(numShares) <= 0)
-                {
-                   
-                    return RedirectToAction("SellStock", "StockTransactions", new { id = stockTransaction.StockPortfolio.StockPortfolioID });
-                 }
+            if (Convert.ToInt32(numShares) <= 0)
+            {
 
-
-                // compare
-                var difference = stockTransaction.Stock.CurrentPrice - stockTransaction.PricePerShare;
-
-                // Create sale/deposit transaction
-                StockTransaction st = new StockTransaction();
-                st.StockPortfolio = stockTransaction.StockPortfolio;
-                st.Stock = stockTransaction.Stock;
-                st.NumberOfShares = Convert.ToInt32(numShares);
-                st.PricePerShare = stockTransaction.PricePerShare;
-                st.TotalPrice = st.PricePerShare * st.NumberOfShares;
-                st.StockTransactionType = StockTransactionTypes.Deposit;
-                st.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context);
-                st.TransactionDate = DateTime.Now;
-                // Associate the sale transaction with the purchase transaction
-                st.SellingTransactionNumber = stockTransaction.StockTransactionNumber;
-
-                ViewBag.Remaining = stockLeft - st.NumberOfShares;
+                return RedirectToAction("SellStock", "StockTransactions", new { id = stockTransaction.StockPortfolio.StockPortfolioID });
+            }
 
 
-                // get total gain/loss for sale of stock
-                var totaldif = difference * st.NumberOfShares;
+            // compare
+            var difference = stockTransaction.Stock.CurrentPrice - stockTransaction.PricePerShare;
 
-                st.GainLoss = totaldif;
+            // Create sale/deposit transaction
+            StockTransaction st = new()
+            {
+                StockPortfolio = stockTransaction.StockPortfolio,
+                Stock = stockTransaction.Stock,
+                NumberOfShares = Convert.ToInt32(numShares),
+                PricePerShare = stockTransaction.PricePerShare
+            };
+            st.TotalPrice = st.PricePerShare * st.NumberOfShares;
+            st.StockTransactionType = StockTransactionTypes.Deposit;
+            st.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context);
+            st.TransactionDate = DateTime.Now;
+            // Associate the sale transaction with the purchase transaction
+            st.SellingTransactionNumber = stockTransaction.StockTransactionNumber;
 
-                String gainOrLoss = "";
-
-                if (difference < 0)
-                {
-                    gainOrLoss += "Loss of ";
-                    gainOrLoss += totaldif.ToString();
-                }
-                else if (difference > 0)
-                {
-                    gainOrLoss += "Gain of ";
-                    gainOrLoss += totaldif.ToString();
-
-                }
-                else
-                {
-                    gainOrLoss += "No Gain ";
-
-                }
-
-                
-                ViewBag.GainOrLoss = gainOrLoss;
+            ViewBag.Remaining = stockLeft - st.NumberOfShares;
 
 
-                return View(st);
-            
+            // get total gain/loss for sale of stock
+            var totaldif = difference * st.NumberOfShares;
+
+            st.GainLoss = totaldif;
+
+            String gainOrLoss = "";
+
+            if (difference < 0)
+            {
+                gainOrLoss += "Loss of ";
+                gainOrLoss += totaldif.ToString();
+            }
+            else if (difference > 0)
+            {
+                gainOrLoss += "Gain of ";
+                gainOrLoss += totaldif.ToString();
+
+            }
+            else
+            {
+                gainOrLoss += "No Gain ";
+
+            }
+
+
+            ViewBag.GainOrLoss = gainOrLoss;
+
+
+            return View(st);
+
         }
 
         public IActionResult Sell(int? id, int? numShares, string profit)
         {
-            
-
-            
-                if (id == null || _context.StockTransactions == null)
-                {
-                    return NotFound();
-                }
-
-                
-                // Original purchase transaction
-                StockTransaction stockTransaction = _context.StockTransactions.Include(s => s.StockPortfolio).Include(s => s.Stock)
-                    .ThenInclude(s => s.StockType).FirstOrDefault(r => r.StockTransactionNumber == id);
-
-                if (stockTransaction == null)
-                {
-                    return NotFound();
-                }
 
 
-                // compare
-                var difference = stockTransaction.Stock.CurrentPrice - stockTransaction.PricePerShare;
 
-                // Create sale/deposit transaction
-                StockTransaction st = new StockTransaction();
-                st.StockPortfolio = stockTransaction.StockPortfolio;
-                
-
-                st.Stock = stockTransaction.Stock;
-                st.NumberOfShares = Convert.ToInt32(numShares);
-                st.PricePerShare = stockTransaction.Stock.CurrentPrice;
-                st.TotalPrice = st.PricePerShare * st.NumberOfShares;
-                st.StockTransactionType = StockTransactionTypes.Deposit;
-                st.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context);
-                st.TransactionDate = DateTime.Now;
-                // Associate the sale transaction with the purchase transaction
-                st.SellingTransactionNumber = stockTransaction.StockTransactionNumber;
-
-                // Change balance and fees
-                st.StockPortfolio.CashValuePortion += st.TotalPrice;
-                st.StockPortfolio.TotalFees += 15;
-                
-                // get total gain/loss for sale of stock
-                var totaldif = difference * st.NumberOfShares;
-
-                String gainOrLoss = "";
-
-                if (difference < 0)
-                {
-                    gainOrLoss += "Loss of ";
-                    gainOrLoss += totaldif.ToString();
-                }
-                else if (difference > 0)
-                {
-                    gainOrLoss += "Gain of ";
-                    gainOrLoss += totaldif.ToString();
-
-                }
-                else
-                {
-                    gainOrLoss += "No Gain ";
-
-                }
-
-                st.StockTransactionNotes = "Sale of " + st.Stock.StockName + " - " + st.NumberOfShares.ToString() + " shares" + " - "
-                + st.PricePerShare.ToString() + " current stock price" + " - " + stockTransaction.PricePerShare.ToString()
-                + " initial stock price" + " - " + gainOrLoss;
+            if (id == null || _context.StockTransactions == null)
+            {
+                return NotFound();
+            }
 
 
-                // Create a fee transaction
-                StockTransaction fee = new StockTransaction();
-                fee.StockPortfolio = stockTransaction.StockPortfolio;
-                fee.Stock = stockTransaction.Stock;
-                fee.TotalPrice = -15;
-                fee.StockTransactionType = StockTransactionTypes.Fee;
-                fee.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1;
-                fee.TransactionDate = DateTime.Now;
-                fee.StockTransactionNotes = "Fee for sale of " + st.Stock.StockName;
+            // Original purchase transaction
+            StockTransaction stockTransaction = _context.StockTransactions.Include(s => s.StockPortfolio).Include(s => s.Stock)
+                .ThenInclude(s => s.StockType).FirstOrDefault(r => r.StockTransactionNumber == id);
 
-                // Change bank account
-                st.StockPortfolio.CashValuePortion += fee.TotalPrice;
-                st.StockPortfolio.TotalGains += st.GainLoss;
-                st.StockPortfolio.TotalFees += fee.TotalPrice;
+            if (stockTransaction == null)
+            {
+                return NotFound();
+            }
 
-                // Add to database
-                _context.StockPortfolios.Update(st.StockPortfolio);
-                _context.StockTransactions.Add(st);
-                _context.StockTransactions.Add(fee);
-                _context.SaveChanges();
 
-                //return RedirectToAction("Details", "StockPortfolio", new { id = st.StockPortfolio.StockPortfolioID});
-                ViewBag.GainOrLoss = profit;
-                return View("SellConfirmed", st);
-            
+            // compare
+            var difference = stockTransaction.Stock.CurrentPrice - stockTransaction.PricePerShare;
+
+            // Create sale/deposit transaction
+            StockTransaction st = new()
+            {
+                StockPortfolio = stockTransaction.StockPortfolio,
+
+
+                Stock = stockTransaction.Stock,
+                NumberOfShares = Convert.ToInt32(numShares),
+                PricePerShare = stockTransaction.Stock.CurrentPrice
+            };
+            st.TotalPrice = st.PricePerShare * st.NumberOfShares;
+            st.StockTransactionType = StockTransactionTypes.Deposit;
+            st.StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context);
+            st.TransactionDate = DateTime.Now;
+            // Associate the sale transaction with the purchase transaction
+            st.SellingTransactionNumber = stockTransaction.StockTransactionNumber;
+
+            // Change balance and fees
+            st.StockPortfolio.CashValuePortion += st.TotalPrice;
+            st.StockPortfolio.TotalFees += 15;
+
+            // get total gain/loss for sale of stock
+            var totaldif = difference * st.NumberOfShares;
+
+            String gainOrLoss = "";
+
+            if (difference < 0)
+            {
+                gainOrLoss += "Loss of ";
+                gainOrLoss += totaldif.ToString();
+            }
+            else if (difference > 0)
+            {
+                gainOrLoss += "Gain of ";
+                gainOrLoss += totaldif.ToString();
+
+            }
+            else
+            {
+                gainOrLoss += "No Gain ";
+
+            }
+
+            st.StockTransactionNotes = "Sale of " + st.Stock.StockName + " - " + st.NumberOfShares.ToString() + " shares" + " - "
+            + st.PricePerShare.ToString() + " current stock price" + " - " + stockTransaction.PricePerShare.ToString()
+            + " initial stock price" + " - " + gainOrLoss;
+
+
+            // Create a fee transaction
+            StockTransaction fee = new()
+            {
+                StockPortfolio = stockTransaction.StockPortfolio,
+                Stock = stockTransaction.Stock,
+                TotalPrice = -15,
+                StockTransactionType = StockTransactionTypes.Fee,
+                StockTransactionNumber = GenerateNextNum.GetNextTransactionNum(_context) + 1,
+                TransactionDate = DateTime.Now,
+                StockTransactionNotes = "Fee for sale of " + st.Stock.StockName
+            };
+
+            // Change bank account
+            st.StockPortfolio.CashValuePortion += fee.TotalPrice;
+            st.StockPortfolio.TotalGains += st.GainLoss;
+            st.StockPortfolio.TotalFees += fee.TotalPrice;
+
+            // Add to database
+            _context.StockPortfolios.Update(st.StockPortfolio);
+            _context.StockTransactions.Add(st);
+            _context.StockTransactions.Add(fee);
+            _context.SaveChanges();
+
+            //return RedirectToAction("Details", "StockPortfolio", new { id = st.StockPortfolio.StockPortfolioID});
+            ViewBag.GainOrLoss = profit;
+            return View("SellConfirmed", st);
+
         }
 
 
