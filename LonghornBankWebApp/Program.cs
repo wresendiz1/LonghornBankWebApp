@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHostedService<DatabaseWarmup>();
+
 
 String connectionString = "Server=tcp:longhornbanktrust.database.windows.net,1433;Initial Catalog=longhornbank;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 

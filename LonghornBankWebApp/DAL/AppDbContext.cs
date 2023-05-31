@@ -24,7 +24,18 @@ namespace LonghornBankWebApp.DAL
             //builder.Entity<AppUser>().HasMany(b => b.BankAccounts).WithOne(u => u.User);
 
             // builder.Entity<BankAccount>().Property(ba => ba.BankAccountBalance).HasPrecision(18, 2).HasColumnType("decimal(18,2)");
+
+
             base.OnModelCreating(builder);
+        }
+        // NOTE: Avoid performance issues when returning query with (JOINS) navigational properties by configuring split queries
+        // https://learn.microsoft.com/en-us/ef/core/querying/single-split-queries
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .UseSqlServer(
+                    @"Server=tcp:longhornbanktrust.database.windows.net,1433;Initial Catalog=longhornbank;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
         }
 
         public DbSet<BankAccount> BankAccounts { get; set; }
