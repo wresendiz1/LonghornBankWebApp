@@ -1,11 +1,10 @@
 //add a using statement for currency
-using System.Globalization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-
 //Be sure to remove the []
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 //create a web application builder
 var builder = WebApplication.CreateBuilder(args);

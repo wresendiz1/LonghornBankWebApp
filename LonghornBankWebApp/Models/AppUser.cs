@@ -5,24 +5,24 @@ using System.ComponentModel.DataAnnotations;
 namespace LonghornBankWebApp.Models
 {
 
-    
-    public class AppUser : IdentityUser 
+
+    public class AppUser : IdentityUser
     {
         //CONSIDER: Katie said we should set what is required
         // in the RegisterViewModel instead of here
         //https://piazza.com/class/l3p02vtw1t675g/post/411
-        
-        
+
+
         [Display(Name = "First Name")]
-        public String FirstName {get; set;}
+        public String FirstName { get; set; }
 
         // Optional
         [Display(Name = "Middle Initials")]
-        public String MidIntName {get; set;}
+        public String MidIntName { get; set; }
 
 
         [Display(Name = "Last Name")]
-        public String LastName {get; set;}
+        public String LastName { get; set; }
 
 
         [Display(Name = "Street")]
@@ -56,7 +56,7 @@ namespace LonghornBankWebApp.Models
 
 
         // Read-only properties
-        
+
         [Display(Name = "Full Name")]
         public String FullName
         {

@@ -1,10 +1,10 @@
+using Highsoft.Web.Mvc.Charts;
+using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
-using Highsoft.Web.Mvc.Charts;
-using Microsoft.AspNetCore.Authorization;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -20,11 +20,11 @@ namespace LonghornBankWebApp.Controllers
         // GET: Stocks
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Stocks.Include(s => s.StockType).ToListAsync());
+            return View(await _context.Stocks.Include(s => s.StockType).ToListAsync());
         }
 
         private IEnumerable<SelectListItem> GetStockTypes()
-       
+
         {
             List<StockType> StockTypes = _context.StockTypes.ToList();
 
@@ -39,7 +39,7 @@ namespace LonghornBankWebApp.Controllers
                 };
                 StockTypeList.Add(newStockType);
             }
-            
+
             return StockTypeList;
         }
 
@@ -54,10 +54,10 @@ namespace LonghornBankWebApp.Controllers
 
 
             var stock = await _context.Stocks.Where(s => s.StockID == id).Select(
-                s => new 
+                s => new
                 {
                     Stock = s,
-                    Prices = s.StockPrices.Select(sp => new LineSeriesData { Y = Decimal.ToDouble(sp.CurrentPrice)}),
+                    Prices = s.StockPrices.Select(sp => new LineSeriesData { Y = Decimal.ToDouble(sp.CurrentPrice) }),
                     Dates = s.StockPrices.Select(sp => sp.Date.ToString())
                 }).FirstOrDefaultAsync();
 
@@ -75,7 +75,7 @@ namespace LonghornBankWebApp.Controllers
             return View(stock.Stock);
         }
 
-       
+
 
 
         // GET: Stocks/Create
@@ -92,8 +92,8 @@ namespace LonghornBankWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Stock stock, int? SelectedID, bool? modify)
         {
-            
-            if(SelectedID == null)
+
+            if (SelectedID == null)
             {
                 ModelState.AddModelError("", "Valid stock type is required");
                 ViewBag.Types = GetStockTypes();
@@ -103,7 +103,7 @@ namespace LonghornBankWebApp.Controllers
             // ensure that no ticker symbol is identical
             Stock dbStock = _context.Stocks.FirstOrDefault(s => s.TickerSymbol == stock.TickerSymbol);
 
-            if(dbStock != null)
+            if (dbStock != null)
             {
                 ModelState.AddModelError("TickerSymbol", "Ticker symbol must be unique");
                 ViewBag.Types = GetStockTypes();
@@ -120,24 +120,24 @@ namespace LonghornBankWebApp.Controllers
             StockType dbStockType = _context.StockTypes.FirstOrDefault(s => s.StockTypeID == SelectedID);
             stock.StockType = dbStockType;
 
-            if (ModelState.IsValid)       
+            if (ModelState.IsValid)
             {
 
-                if(modify == false)
+                if (modify == false)
                 {
-                    ModelState.AddModelError("Valid", "Confirm to create " + stock.StockName + " stock with current price $" 
+                    ModelState.AddModelError("Valid", "Confirm to create " + stock.StockName + " stock with current price $"
                         + stock.CurrentPrice + " and type " + stock.StockType.StockTypeName);
                     ViewBag.Types = GetStockTypes();
                     return View(stock);
                 }
-                else if(modify == true)
+                else if (modify == true)
                 {
                     _context.Add(stock);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
- 
-               
+
+
             }
             return View(stock);
         }
@@ -169,7 +169,7 @@ namespace LonghornBankWebApp.Controllers
             {
                 return NotFound();
             }
-            
+
             if (stock.CurrentPrice < (decimal)0.01)
             {
                 ModelState.AddModelError("CurrentPrice", "Current price must be greater than $0.01");
@@ -204,12 +204,12 @@ namespace LonghornBankWebApp.Controllers
                     throw;
                 }
             }
-                return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
 
         }
 
         // GET: Stocks/Delete/5
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Stocks == null)
@@ -241,14 +241,14 @@ namespace LonghornBankWebApp.Controllers
         //    {
         //        _context.Stocks.Remove(stock);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool StockExists(int id)
         {
-          return _context.Stocks.Any(e => e.StockID == id);
+            return _context.Stocks.Any(e => e.StockID == id);
         }
     }
 }

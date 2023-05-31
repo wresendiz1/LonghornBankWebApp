@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 
 
 
@@ -20,7 +16,7 @@ namespace LonghornBankWebApp.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        
+
         public MessagesController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
@@ -30,7 +26,7 @@ namespace LonghornBankWebApp.Controllers
         // GET: Messages
         public async Task<IActionResult> Index()
         {
-            
+
             AppUser user = _userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
             List<Message> Pending = await _context.Messages.Where(m => m.Admins.Contains(user)).ToListAsync();
@@ -96,13 +92,13 @@ namespace LonghornBankWebApp.Controllers
                 // all admins
                 if (Admin == null)
                 {
-                        List<AppUser> AllAdmins = _userManager.GetUsersInRoleAsync("Admin").Result.ToList();
-                    
-                        var query = from a in AllAdmins where a.IsActive == true select a;
+                    List<AppUser> AllAdmins = _userManager.GetUsersInRoleAsync("Admin").Result.ToList();
 
-                        List<AppUser> ActiveAdmins = query.ToList<AppUser>();
+                    var query = from a in AllAdmins where a.IsActive == true select a;
 
-                        message.Admins = ActiveAdmins;
+                    List<AppUser> ActiveAdmins = query.ToList<AppUser>();
+
+                    message.Admins = ActiveAdmins;
 
                     message.Receiver = "All";
                 }
@@ -110,7 +106,7 @@ namespace LonghornBankWebApp.Controllers
                 {
                     AppUser user = await _userManager.FindByEmailAsync(Admin);
 
-                    if(user.Email == User.Identity.Name)
+                    if (user.Email == User.Identity.Name)
                     {
                         ModelState.AddModelError("Receiver", "You cannot send a message to yourself");
                         ViewBag.Admins = GetAllAdmins();
@@ -130,7 +126,7 @@ namespace LonghornBankWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+
             ViewBag.Admins = GetAllAdmins();
             return View(message);
         }
@@ -140,14 +136,14 @@ namespace LonghornBankWebApp.Controllers
             AppUser user = _userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
             List<Message> Pending = _context.Messages.Where(m => m.Admins.Contains(user)).ToList();
-            
+
             return Pending.Count;
         }
 
         public async Task<IActionResult> Read(int? id)
         {
 
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -155,7 +151,7 @@ namespace LonghornBankWebApp.Controllers
             Message message = await _context.Messages.Include(m => m.Admins).FirstOrDefaultAsync(m => m.MessageID == id);
 
             AppUser user = _userManager.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-            
+
             message.Admins.Remove(user);
 
             _context.Update(message);
@@ -199,14 +195,14 @@ namespace LonghornBankWebApp.Controllers
         //    {
         //        _context.Messages.Remove(message);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool MessageExists(int id)
         {
-          return _context.Messages.Any(e => e.MessageID == id);
+            return _context.Messages.Any(e => e.MessageID == id);
         }
     }
 }

@@ -6,9 +6,9 @@
 
 
         public Decimal CurrentPrice { get; set; }
-        
+
         public DateTime Date { get; set; }
-        
+
 
         // Navigational property
         public Stock Stock { get; set; }

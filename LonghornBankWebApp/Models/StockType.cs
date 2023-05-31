@@ -24,7 +24,7 @@ namespace LonghornBankWebApp.Models
             {
                 Stocks = new List<Stock>();
             }
-         
+
         }
 
 

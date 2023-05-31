@@ -1,5 +1,4 @@
-﻿using System;
-namespace LonghornBankWebApp.Models.ViewModels
+﻿namespace LonghornBankWebApp.Models.ViewModels
 {
     public class TransactionDispute
     {

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
+﻿using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -19,7 +19,7 @@ namespace LonghornBankWebApp.Controllers
         // GET: StockTypes
         public async Task<IActionResult> Index()
         {
-              return View(await _context.StockTypes.ToListAsync());
+            return View(await _context.StockTypes.ToListAsync());
         }
 
         // GET: StockTypes/Details/5
@@ -148,14 +148,14 @@ namespace LonghornBankWebApp.Controllers
         //    {
         //        _context.StockTypes.Remove(stockType);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool StockTypeExists(int id)
         {
-          return _context.StockTypes.Any(e => e.StockTypeID == id);
+            return _context.StockTypes.Any(e => e.StockTypeID == id);
         }
     }
 }

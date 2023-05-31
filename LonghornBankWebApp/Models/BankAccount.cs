@@ -5,11 +5,11 @@
 namespace LonghornBankWebApp.Models
 {
     // User can have unlimited checking and savings but only one IRA account
- 
+
     // This model class refers to the bank accounts made by users and not website account
-    
-    
-    public enum BankAccountTypes { Checking, Savings, IRA}
+
+
+    public enum BankAccountTypes { Checking, Savings, IRA }
     public class BankAccount
     {
 
@@ -64,7 +64,7 @@ namespace LonghornBankWebApp.Models
 
         public AppUser User { get; set; }
 
-        
+
         public List<Transaction> Transactions { get; set; }
 
 
@@ -73,7 +73,7 @@ namespace LonghornBankWebApp.Models
 
         public BankAccount()
         {
-            if(Transactions == null)
+            if (Transactions == null)
             {
 
                 Transactions = new List<Transaction>();

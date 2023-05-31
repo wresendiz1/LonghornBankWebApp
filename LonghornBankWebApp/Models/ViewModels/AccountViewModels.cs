@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LonghornBankWebApp.Models
-{ 
+{
     //NOTE: This is the view model used to allow the user to login
     //The user only needs teh email and password to login
     public class LoginViewModel
@@ -26,7 +24,7 @@ namespace LonghornBankWebApp.Models
     //When the user registers, they only need to specify the
     //properties listed in this model
     public class RegisterViewModel
-    {   
+    {
         //NOTE: Here is the property for email
         [Required]
         [EmailAddress]
@@ -49,7 +47,7 @@ namespace LonghornBankWebApp.Models
         [RegularExpression(@"^[a-zA-Z]{1}$", ErrorMessage = "Middle initial must be 1 valid character long.")]
         public String MidIntName { get; set; }
 
-        
+
         [Required(ErrorMessage = "Last name is required.")]
         [Display(Name = "Last Name")]
         public String LastName { get; set; }
@@ -69,13 +67,13 @@ namespace LonghornBankWebApp.Models
         [Display(Name = "City")]
         public String City { get; set; }
 
-      
+
         [Required(ErrorMessage = "Zip Code is required.")]
         [RegularExpression(@"^(?!00000)[0-9]{5,5}$", ErrorMessage = "Must be a valid 5 digit zip code.")]
         [DataType(DataType.PostalCode)]
         [Display(Name = "Zip Code")]
         public String ZipCode { get; set; }
-        
+
         [Required(ErrorMessage = "Date of birth is required.")]
         [Display(Name = "Date of Birth")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]

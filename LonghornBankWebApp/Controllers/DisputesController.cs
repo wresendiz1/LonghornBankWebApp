@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using LonghornBankWebApp.Models.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 using LonghornBankWebApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -25,7 +25,7 @@ namespace LonghornBankWebApp.Controllers
         // GET: Disputes
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Disputes.ToListAsync());
+            return View(await _context.Disputes.ToListAsync());
         }
 
         // GET: Disputes/Details/5
@@ -36,7 +36,7 @@ namespace LonghornBankWebApp.Controllers
                 return NotFound();
             }
 
-            var dispute = await _context.Disputes.Include(d => d.Transaction).ThenInclude(t=>t.BankAccount).Include(t =>t.Transaction).ThenInclude(t => t.StockPortfolio)
+            var dispute = await _context.Disputes.Include(d => d.Transaction).ThenInclude(t => t.BankAccount).Include(t => t.Transaction).ThenInclude(t => t.StockPortfolio)
                 .FirstOrDefaultAsync(m => m.DisputeID == id);
 
 
@@ -49,9 +49,9 @@ namespace LonghornBankWebApp.Controllers
         }
 
 
-        public IActionResult Resolve(int id, string message, decimal adjusted = -1, bool reject = false, bool accept = false )
+        public IActionResult Resolve(int id, string message, decimal adjusted = -1, bool reject = false, bool accept = false)
         {
-            Dispute dispute = _context.Disputes.Include(t=>t.Transaction).ThenInclude(t=>t.BankAccount).Include(t => t.Transaction).ThenInclude(t => t.StockPortfolio).FirstOrDefault(d => d.DisputeID == id);
+            Dispute dispute = _context.Disputes.Include(t => t.Transaction).ThenInclude(t => t.BankAccount).Include(t => t.Transaction).ThenInclude(t => t.StockPortfolio).FirstOrDefault(d => d.DisputeID == id);
 
             dispute.oldAmount = dispute.Transaction.TransactionAmount;
 
@@ -61,7 +61,7 @@ namespace LonghornBankWebApp.Controllers
 
             dispute.adminEmail = User.Identity.Name.ToString();
 
-            if(accept)
+            if (accept)
             {
                 if (dispute.DeleteTransaction)
                 {
@@ -85,11 +85,11 @@ namespace LonghornBankWebApp.Controllers
                     {
                         dispute.Transaction.BankAccount.BankAccountBalance = dispute.Transaction.BankAccount.BankAccountBalance - dispute.Transaction.TransactionAmount + dispute.CorrectAmount;
                     }
-                    
+
                     dispute.Transaction.TransactionAmount = dispute.CorrectAmount;
                 }
 
-                
+
                 dispute.DisputeStatus = DisputeStatus.Accepted;
                 dispute.Transaction.TransactionNotes = "(Dispute accepted) " + dispute.Transaction.TransactionNotes;
 
@@ -97,12 +97,12 @@ namespace LonghornBankWebApp.Controllers
 
 
             }
-            if(reject)
+            if (reject)
             {
                 dispute.DisputeStatus = DisputeStatus.Rejected;
                 dispute.Transaction.TransactionNotes = "(Dispute rejected) " + dispute.Transaction.TransactionNotes;
             }
-            if(adjusted != -1)
+            if (adjusted != -1)
             {
                 dispute.CorrectAmount = adjusted;
                 dispute.DisputeStatus = DisputeStatus.Adjusted;
@@ -125,10 +125,10 @@ namespace LonghornBankWebApp.Controllers
             if (dispute.Transaction.StockPortfolio != null)
             {
                 _context.Update(dispute.Transaction.StockPortfolio);
-                
+
                 // find user email
                 StockPortfolio sp = _context.StockPortfolios.Include(sp => sp.User).FirstOrDefault(sp => sp.StockPortfolioID == dispute.Transaction.StockPortfolio.StockPortfolioID);
-                
+
                 EmailMessaging.SendEmail(sp.User.Email, "Dispute for transaction: " + dispute.Transaction.TransactionNumber + " has been resolved"
                     , "Transaction " + dispute.Transaction.TransactionNumber + " has been " + dispute.DisputeStatus.ToString() + " by admin " + dispute.adminEmail + ". Please check your account for more details. Message from admin: " + dispute.adminMessage);
 
@@ -237,13 +237,13 @@ namespace LonghornBankWebApp.Controllers
             };
             userMessage.Admins.Add(u);
 
-            
+
             _context.Add(userMessage);
             _context.Add(message);
             _context.Add(dispute);
             _context.SaveChanges();
 
-            return RedirectToAction(controllerName:"Transactions", actionName:"Details", routeValues: new {id=transaction.TransactionID});
+            return RedirectToAction(controllerName: "Transactions", actionName: "Details", routeValues: new { id = transaction.TransactionID });
         }
 
         //// POST: Disputes/Create
@@ -353,14 +353,14 @@ namespace LonghornBankWebApp.Controllers
         //    {
         //        _context.Disputes.Remove(dispute);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool DisputeExists(int id)
         {
-          return _context.Disputes.Any(e => e.DisputeID == id);
+            return _context.Disputes.Any(e => e.DisputeID == id);
         }
     }
 }

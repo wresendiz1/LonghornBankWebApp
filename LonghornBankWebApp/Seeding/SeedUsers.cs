@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using IronXL;
-
+﻿using IronXL;
+using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using LonghornBankWebApp.Utilities;
-using LonghornBankWebApp.DAL;
+using Microsoft.AspNetCore.Identity;
 
 namespace LonghornBankWebApp.Seeding
 {
-    
+
     public static class SeedUsers
     {
         public async static Task<IdentityResult> SeedAllUsers(UserManager<AppUser> userManager, AppDbContext context)
@@ -16,12 +15,12 @@ namespace LonghornBankWebApp.Seeding
             String path = @"C:\Fall 2022\LonghornBankWebApp\LonghornBankWebApp\wwwroot\Files\BankData.xlsx";
             var workBook = new WorkBook(path);
             var workSheet1 = workBook.WorkSheets.First();
-            
+
             //Create a list of AddUserModels
             List<AddUserModel> AllUsers = new List<AddUserModel>();
 
             //ADDED: Iterate through every customer case in the Excel file
-            for(var y = 2; y<=52; y++)
+            for (var y = 2; y <= 52; y++)
             {
                 // Gets all the fields from customer
                 var cells = workSheet1[$"A{y}:K{y}"].ToList();
@@ -45,13 +44,13 @@ namespace LonghornBankWebApp.Seeding
                     Password = cells[1].Value.ToString(),
                     RoleName = "Customer"
                 }); ;
-                
+
             }
             //ADDED: Iterate through every employee case in the Excel file
             // employees need SSN & EmpType and lack DOB
 
             var workSheet2 = workBook.WorkSheets[1];
-            
+
             for (var y = 2; y <= 23; y++)
             {
                 // Gets all the fields from customer
@@ -96,7 +95,7 @@ namespace LonghornBankWebApp.Seeding
             }
             catch (Exception ex)
             {
-                throw new Exception("There was a problem adding the user with email: " 
+                throw new Exception("There was a problem adding the user with email: "
                     + errorFlag, ex);
             }
 

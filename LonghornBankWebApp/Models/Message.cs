@@ -8,7 +8,7 @@ namespace LonghornBankWebApp.Models
         public Int32 MessageID { get; set; }
 
         public String Receiver { get; set; }
-        
+
         public String Sender { get; set; }
 
         [Required]
@@ -26,17 +26,17 @@ namespace LonghornBankWebApp.Models
         public List<AppUser> Admins { get; set; }
 
 
-       
+
         public Message()
         {
 
-            if(Admins == null)
+            if (Admins == null)
             {
                 Admins = new List<AppUser>();
 
             }
         }
 
-        
+
     }
 }

@@ -1,12 +1,11 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 
 namespace LonghornBankWebApp.Models
 {
     // NOTE: Savings can only contain standard transaction (deposits/withdrawals/transfers)
     public enum TransactionTypes { Deposit, Withdrawal, Transfer, Interest, Fee, Other, Bonus }
-    
+
     public enum TransactionStatuses { Pending, Approved, Rejected, Scheduled, Deleted }
 
     public class Transaction

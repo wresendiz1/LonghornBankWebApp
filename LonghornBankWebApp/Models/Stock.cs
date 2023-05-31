@@ -35,7 +35,7 @@ namespace LonghornBankWebApp.Models
             if (StockTransactions == null)
             {
                 StockTransactions = new List<StockTransaction>();
-                
+
             }
             if (StockPrices == null)
             {

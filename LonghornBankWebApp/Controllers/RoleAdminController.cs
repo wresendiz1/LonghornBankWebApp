@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using LonghornBankWebApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using LonghornBankWebApp.Utilities;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -28,13 +28,13 @@ namespace LonghornBankWebApp.Controllers
             _signInManager = signIn;
             _context = appDbContext;
         }
-        
+
         // GET: /RoleAdmin/
         public async Task<ActionResult> Index()
         {
             //Create a list of roles that will need to be edited
             List<RoleEditModel> roles = new();
-            
+
             //loop through each of the existing roles
             foreach (IdentityRole role in _roleManager.Roles)
             {
@@ -51,7 +51,7 @@ namespace LonghornBankWebApp.Controllers
                 };
 
                 //add this role to the list of role edit models
-                roles.Add(rem);  
+                roles.Add(rem);
             }
 
             //pass the list of roles to the view
@@ -63,7 +63,7 @@ namespace LonghornBankWebApp.Controllers
         {
             //this is a list of all the transactions that are pending
             List<Transaction> PendingTrans = _context.Transactions.Where(t => t.TransactionStatus == TransactionStatuses.Pending).
-                Include(t => t.BankAccount).ThenInclude(ba => ba.User).Include(t=>t.StockPortfolio).ThenInclude(sp=>sp.User).ToList();
+                Include(t => t.BankAccount).ThenInclude(ba => ba.User).Include(t => t.StockPortfolio).ThenInclude(sp => sp.User).ToList();
 
 
             // list of disputes
@@ -95,10 +95,10 @@ namespace LonghornBankWebApp.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult DisplayProcessing()
         {
-            
+
             return View(_context.PortfolioProcesses.ToList());
         }
-        
+
         [Authorize(Roles = "Admin")]
         public IActionResult ProcessPortfolios()
         {
@@ -111,7 +111,7 @@ namespace LonghornBankWebApp.Controllers
 
 
 
-            List<StockPortfolio> portfolios = _context.StockPortfolios.Include(sp => sp.Transactions).Include(sp=>sp.StockTransactions).ThenInclude(st=>st.Stock).ThenInclude(s=>s.StockType).ToList();
+            List<StockPortfolio> portfolios = _context.StockPortfolios.Include(sp => sp.Transactions).Include(sp => sp.StockTransactions).ThenInclude(st => st.Stock).ThenInclude(s => s.StockType).ToList();
 
             Transaction bonus;
             bool changed = false;
@@ -119,7 +119,7 @@ namespace LonghornBankWebApp.Controllers
             {
 
                 StockPortfolioController.UpdatePortfolio(sp, _context);
-                
+
 
                 if (sp.IsBalanced)
                 {
@@ -143,13 +143,13 @@ namespace LonghornBankWebApp.Controllers
                 }
             }
 
-            if(changed)
+            if (changed)
             {
 
                 _context.SaveChanges();
             }
 
-            return RedirectToAction(actionName:"ManageTask");
+            return RedirectToAction(actionName: "ManageTask");
         }
 
         [Authorize(Roles = "Admin")]
@@ -157,7 +157,7 @@ namespace LonghornBankWebApp.Controllers
         {
             //this is a list of all the transactions that are pending
             List<Transaction> PendingTrans = _context.Transactions.Where(t => t.TransactionStatus == TransactionStatuses.Pending).
-                Include(t => t.BankAccount).ThenInclude(ba => ba.User).Include(t=>t.StockPortfolio).ThenInclude(sp=>sp.User).ToList();
+                Include(t => t.BankAccount).ThenInclude(ba => ba.User).Include(t => t.StockPortfolio).ThenInclude(sp => sp.User).ToList();
 
             return View(PendingTrans);
         }
@@ -166,13 +166,13 @@ namespace LonghornBankWebApp.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult PendingDisputes(bool showAll = false)
         {
-            
+
             List<Dispute> Disputes = new();
 
             if (showAll == false)
             {
                 Disputes = _context.Disputes.Where(d => d.DisputeStatus == DisputeStatus.Submitted).Include(d => d.Transaction)
-                .ThenInclude(t => t.BankAccount).ThenInclude(ba => ba.User).Include(d=> d.Transaction).ThenInclude(t=> t.StockPortfolio).ThenInclude(t=>t.User).ToList();
+                .ThenInclude(t => t.BankAccount).ThenInclude(ba => ba.User).Include(d => d.Transaction).ThenInclude(t => t.StockPortfolio).ThenInclude(t => t.User).ToList();
                 ViewBag.showAll = false;
             }
 
@@ -181,7 +181,7 @@ namespace LonghornBankWebApp.Controllers
                 Disputes = _context.Disputes.Include(d => d.Transaction).ThenInclude(t => t.BankAccount).ThenInclude(ba => ba.User).ToList();
                 ViewBag.showAll = true;
             }
-            
+
 
             return View(Disputes);
 
@@ -191,7 +191,7 @@ namespace LonghornBankWebApp.Controllers
         public IActionResult DisputeResolution(Int32 id)
         {
 
-            Dispute dispute = _context.Disputes.Include(d=>d.Transaction).FirstOrDefault(d=>d.DisputeID==id);
+            Dispute dispute = _context.Disputes.Include(d => d.Transaction).FirstOrDefault(d => d.DisputeID == id);
 
             return RedirectToAction(controllerName: "Transactions", actionName: "Details", routeValues: new { id = dispute.Transaction.TransactionID });
 
@@ -222,9 +222,9 @@ namespace LonghornBankWebApp.Controllers
             }
 
             //update transaction status to approved
-            if(status == "Approve")
+            if (status == "Approve")
             {
-                if(tr.TransactionDate <= DateTime.Today)
+                if (tr.TransactionDate <= DateTime.Today)
                 {
                     tr.TransactionStatus = TransactionStatuses.Approved;
 
@@ -246,14 +246,14 @@ namespace LonghornBankWebApp.Controllers
                     {
                         tr.StockPortfolio.CashValuePortion += tr.TransactionAmount;
                     }
-                    
+
                 }
                 else
                 {
                     tr.TransactionStatus = TransactionStatuses.Scheduled;
                 }
-                
-                
+
+
             }
             else
             {
@@ -265,7 +265,7 @@ namespace LonghornBankWebApp.Controllers
                 EmailMessaging.SendEmail(tr.BankAccount.User.Email, "Transaction: " + tr.TransactionNumber
                 + " has been " + tr.TransactionStatus.ToString(), "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
                 " Please login to your account to view the details of this transaction.");
-                
+
                 _context.Update(tr.BankAccount);
 
                 // Create notifaction
@@ -284,7 +284,7 @@ namespace LonghornBankWebApp.Controllers
 
             }
 
-            else if (tr.StockPortfolio!= null)
+            else if (tr.StockPortfolio != null)
             {
                 EmailMessaging.SendEmail(tr.StockPortfolio.User.Email, "Transaction: " + tr.TransactionNumber
                 + " has been " + tr.TransactionStatus.ToString(), "Transaction " + tr.TransactionNumber + " has been " + tr.TransactionStatus.ToString() + " by an administrator." +
@@ -316,7 +316,7 @@ namespace LonghornBankWebApp.Controllers
 
 
 
-        
+
         public ActionResult Edit(string id)
         {
             //look up the role requested by the user
@@ -327,10 +327,10 @@ namespace LonghornBankWebApp.Controllers
 
             List<AppUser> NonActive = new();
 
-            var UsersInRole = _userManager.GetUsersInRoleAsync(role.Name).Result;  
+            var UsersInRole = _userManager.GetUsersInRoleAsync(role.Name).Result;
 
 
-            foreach(AppUser user in UsersInRole)
+            foreach (AppUser user in UsersInRole)
             {
                 if (user.IsActive == true)
                 {
@@ -466,7 +466,7 @@ namespace LonghornBankWebApp.Controllers
             if (result.Succeeded) //everything is okay
             {
                 // Send email to new employee
-                EmailMessaging.SendEmail(aum.User.Email, "Welcome to Longhorn Bank", 
+                EmailMessaging.SendEmail(aum.User.Email, "Welcome to Longhorn Bank",
                     "You have been added as an employee to Longhorn Bank. Please login to your account to view your account information." +
                     "Passoword: " + aum.Password + ". Please contact your manager if you have any questions.");
 
@@ -506,16 +506,16 @@ namespace LonghornBankWebApp.Controllers
 
             }
 
-            
+
             ViewBag.SelectedUsers = result.Count();
 
             return View(result.OrderBy(c => c.UserName));
-            
+
 
 
         }
 
-        
+
         public async Task<IActionResult> AccountDetails(string user)
         {
             if (user == null)
@@ -553,16 +553,16 @@ namespace LonghornBankWebApp.Controllers
 
             ViewBag.Role = await _userManager.GetRolesAsync(customer);
             ViewBag.Role = ViewBag.Role[0];
-            
+
             //send data to the view
             return View(ivm);
 
         }
 
-        
+
         public async Task<IActionResult> AccountModify(string email)
         {
-            
+
             ViewBag.Email = email;
             AppUser User = await _userManager.FindByEmailAsync(email);
 
@@ -572,7 +572,7 @@ namespace LonghornBankWebApp.Controllers
 
             return View();
         }
-        
+
 
         public async Task<IActionResult> ChangePassword(string user)
         {
@@ -606,7 +606,7 @@ namespace LonghornBankWebApp.Controllers
 
                 EmailMessaging.SendEmail(userLoggedIn.Email, "Password Changed", "Your password has been changed. Your new password is: " + cpvm.NewPassword);
                 return RedirectToAction("AccountDetails", new { user = userLoggedIn.UserName });
-                
+
 
             }
             else
@@ -615,7 +615,7 @@ namespace LonghornBankWebApp.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
-                
+
                 ViewBag.UserName = userLoggedIn.UserName;
                 return View(cpvm);
 
@@ -633,7 +633,7 @@ namespace LonghornBankWebApp.Controllers
             {
                 // Count changes
                 int countToChange = 0;
-                
+
                 //get user info
                 AppUser user = await _userManager.FindByEmailAsync(id);
 
@@ -682,7 +682,7 @@ namespace LonghornBankWebApp.Controllers
                 else
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("AccountDetails", new {user = id});
+                    return RedirectToAction("AccountDetails", new { user = id });
                 }
             }
 
@@ -694,7 +694,7 @@ namespace LonghornBankWebApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BaIndex(string username)
         {
-            
+
             var UsersInRole = _userManager.GetUsersInRoleAsync("Customer");
 
 
@@ -704,7 +704,7 @@ namespace LonghornBankWebApp.Controllers
             }
 
             var result = from cus in await UsersInRole select cus;
-            
+
             ViewBag.AllUsers = result.Count();
 
             if (username != null)
@@ -739,12 +739,12 @@ namespace LonghornBankWebApp.Controllers
             {
                 return View("Error", new string[] { "Bank Account Not Found" });
             }
-            
+
             return View(dbBankAccounts);
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> EditBa(string id, string status )
+        public async Task<IActionResult> EditBa(string id, string status)
         {
             if (id == null | status == null)
             {
@@ -810,18 +810,18 @@ namespace LonghornBankWebApp.Controllers
             }
 
 
-            
-            if(dbBankAccount != null)
+
+            if (dbBankAccount != null)
             {
-       
-                    return RedirectToAction("BaDetails", new { user = dbBankAccount.User.UserName });
+
+                return RedirectToAction("BaDetails", new { user = dbBankAccount.User.UserName });
             }
 
             else
             {
-                    return RedirectToAction("BaDetails", new { user = dBStockPort.User.UserName });
+                return RedirectToAction("BaDetails", new { user = dBStockPort.User.UserName });
             }
-            
+
 
         }
 

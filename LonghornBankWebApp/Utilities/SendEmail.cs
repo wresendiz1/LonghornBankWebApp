@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Net;
 
 
 namespace LonghornBankWebApp.Utilities

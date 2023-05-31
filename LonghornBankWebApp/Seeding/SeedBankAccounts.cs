@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using IronXL;
-
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
+﻿using IronXL;
 using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Text;
 
 namespace LonghornBankWebApp.Seeding
@@ -27,46 +25,46 @@ namespace LonghornBankWebApp.Seeding
             for (var y = 2; y <= 23; y++)
             {
                 var cells = workSheet[$"A{y}:E{y}"].ToList();
-                
-                    // just to store the record and it's attributes before adding it to the list
-                    BankAccount bankAccount = new BankAccount();
-                    
-                    //set the bank account type
-                    if (cells[3].Value.ToString() == "Checking")
-                    {
-                        bankAccount.BankAccountType = BankAccountTypes.Checking;
-                    }
-                    else if(cells[3].Value.ToString() == "Savings")
-                    {
-                        bankAccount.BankAccountType = BankAccountTypes.Savings;
-                    }
-                    else if(cells[3].Value.ToString() == "IRA")
-                    {
-                        bankAccount.BankAccountType = BankAccountTypes.IRA;
-                    }
-                    
-                    // set the bank account number
-                    bankAccount.BankAccountNumber = Convert.ToUInt32(cells[0].Value);
-                    // set the bank account name
-                    bankAccount.BankAccountName = cells[2].Value.ToString();
-                    //sets the balance
-                    bankAccount.BankAccountBalance = Convert.ToDecimal(cells[4].Value);
-                    // sets the user
-                    bankAccount.User = userManager.FindByEmailAsync(cells[1].Value.ToString()).Result;
 
-                    bankAccount.isActive = true;
-                    
-              
-                    // adds account object to list of all
-                    allBankAccounts.Add(bankAccount);
-               
-        
+                // just to store the record and it's attributes before adding it to the list
+                BankAccount bankAccount = new BankAccount();
+
+                //set the bank account type
+                if (cells[3].Value.ToString() == "Checking")
+                {
+                    bankAccount.BankAccountType = BankAccountTypes.Checking;
+                }
+                else if (cells[3].Value.ToString() == "Savings")
+                {
+                    bankAccount.BankAccountType = BankAccountTypes.Savings;
+                }
+                else if (cells[3].Value.ToString() == "IRA")
+                {
+                    bankAccount.BankAccountType = BankAccountTypes.IRA;
+                }
+
+                // set the bank account number
+                bankAccount.BankAccountNumber = Convert.ToUInt32(cells[0].Value);
+                // set the bank account name
+                bankAccount.BankAccountName = cells[2].Value.ToString();
+                //sets the balance
+                bankAccount.BankAccountBalance = Convert.ToDecimal(cells[4].Value);
+                // sets the user
+                bankAccount.User = userManager.FindByEmailAsync(cells[1].Value.ToString()).Result;
+
+                bankAccount.isActive = true;
+
+
+                // adds account object to list of all
+                allBankAccounts.Add(bankAccount);
+
+
             }
 
             workSheet = workBook.WorkSheets[3];
             for (var y = 2; y <= 6; y++)
             {
-                 var cells = workSheet[$"A{y}:D{y}"].ToList();
+                var cells = workSheet[$"A{y}:D{y}"].ToList();
 
                 StockPortfolio stockPortfolio = new StockPortfolio();
                 // set portfolio number
@@ -75,7 +73,7 @@ namespace LonghornBankWebApp.Seeding
                 stockPortfolio.PortfolioName = cells[2].Value.ToString();
                 // set portfolio user
                 stockPortfolio.User = userManager.FindByEmailAsync(cells[1].Value.ToString()).Result;
-                
+
                 // set portfolio balance
                 stockPortfolio.CashValuePortion = Convert.ToDecimal(cells[3].Value);
 
@@ -83,7 +81,7 @@ namespace LonghornBankWebApp.Seeding
 
                 allStockPortfolios.Add(stockPortfolio);
 
-                
+
             }
 
             // at this point you have a list of all the bank account objects from the excel sheet
@@ -92,7 +90,7 @@ namespace LonghornBankWebApp.Seeding
 
             try
             {
-                foreach(BankAccount ba in allBankAccounts)
+                foreach (BankAccount ba in allBankAccounts)
                 {
                     intBankID = ba.BankAccountID;
                     strBankAccount = ba.BankAccountName;
@@ -121,7 +119,8 @@ namespace LonghornBankWebApp.Seeding
                     }
 
                 }
-            } catch(Exception ex)// throw error if problem in 
+            }
+            catch (Exception ex)// throw error if problem in 
             {
                 StringBuilder msg = new StringBuilder();
                 msg.Append("There was a problem adding the bank account with the title: ");
@@ -133,7 +132,7 @@ namespace LonghornBankWebApp.Seeding
             }
 
             // at this point you have a list of all the bank account objects from the excel sheet
-            
+
             Int32 intPortfolioID = 0;
             String PortfolioName = "Start";
 
@@ -160,7 +159,7 @@ namespace LonghornBankWebApp.Seeding
                     //Update fields
                     {
                         dbStockPortfolio.PortfolioNumber = sp.PortfolioNumber;
-                        dbStockPortfolio.PortfolioName= sp.PortfolioName;
+                        dbStockPortfolio.PortfolioName = sp.PortfolioName;
                         dbStockPortfolio.CashValuePortion = sp.CashValuePortion;
                         _context.SaveChanges();
 

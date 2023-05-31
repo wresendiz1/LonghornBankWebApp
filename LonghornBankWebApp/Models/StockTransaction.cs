@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace LonghornBankWebApp.Models
 {
 
     // Withdrawal = Purchase
     // Deposit = Sell
- 
+
     public enum StockTransactionTypes { Withdrawal, Deposit, Fee, Bonus }
     public class StockTransaction
     {
@@ -15,7 +14,7 @@ namespace LonghornBankWebApp.Models
         public Int32 StockTransactionNumber { get; set; }
 
         // NOTE: Used to stock deposits and associate the # of sold shares with withdrawal
-        public Int32 SellingTransactionNumber{get; set; }
+        public Int32 SellingTransactionNumber { get; set; }
 
         [Display(Name = "Price per Share")]
         [DisplayFormat(DataFormatString = "{0:C}")]

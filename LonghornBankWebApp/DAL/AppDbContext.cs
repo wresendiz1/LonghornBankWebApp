@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.Models;
+﻿using LonghornBankWebApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace LonghornBankWebApp.DAL
 {
     //NOTE: This class definition references the user class for this project.  
     //If your User class is called something other than AppUser, you will need
     //to change it in the line below
-    public class AppDbContext: IdentityDbContext<AppUser>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){ }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -40,7 +40,7 @@ namespace LonghornBankWebApp.DAL
 
         public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        
+
         public DbSet<StockPortfolio> StockPortfolios { get; set; }
 
         public DbSet<Dispute> Disputes { get; set; }

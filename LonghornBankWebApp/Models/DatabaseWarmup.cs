@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 namespace LonghornBankWebApp.Models
 {
     // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio
-    public class MyBackgroundService : IHostedService, IDisposable
+    public class DatabaseWarmup : IHostedService, IDisposable
     {
-        private readonly ILogger<MyBackgroundService> _logger;
+        private readonly ILogger<DatabaseWarmup> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private Timer _timer;
 
-        public MyBackgroundService(ILogger<MyBackgroundService> logger, IServiceScopeFactory scopeFactory)
+        public DatabaseWarmup(ILogger<DatabaseWarmup> logger, IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
@@ -49,8 +49,6 @@ namespace LonghornBankWebApp.Models
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             // from the stocks model, get the stock prices
             var stockPrices = await dbContext.Stocks.Include(s => s.StockPrices).ToListAsync();
-
-            // TODO: Add your background task logic here
 
             await dbContext.SaveChangesAsync();
         }

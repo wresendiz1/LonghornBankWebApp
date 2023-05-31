@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Text;
-
+﻿using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
-using LonghornBankWebApp.DAL;
+using Microsoft.AspNetCore.Identity;
+using System.Text;
 
 namespace LonghornBankWebApp.Utilities
 {
@@ -12,13 +11,13 @@ namespace LonghornBankWebApp.Utilities
         {
             //check to see if the user already exists in the database
             AppUser dbUser = await userManager.FindByEmailAsync(aum.User.Email);
-            
+
             //create a variable for result
             IdentityResult result;
-            
+
             //if user hasn't been created, then add them
             if (dbUser == null)
-            {           
+            {
                 try
                 {
                     //NOTE: Attempt to add the user using the UserManager
@@ -57,7 +56,7 @@ namespace LonghornBankWebApp.Utilities
                 //update the fields that you inherit from identity
                 //email and user name do not change
                 dbUser.PhoneNumber = aum.User.PhoneNumber;
-                
+
                 //FirstName is included as an example
                 dbUser.FirstName = aum.User.FirstName;
                 dbUser.LastName = aum.User.LastName;

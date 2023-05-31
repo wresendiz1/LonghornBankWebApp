@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace LonghornBankWebApp.Models
 {
@@ -73,7 +72,7 @@ namespace LonghornBankWebApp.Models
             {
                 Transactions = new List<Transaction>();
             }
-         
+
         }
 
     }

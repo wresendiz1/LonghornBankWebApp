@@ -3,7 +3,7 @@
 namespace LonghornBankWebApp.Models
 {
 
-    public enum DisputeStatus { Submitted, Accepted, Rejected, Adjusted}
+    public enum DisputeStatus { Submitted, Accepted, Rejected, Adjusted }
     public class Dispute
     {
 
@@ -39,7 +39,7 @@ namespace LonghornBankWebApp.Models
         public DateTime dateCreated { get; set; }
 
         public String adminEmail { get; set; }
-        
+
         // navigational properties
         public Transaction Transaction { get; set; }
 

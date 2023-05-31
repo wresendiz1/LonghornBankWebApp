@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using LonghornBankWebApp.Utilities;
+﻿using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
-using LonghornBankWebApp.DAL;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -40,7 +39,7 @@ namespace LonghornBankWebApp.Controllers
 
         }
 
-       
+
         public async Task<IActionResult> SeedRoles()
         {
             try
@@ -104,7 +103,7 @@ namespace LonghornBankWebApp.Controllers
             return View("Confirm");
         }
 
-     
+
         public IActionResult SeedTransactions()
         {
 
@@ -305,7 +304,7 @@ namespace LonghornBankWebApp.Controllers
         public IActionResult SeedBankAccounts()
         {
             try
-            { 
+            {
                 // ASK: does this need to be await
                 Seeding.SeedBankAccounts.SeedAllBankAccounts(_userManager, _context);
             }

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using IronXL;
-
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
+﻿using IronXL;
 using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Text;
 
 namespace LonghornBankWebApp.Seeding
@@ -25,11 +23,11 @@ namespace LonghornBankWebApp.Seeding
                 var cells = workSheet[$"A{y}:E{y}"].ToList();
 
                 Dispute dis = new Dispute();
-                
+
                 dis.Transaction = _context.Transactions.FirstOrDefault(t => t.TransactionNumber == Convert.ToInt32(cells[1].Value.ToString()));
 
                 dis.Transaction.BankAccount = _context.BankAccounts.FirstOrDefault(ba => ba.Transactions.Contains(dis.Transaction));
-                
+
                 dis.Transaction.BankAccount.User = userManager.FindByEmailAsync(cells[0].Value.ToString()).Result;
 
                 dis.CorrectAmount = Convert.ToDecimal(cells[2].Value);
@@ -52,10 +50,10 @@ namespace LonghornBankWebApp.Seeding
 
             try
             {
-                foreach(Dispute d in allDisputes)
+                foreach (Dispute d in allDisputes)
                 {
                     notes = d.DisputeNotes;
-                    
+
                     Dispute dbDispute = _context.Disputes.FirstOrDefault(dis => dis.DisputeID == d.DisputeID);
 
                     if (dbDispute == null)
@@ -65,7 +63,7 @@ namespace LonghornBankWebApp.Seeding
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 StringBuilder msg = new StringBuilder();
                 msg.Append("Error seeding dispute ");

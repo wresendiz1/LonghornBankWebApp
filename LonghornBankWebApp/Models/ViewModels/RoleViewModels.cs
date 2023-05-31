@@ -1,6 +1,6 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace LonghornBankWebApp.Models
 {
@@ -10,7 +10,7 @@ namespace LonghornBankWebApp.Models
         public IEnumerable<AppUser> ActiveMembers { get; set; }
         public IEnumerable<AppUser> InActiveMembers { get; set; }
     }
-    
+
     public class RoleModificationModel
     {
         [Required]

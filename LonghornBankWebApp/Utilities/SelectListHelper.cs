@@ -1,11 +1,7 @@
-﻿using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LonghornBankWebApp.Utilities
-    
+
 {
     public class SelectListHelper
     {

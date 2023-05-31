@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using LonghornBankWebApp.Models.ViewModels;
+using LonghornBankWebApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
 using System.Collections;
-using LonghornBankWebApp.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using LonghornBankWebApp.Utilities;
-using Microsoft.AspNetCore.Identity;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -83,7 +79,7 @@ namespace LonghornBankWebApp.Controllers
 
                 if (order == "Descending")
                 {
-                     amount_ordered = amount_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                    amount_ordered = amount_ordered.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 }
 
                 else
@@ -181,7 +177,7 @@ namespace LonghornBankWebApp.Controllers
 
                 ordered = date_ordered.Keys.ToList();
             }
-            
+
 
 
 
@@ -223,7 +219,7 @@ namespace LonghornBankWebApp.Controllers
                     queried_ordered.Add(tadd);
                 }
             }
-            
+
             return queried_ordered;
         }
 
@@ -236,14 +232,14 @@ namespace LonghornBankWebApp.Controllers
             bool index = false;
             bool mutual = false;
             Stock temp = new();
-            
+
 
             IDictionary<Stock, int> stock_holdings = new Dictionary<Stock, int>();
 
             foreach (KeyValuePair<int, int> holding in holdings)
             {
                 sum += _context.Stocks.Find(holding.Key).CurrentPrice * holding.Value;
-                temp = _context.Stocks.Include(s=>s.StockType).FirstOrDefault(s=> s.StockID == holding.Key);
+                temp = _context.Stocks.Include(s => s.StockType).FirstOrDefault(s => s.StockID == holding.Key);
 
                 if (temp.StockType.StockTypeName == "Ordinary")
                 {
@@ -262,7 +258,7 @@ namespace LonghornBankWebApp.Controllers
             }
 
             stonks.PortfolioValue = stonks.CashValuePortion + sum;
-            
+
 
             if (index && mutual && ordinary >= 2)
             {
@@ -289,7 +285,7 @@ namespace LonghornBankWebApp.Controllers
 
             foreach (Transaction t in stonks.Transactions)
             {
-                if(t.TransactionType == TransactionTypes.Fee)
+                if (t.TransactionType == TransactionTypes.Fee)
                 {
                     stonks.TotalFees += t.TransactionAmount;
                 }
@@ -301,21 +297,21 @@ namespace LonghornBankWebApp.Controllers
 
             return (stonks, stock_holdings);
         }
-        
+
         public async Task<IActionResult> Index(string SearchString, string selected, string order, int id, string message, string bonus)
         {
-            
+
             // get the stock portfolio from the database
             StockPortfolio stonks = new();
 
             ViewBag.Message = message;
             ViewBag.bonus = bonus;
 
-            if(User.IsInRole("Customer"))
+            if (User.IsInRole("Customer"))
             {
                 stonks = await _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefaultAsync(r => r.User.UserName == User.Identity.Name);
             }
-            
+
             if (User.IsInRole("Admin") || User.IsInRole("Employee"))
             {
                 stonks = await _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefaultAsync(r => r.StockPortfolioID == id);
@@ -389,7 +385,7 @@ namespace LonghornBankWebApp.Controllers
 
             decimal withScheduled = 0;
             decimal withPending = 0;
-            foreach(Transaction tr in stonks.Transactions)
+            foreach (Transaction tr in stonks.Transactions)
             {
                 if (tr.TransactionStatus == TransactionStatuses.Pending)
                 {
@@ -418,7 +414,7 @@ namespace LonghornBankWebApp.Controllers
         public IActionResult CalcBonus(int id)
         {
             StockPortfolio stonk = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).FirstOrDefault(r => r.StockPortfolioID == id);
-            decimal bonus = (stonk.PortfolioValue-stonk.CashValuePortion) * 0.1m;
+            decimal bonus = (stonk.PortfolioValue - stonk.CashValuePortion) * 0.1m;
 
             //ViewBag.bonus = bonus;
             //return View(stonk);
@@ -448,13 +444,13 @@ namespace LonghornBankWebApp.Controllers
             List<StockPortfolio> stonks = new();
             if (User.IsInRole("Customer"))
             {
-                stonks=_context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).Where(r => r.User.UserName == User.Identity.Name).ToList();
+                stonks = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).Where(r => r.User.UserName == User.Identity.Name).ToList();
             }
-            if(User.IsInRole("Admin"))
+            if (User.IsInRole("Admin"))
             {
                 stonks = _context.StockPortfolios.Include(s => s.Transactions).Include(sp => sp.StockTransactions).ThenInclude(s => s.Stock).Where(r => r.StockPortfolioID == id).ToList();
             }
-            
+
 
             // just make sure that the user has a stock portfolio before proceeding
             if (stonks.Count == 0)
@@ -498,20 +494,20 @@ namespace LonghornBankWebApp.Controllers
             {
                 foreach (Transaction transaction in t)
                 {
-                    
+
                     if (transaction.TransactionType == svm.SelectedType)
                     {
                         queried.Add(transaction);
                     }
-                    
+
                 }
 
                 foreach (StockTransaction transaction in st)
-                {           
+                {
                     if (transaction.StockTransactionType.ToString() == svm.SelectedType.ToString())
                     {
                         queried.Add(transaction);
-                    }  
+                    }
                 }
             }
 
@@ -603,7 +599,7 @@ namespace LonghornBankWebApp.Controllers
             }
 
 
-            if(svm.DateHigh != null)
+            if (svm.DateHigh != null)
             {
                 foreach (Transaction transaction in t)
                 {
@@ -617,7 +613,7 @@ namespace LonghornBankWebApp.Controllers
 
                 foreach (StockTransaction transaction in st)
                 {
-                    
+
                     if (transaction.TransactionDate <= svm.DateHigh)
                     {
                         queried.Add(transaction);
@@ -632,7 +628,7 @@ namespace LonghornBankWebApp.Controllers
             ViewBag.order = GetOrder();
             ViewBag.total = stonks[0].Transactions.Count + stonks[0].StockTransactions.Count;
             ViewBag.id = id;
-            
+
             IDictionary<Stock, int> holdings = new Dictionary<Stock, int>();
             (stonks[0], holdings) = UpdatePortfolio(stonks[0], _context);
             ViewBag.holdings = holdings;
@@ -669,7 +665,7 @@ namespace LonghornBankWebApp.Controllers
 
             return orderList;
         }
-        
+
 
         // GET: StockPortfolio/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -735,7 +731,7 @@ namespace LonghornBankWebApp.Controllers
             }
 
 
-            if(changed)
+            if (changed)
             {
                 _context.SaveChanges();
             }
@@ -785,7 +781,7 @@ namespace LonghornBankWebApp.Controllers
                 return View("Error", new string[] { "You can only have one stock portfolio!" });
             }
 
-            
+
             StockPortfolio sp = new();
 
 
@@ -866,14 +862,14 @@ namespace LonghornBankWebApp.Controllers
                 }
                 };
                 _context.Add(m);
-                
+
                 sp.CashValuePortion += id.TransactionAmount;
             }
 
             id.TransactionNumber = Utilities.GenerateNextNum.GetNextTransactionNum(_context);
             id.TransactionNotes = "Congratulations on opening your stock portfolio!";
 
-            
+
 
             _context.Add(sp);
             _context.Add(id);
@@ -978,14 +974,14 @@ namespace LonghornBankWebApp.Controllers
         //    {
         //        _context.StockPortfolios.Remove(stockPortfolio);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool StockPortfolioExists(int id)
         {
-          return _context.StockPortfolios.Any(e => e.StockPortfolioID == id);
+            return _context.StockPortfolios.Any(e => e.StockPortfolioID == id);
         }
 
 
@@ -1010,7 +1006,7 @@ namespace LonghornBankWebApp.Controllers
                         holdings.Add(st.Stock.StockID, st.NumberOfShares);
                     }
                 }
-                
+
                 // Removes shares from dict if sold
                 if (st.StockTransactionType == StockTransactionTypes.Deposit)
                 {

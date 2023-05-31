@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
+﻿using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
 using LonghornBankWebApp.Models.ViewModels;
+using LonghornBankWebApp.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -365,7 +365,7 @@ namespace LonghornBankWebApp.Controllers
 
                 // create message for admins
                 // extra func only needed for disputes
-                
+
                 var fullname = transaction.BankAccount == null ? transaction.StockPortfolio.User.FullName : transaction.BankAccount.User.FullName;
                 Message message = new()
                 {
@@ -1054,7 +1054,7 @@ namespace LonghornBankWebApp.Controllers
 
             foreach (BankAccount bankAccount in bankAccountsList)
             {
-               
+
                 bankAccount.TransferDropDown = bankAccount.BankAccountName + "     " + "XXXXXX" + bankAccount.BankAccountNumber.ToString()[^4..] + "     $" + bankAccount.BankAccountBalance;
                 items.Add(new SelectListItem(text: bankAccount.TransferDropDown, value: bankAccount.BankAccountNumber.ToString()));
 

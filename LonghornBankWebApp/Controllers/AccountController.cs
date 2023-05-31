@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using LonghornBankWebApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LonghornBankWebApp.DAL;
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
 
 namespace LonghornBankWebApp.Controllers
 {
@@ -49,7 +49,7 @@ namespace LonghornBankWebApp.Controllers
 
             AppUser u = await _userManager.FindByEmailAsync(rvm.Email);
 
-            if(u != null)
+            if (u != null)
             {
                 ModelState.AddModelError(nameof(rvm.Email), "Email already taken");
                 return View(rvm);
@@ -75,7 +75,7 @@ namespace LonghornBankWebApp.Controllers
                 IsActive = true,
                 // Customers start with no accounts
                 UserHasAccount = false
-                
+
             };
 
             //create AddUserModel
@@ -91,7 +91,7 @@ namespace LonghornBankWebApp.Controllers
             IdentityResult result = await AddUser.AddUserWithRoleAsync(aum, _userManager, _context);
 
             if (result.Succeeded) //everything is okay
-            { 
+            {
                 //NOTE: This code logs the user into the account that they just created
                 //You may or may not want to log a user in directly after they register - check
                 //the business rules!
@@ -186,7 +186,7 @@ namespace LonghornBankWebApp.Controllers
                 // NOTE: old way of checking if user has an account, use "UserHasAccount" property instead
                 //BankAccount ba = _context.BankAccounts.Where(b => b.User.UserName == lvm.Email).FirstOrDefault();
                 //StockPortfolio sp = _context.StockPortfolios.Where(s => s.User.UserName == lvm.Email).FirstOrDefault();
-                
+
                 AppUser user = _userManager.FindByNameAsync(lvm.Email).Result;
                 bool UserCustomer = _userManager.IsInRoleAsync(user, "Customer").Result;
                 bool UserAdmin = _userManager.IsInRoleAsync(user, "Admin").Result;
@@ -212,7 +212,7 @@ namespace LonghornBankWebApp.Controllers
                                     EmailMessaging.SendEmail(user.Email, "Longhorn Bank: Transaction Canceled for Bank Account "
                                         + t.BankAccount.BankAccountNumber, "Your transaction for $" + t.TransactionAmount
                                         + " has been canceled because it would have sent your account into overdraft. Please contact us if you have any questions.");
-                                    
+
                                     // Create notifaction
                                     Message m = new()
                                     {
@@ -283,7 +283,7 @@ namespace LonghornBankWebApp.Controllers
                     if (bankAccount.BankAccountType == BankAccountTypes.IRA)
                     {
                         DateTime today = DateTime.Today;
-                        
+
                         int age = today.Year - bankAccount.User.DOB.Year;
 
                         if (bankAccount.User.DOB > today.AddYears(-age))
@@ -291,7 +291,7 @@ namespace LonghornBankWebApp.Controllers
                             age--;
                         }
                         // update whether or not IRA accounts are qualified
-                        if ( age > 65 && bankAccount.IRAQualified == false)
+                        if (age > 65 && bankAccount.IRAQualified == false)
                         {
                             bankAccount.IRAQualified = true;
                             _context.Update(bankAccount);
@@ -305,7 +305,7 @@ namespace LonghornBankWebApp.Controllers
 
                 _context.SaveChanges();
 
-                
+
 
                 // if CUSTOMER has no account, redirect to new user view
                 if (user.UserHasAccount == false && UserCustomer)
@@ -315,14 +315,14 @@ namespace LonghornBankWebApp.Controllers
                 }
                 else if (user.UserHasAccount && UserCustomer && user.IsActive)
                 {
-                    
+
                     return RedirectToAction("Index", "BankAccounts");
 
                 }
 
                 else if (UserCustomer && user.IsActive == false)
                 {
-                     
+
                     return RedirectToAction("Index", "BankAccounts", new { message = "Web Account has been disabled, please contact your local branch for more information" });
                 }
                 // Admin needs to be redirected to home screen with tasks awaiting attention
@@ -345,8 +345,8 @@ namespace LonghornBankWebApp.Controllers
 
                 }
 
-                
-                
+
+
             }
             else //log in was not successful
             {
@@ -363,7 +363,7 @@ namespace LonghornBankWebApp.Controllers
         }
 
         //GET: Account/Index
-        
+
         public IActionResult Index()
         {
             IndexViewModel ivm = new();
@@ -478,7 +478,7 @@ namespace LonghornBankWebApp.Controllers
                     return RedirectToAction("Index", "Account");
                 }
             }
-            
+
             return View(mvm);
         }
 
@@ -491,7 +491,7 @@ namespace LonghornBankWebApp.Controllers
             return View();
         }
 
-        
+
 
         // POST: /Account/ChangePassword
         [HttpPost]
@@ -543,6 +543,6 @@ namespace LonghornBankWebApp.Controllers
 
             //send the user back to the home page
             return RedirectToAction("Index", "Home");
-        }           
+        }
     }
 }

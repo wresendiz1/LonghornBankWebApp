@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using IronXL;
-
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
+﻿using IronXL;
 using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
 using System.Text;
-using System.Globalization;
 
 namespace LonghornBankWebApp.Seeding
 {
@@ -29,7 +25,7 @@ namespace LonghornBankWebApp.Seeding
 
                 stockType.StockTypeName = cells[1].Value.ToString();
 
-               // our foreach does this too
+                // our foreach does this too
                 bool containsType = allStockTypes.Any(item => item.StockTypeName == stockType.StockTypeName);
 
                 if (containsType == false)
@@ -75,7 +71,7 @@ namespace LonghornBankWebApp.Seeding
         public static void SeedAllStocks(AppDbContext _context)
         {
             String path = @"C:\Fall 2022\LonghornBankWebApp\LonghornBankWebApp\wwwroot\Files\BankData.xlsx";
-            
+
             var workBook = new WorkBook(path);
             var workSheet = workBook.WorkSheets[4];
 
@@ -104,7 +100,7 @@ namespace LonghornBankWebApp.Seeding
 
                 // Track history of stock prices
                 StockPrice stockPrice = new StockPrice();
-                
+
                 stockPrice.CurrentPrice = Convert.ToDecimal(cells[3].Value);
                 stockPrice.Date = DateTime.Now;
                 stockPrice.Stock = stock;
@@ -114,7 +110,7 @@ namespace LonghornBankWebApp.Seeding
 
             }
             String StockName = "Start";
-            
+
             try
             {
                 foreach (Stock s in allStocks)
@@ -155,7 +151,7 @@ namespace LonghornBankWebApp.Seeding
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 StringBuilder message = new StringBuilder();
                 message.Append("There was an error adding the stock prices to the database: ");

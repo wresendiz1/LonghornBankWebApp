@@ -1,13 +1,9 @@
 ﻿
-using Microsoft.AspNetCore.Identity;
 using IronXL;
-
-using LonghornBankWebApp.Models;
-using LonghornBankWebApp.Utilities;
 using LonghornBankWebApp.DAL;
+using LonghornBankWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Text;
-using System.Globalization;
-using NuGet.Protocol;
 
 namespace LonghornBankWebApp.Seeding
 {
@@ -66,7 +62,7 @@ namespace LonghornBankWebApp.Seeding
                     else
                     {
                         transactionTo.TransactionStatus = TransactionStatuses.Pending;
-                     
+
                     }
                     transactionTo.TransactionNotes = cells[8].Value.ToString();
 
@@ -122,7 +118,7 @@ namespace LonghornBankWebApp.Seeding
                         // Negative
                         withdraw.TransactionAmount = Convert.ToDecimal(cells[5].Value) * -1;
                         withdraw.TransactionDate = Convert.ToDateTime(cells[6].Value);
-                        
+
                         if (cells[7].ToString() == "Yes")
                         {
                             withdraw.TransactionStatus = TransactionStatuses.Approved;
@@ -132,7 +128,7 @@ namespace LonghornBankWebApp.Seeding
                             withdraw.TransactionStatus = TransactionStatuses.Pending;
 
                         }
-                        
+
                         withdraw.TransactionNotes = cells[8].Value.ToString();
 
                         allTransactions.Add(withdraw);
@@ -158,7 +154,7 @@ namespace LonghornBankWebApp.Seeding
                         // Positive Amount
                         deposit.TransactionAmount = Convert.ToDecimal(cells[5].Value);
                         deposit.TransactionDate = Convert.ToDateTime(cells[6].Value);
-                        
+
                         if (cells[7].ToString() == "Yes")
                         {
                             deposit.TransactionStatus = TransactionStatuses.Approved;
@@ -168,7 +164,7 @@ namespace LonghornBankWebApp.Seeding
                             deposit.TransactionStatus = TransactionStatuses.Pending;
 
                         }
-                        
+
                         deposit.TransactionNotes = cells[8].Value.ToString();
 
                         allTransactions.Add(deposit);
@@ -251,14 +247,14 @@ namespace LonghornBankWebApp.Seeding
 
             List<StockTransaction> allStockTrans = new List<StockTransaction>();
             int counter = 12;
-            
+
             for (var y = 2; y <= 4; y++)
             {
                 var cells = workSheet[$"A{y}:G{y}"].ToList();
 
                 StockTransaction st = new StockTransaction();
 
-           
+
 
                 if (cells[1].Value.ToString() == "Purchase")
                 {
@@ -309,7 +305,7 @@ namespace LonghornBankWebApp.Seeding
                     st.TransactionDate = Convert.ToDateTime(cells[6].Value);
                     st.StockTransactionNotes = "Stock Sale - Account " + st.StockPortfolio.PortfolioNumber.ToString() + " - " + st.Stock.StockName.ToString() +
                        " - " + st.NumberOfShares.ToString() + " shares at $" + st.PricePerShare.ToString() + " per share";
-                    
+
                     st.Stock.StockType = _context.StockTypes.FirstOrDefault(stt => stt.Stocks.Contains(st.Stock));
 
                     // Sell fee
@@ -330,33 +326,32 @@ namespace LonghornBankWebApp.Seeding
                 }
                 // other if statements for other type of transaction (Bonus)
             }
-                String TransName = "Start";
+            String TransName = "Start";
 
-                try
+            try
+            {
+                foreach (StockTransaction str in allStockTrans)
                 {
-                    foreach (StockTransaction str in allStockTrans)
+                    TransName = str.StockPortfolio.PortfolioName;
+
+                    StockTransaction dbTransaction = _context.StockTransactions.FirstOrDefault(b => b.StockTransactionNumber == str.StockTransactionNumber);
+
+                    if (dbTransaction == null)
                     {
-                        TransName = str.StockPortfolio.PortfolioName;
-
-                        StockTransaction dbTransaction = _context.StockTransactions.FirstOrDefault(b => b.StockTransactionNumber == str.StockTransactionNumber);
-
-                        if (dbTransaction == null)
-                        {
-                            _context.StockTransactions.Add(str);
-                            _context.SaveChanges();
-                        }
+                        _context.StockTransactions.Add(str);
+                        _context.SaveChanges();
                     }
+                }
 
 
-                }
-                catch(Exception ex)
-                {
-                    StringBuilder msg = new StringBuilder();
-                    msg.Append("there was a problem adding the transcation with the bank account name: ");
-                    msg.Append(TransName);
-                    throw new Exception(msg.ToString(), ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                StringBuilder msg = new StringBuilder();
+                msg.Append("there was a problem adding the transcation with the bank account name: ");
+                msg.Append(TransName);
+                throw new Exception(msg.ToString(), ex);
+            }
         }
     }
-}   
-    
+}

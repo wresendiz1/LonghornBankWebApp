@@ -49,7 +49,7 @@ namespace LonghornBankWebApp.Utilities
 
 
 
-            
+
 
             if (!_context.Transactions.Any() && !_context.StockTransactions.Any())
             {
@@ -61,19 +61,19 @@ namespace LonghornBankWebApp.Utilities
                 intMaxTNumber = Math.Max(_context.Transactions.Max(c => c.TransactionNumber), _context.StockTransactions.Max(c => c.StockTransactionNumber));
 
             }
-            if (intMaxTNumber < START_NUMBER )
+            if (intMaxTNumber < START_NUMBER)
             {
                 intMaxTNumber = START_NUMBER;
             }
-            
+
 
             intNextTNumber = intMaxTNumber + 1;
- 
+
 
             return intNextTNumber;
         }
 
-        
+
 
     }
 }
