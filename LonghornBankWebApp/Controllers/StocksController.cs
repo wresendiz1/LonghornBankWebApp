@@ -17,10 +17,15 @@ namespace LonghornBankWebApp.Controllers
             _context = context;
         }
 
+
+
+
+
         // GET: Stocks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Stocks.Include(s => s.StockType).ToListAsync());
+            return View(await _context.Stocks.Include(s => s.StockType).AsNoTracking().ToListAsync());
+
         }
 
         private IEnumerable<SelectListItem> GetStockTypes()
@@ -59,7 +64,7 @@ namespace LonghornBankWebApp.Controllers
                     Stock = s,
                     Prices = s.StockPrices.Select(sp => new LineSeriesData { Y = Decimal.ToDouble(sp.CurrentPrice) }),
                     Dates = s.StockPrices.Select(sp => sp.Date.ToString())
-                }).FirstOrDefaultAsync();
+                }).AsNoTracking().FirstOrDefaultAsync();
 
             if (stock == null)
             {

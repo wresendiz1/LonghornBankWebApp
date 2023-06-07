@@ -1,6 +1,8 @@
 ﻿using LonghornBankWebApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Reflection.Emit;
 
 namespace LonghornBankWebApp.DAL
 {
@@ -13,29 +15,25 @@ namespace LonghornBankWebApp.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //this code makes sure the database is re-created on the $5/month Azure tier
-            builder.HasPerformanceLevel("Basic");
-            builder.HasServiceTier("Basic");
+
+            /// Specify the precision and scale for decimal types (VALIDATION 30000)
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(decimal));
+                foreach (var property in properties)
+                {
+                    builder.Entity(entityType.Name).Property(property.Name).HasColumnType("decimal(18,2)");
+                }
+            }
             // Add the shadow property to the model
             builder.Entity<StockPortfolio>().Property<String>("AppUserForeignKey");
 
             //this code configures the 1:1 relationship between AppUser and StockPortfolio
             builder.Entity<AppUser>().HasOne(sp => sp.StockPortfolio).WithOne(u => u.User).HasForeignKey<StockPortfolio>("AppUserForeignKey");
-            //builder.Entity<AppUser>().HasMany(b => b.BankAccounts).WithOne(u => u.User);
 
             // builder.Entity<BankAccount>().Property(ba => ba.BankAccountBalance).HasPrecision(18, 2).HasColumnType("decimal(18,2)");
 
-
             base.OnModelCreating(builder);
-        }
-        // NOTE: Avoid performance issues when returning query with (JOINS) navigational properties by configuring split queries
-        // https://learn.microsoft.com/en-us/ef/core/querying/single-split-queries
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-                .UseSqlServer(
-                    @"Server=tcp:longhornbanktrust.database.windows.net,1433;Initial Catalog=longhornbank;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
         }
 
         public DbSet<BankAccount> BankAccounts { get; set; }
@@ -57,7 +55,6 @@ namespace LonghornBankWebApp.DAL
 
         //ADDED: This is the line that adds the StockPrice table to the database
         public DbSet<StockPrice> StockPrices { get; set; }
-
 
     }
 }

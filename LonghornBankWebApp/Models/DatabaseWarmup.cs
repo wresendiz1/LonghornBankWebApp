@@ -1,10 +1,11 @@
 ﻿using LonghornBankWebApp.DAL;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace LonghornBankWebApp.Models
 {
     // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio
-    public class DatabaseWarmup : IHostedService, IDisposable
+    public class DatabaseWarmup : IHostedService
     {
         private readonly ILogger<DatabaseWarmup> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
@@ -26,8 +27,9 @@ namespace LonghornBankWebApp.Models
         {
             _myBackgroundServiceStarting(_logger, "", null);
 
+
             // Schedule the task to run every minute
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
 
             return Task.CompletedTask;
         }
@@ -44,13 +46,35 @@ namespace LonghornBankWebApp.Models
 
         private async void DoWork(object state)
         {
-            using var scope = _scopeFactory.CreateScope();
-            // Get a reference to the AppDbContext
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            // from the stocks model, get the stock prices
-            var stockPrices = await dbContext.Stocks.Include(s => s.StockPrices).ToListAsync();
+            // Ping the website to ensure it is up and avoid cold start
+            using var httpClient = new HttpClient();
 
-            await dbContext.SaveChangesAsync();
+            try
+            {
+                HttpResponseMessage response = await httpClient.GetAsync("https://longhornbanktrust.azurewebsites.net/Stocks/Details/1");
+
+                //if (response.StatusCode == HttpStatusCode.OK)
+                //{
+
+                //    //Console.WriteLine(await response.Content.ReadAsStringAsync());
+                //}
+                //else
+                //{
+                //_logger.LogError("Error pinging website");
+                //}
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error");
+            }
+
+            using var scope = _scopeFactory.CreateScope();
+
+            // Get a reference to the AppDbContext
+            AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // from the stocks model, get the stock prices
+            _ = dbContext.Stocks.Include(s => s.StockPrices).AsNoTracking().ToListAsync();
         }
 
         public void Dispose() => _timer?.Dispose();

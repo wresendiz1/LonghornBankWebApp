@@ -1,5 +1,4 @@
 //add a using statement for currency
-//Be sure to remove the []
 using LonghornBankWebApp.DAL;
 using LonghornBankWebApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +13,13 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHostedService<DatabaseWarmup>();
 
-
 String connectionString = "Server=tcp:longhornbanktrust.database.windows.net,1433;Initial Catalog=longhornbank;Persist Security Info=False;User ID=MISAdmin;Password=Passkey123;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
+// NOTE: Avoid performance issues when returning query with (JOINS) navigational properties by configuring split queries
+// https://learn.microsoft.com/en-us/ef/core/querying/single-split-queries
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString,
+    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
-
-//NOTE: This tells your application how to get a connection to the database
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 //NOTE: You need this line for including Identity in your project
 builder.Services.AddDefaultIdentity<AppUser>()

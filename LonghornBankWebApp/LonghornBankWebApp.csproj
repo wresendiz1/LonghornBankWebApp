@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <AnalysisLevel>6.0-recommended</AnalysisLevel>
+    <Configurations>Debug;Release;Run</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
